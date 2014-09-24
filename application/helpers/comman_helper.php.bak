@@ -1,0 +1,371 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+/**
+ * Procialize
+ *
+ * An open source application development framework for PHP 5.1.6 or newer
+ *
+ * @package		Procialize
+ * @author		Aatish Gore
+ * @copyright           Copyright (c) 2013 - 2014.
+ * @since		Version 1.0
+ * @filesource
+ */
+// ------------------------------------------------------------------------
+
+/**
+ * CodeIgniter Custom form helper
+ *
+ * @package		JITO
+ * @subpackage	Helpers
+ * @category	Helpers
+ * @author		Aatish Gore
+ */
+// ------------------------------------------------------------------------
+
+/**
+ * Element
+ *
+ * Lets you determine whether an array index is set and whether it has a value.
+ * If the element is empty it returns FALSE (or whatever you specify as the default value.)
+ *
+ * @access	public
+ * @param	string
+ * @param	array
+ * @param	mixed
+ * @return	mixed	depends on what the array contains
+ */
+/**
+ * getCreatedUserId
+ * 
+ * returns loggedin user id
+ * 
+ * @access	public
+ * @param	null
+ * @return	int 
+ * @author      Aatish Gore<aatish15@gmail.com>
+ */
+if (!function_exists('getCreatedUserId')) {
+
+    function getCreatedUserId() {
+        return 1;
+    }
+
+}
+
+/**
+ * getCreatedUserId
+ * 
+ * returns loggedin user id
+ * 
+ * @access	public
+ * @param	null
+ * @return	int 
+ * @author      Aatish Gore<aatish15@gmail.com>
+ */
+if (!function_exists('getInstance')) {
+
+    function getInstance() {
+        return 1;
+    }
+
+}
+/**
+ * getPvtOrgId
+ * 
+ * returns loggedin user id orgainsation id
+ * 
+ * @access	public
+ * @param	null
+ * @return	int 
+ * @author      Aatish Gore<aatish15@gmail.com>
+ */
+if (!function_exists('getPvtOrgId')) {
+
+    function getPvtOrgId() {
+        return 1;
+    }
+
+}
+/**
+ * stringToArray
+ * 
+ * returns loggedin user id orgainsation id
+ * 
+ * @access	public
+ * @param	$string
+ * @param       $delimiter
+ * @return	int 
+ * @author      Aatish Gore<aatish15@gmail.com>
+ */
+if (!function_exists('stringToArray')) {
+
+    function stringToArray($string = '', $delimiter = ',') {
+        return explode($delimiter, $string);
+    }
+
+}
+
+/**
+ * saveTags
+ * 
+ * returns loggedin user id orgainsation id
+ * 
+ * @access	public
+ * @param	$data  array
+ * @return	int 
+ * @author      Aatish Gore<aatish15@gmail.com>
+ */
+if (!function_exists('saveTags')) {
+
+    function saveTags($data = array()) {
+        if (empty($data))
+            return;
+        $arrRawTags = stringToArray($data['tag_name']);
+        $arrTags = array();
+        $i = 0;
+        foreach ($arrRawTags as $tag) {
+            $arrTags[$i]['tag_name'] = $tag;
+            $arrTags[$i]['created_by'] = getCreatedUserId();
+            $arrTags[$i]['created_date'] = date("Y-m-d H:i:s");
+            $arrTags[$i]['status'] = 1;
+        }
+        $ci = & get_instance();
+        $debug = $ci->db->db_debug;
+        $ci->db->db_debug = FALSE;
+        $ci->db->insert_batch('tag', $arrTags);
+        $ci->db->db_debug = $debug;
+        return $arrRawTags;
+    }
+
+}
+/**
+ * saveTags
+ * 
+ * returns loggedin user id orgainsation id
+ * 
+ * @access	public
+ * @param	$data  array
+ * @return	int 
+ * @author      Aatish Gore<aatish15@gmail.com>
+ */
+if (!function_exists('menuArray')) {
+
+    function menuArray() {
+        $menuArray = array();
+        $base_url = APPPATH;
+        $dir = APPPATH . 'controllers/manage/*.php';
+        $files1 = glob($dir);
+        $success_counter = 0;
+        $error_counter = 0;
+        $arrskip = array('top_level','user','industry','tag','agenda','functionality','login');
+        
+        foreach ($files1 as $filename) {
+            $file = basename($filename, ".php");
+            if(in_array($file, $arrskip))
+                continue;
+            $menuArray[] = $file ;
+        }
+        
+        return $menuArray;
+    }
+
+}
+
+function allowedMenus($type = '') {
+    $arrAllowed = array();
+
+    if ($type == '')
+        return $arrAllowed;
+    switch ($type) {
+        case 'O':
+            $arrAllowed[] = 'exhibitor';
+            $arrAllowed[] = 'sponsor';
+            $arrAllowed[] = 'speaker';
+            $arrAllowed[] = 'survey';
+            $arrAllowed[] = 'attendee';
+            $arrAllowed[] = 'index';
+            break;
+        case 'E':
+//            $arrAllowed[] = 'exhibitor';
+//            $arrAllowed[] = 'attendee';
+            
+            break;
+    }
+    return $arrAllowed;
+}
+
+function generateMenu($type, $isAdmin = false) {
+    $arrAllMenu = menuArray();
+
+    if ($isAdmin)
+        return $arrAllMenu;
+    $arrAllowedMenu = allowedMenus($type);
+
+    $arrMenu = array();
+    foreach ($arrAllMenu as $allMenu) {
+        if (in_array($allMenu, $arrAllowedMenu))
+            $arrMenu[] = $allMenu;
+    }
+    return $arrMenu;
+}
+
+function getEvents($user_id = 0, $isAdmin = false, $type = NULL) {
+    $arrEvents = array();
+    if ($isAdmin) {
+        $arrEvents[0]['name'] = 'Admin Menu';
+        $arrEvents[0]['event_id'] = '';
+        return $arrEvents;
+    }
+    $ci = & get_instance();
+//    $ci->db->select('event.id as event_id,event.name as name');
+//    if ($type == 'O') {
+////        $ci->db->join('organizer', 'organizer.id = event.organizer_id');
+////        $ci->db->where('organizer.user_id', $user_id);
+//    } elseif($type == 'E') {
+//        $ci->db->join('exhibitor', 'exhibitor.event_id = event.id');
+//        $ci->db->where('exhibitor.user_id', $user_id);
+//    }
+//    $result = $ci->db->get('event');
+//    
+//    return $result->result_array();;
+    
+    $ci->load->model('event_model');
+    return $ci->event_model->getOrganizerEvent($user_id,$type);
+}
+
+function generatePassword($length = 8, $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') {
+    return substr(str_shuffle($chars), 0, $length);
+}
+
+
+/**
+ * @function		GetAllCommon
+ *
+ * Short desc
+ *
+ * For fetching data from table and returns an array.
+ *
+ * @access          public
+ * @param           string-$tableName , string-$strData (Option Parameter)
+ * @return          array
+ * @author          Rima mehta 
+ * @since           Version 1.0
+**/
+if ( ! function_exists('GetAllCommon'))
+{
+	function GetAllCommon($tableName , $strData='' , $orderByField='', $orderBySort='')
+	{
+		$CI =& get_instance();
+		
+		if ($strData != '')
+			$CI->db->select( $strData );
+		
+		if($orderByField!='')
+			if($orderBySort=='')
+				$CI->db->order_by($orderByField, "ASC"); 
+			else
+				$CI->db->order_by($orderByField, $orderBySort); 
+		
+		$query = $CI->db->get( $tableName );
+		//echo $CI->db->last_query();
+		
+		return $query->result_array();
+	}
+}
+
+
+
+/**
+ * @function		GetAllCommonWithWhere
+ *
+ * Short desc
+ *
+ * For fetching data from table with where condition and returns an array.
+ *
+ * @access	public
+ * @param	string-$tableName , string-$where string-$strData (Option Parameter)
+ * @return	array
+ * @author	Rima mehta 
+ * @since	Version 1.0
+**/
+if ( ! function_exists('GetAllCommonWithWhere'))
+{
+	function GetAllCommonWithWhere($tableName , $where , $strData='', $orderByField='', $orderBySort='', $groupByFields= '',$distinct='')
+	{
+		$CI =& get_instance();
+		
+		$CI->db->where( $where );
+		
+		if($distinct !='')
+			$CI->db->distinct($distinct);
+
+		if ($strData != '')
+			$CI->db->select( $strData );
+
+		if($groupByFields != '')
+			$CI->db->group_by($groupByFields);
+		
+		if($orderBySort == '')
+			$orderBySort ='ASC';
+
+		if($orderByField!='')
+		{
+			if( strpos($orderByField, ',') === false)
+			{
+				if (is_numeric($orderByField))
+					$CI->db->order_by($orderByField, $orderBySort); 
+				else
+					$CI->db->order_by("UPPER(".$orderByField.")", $orderBySort); 
+			}
+			else
+			{
+				// when it comes here, it meas $orderByField has comma seperated fields
+				$CI->db->order_by($orderByField, $orderBySort); 
+			}
+		}
+		
+		$query = $CI->db->get( $tableName );
+		//echo $CI->db->last_query();die;
+		//return $query->result (); // This will return object
+		return $query->result_array();
+	}
+}
+
+
+/**
+* GetKeyValueArrayCommon
+*
+* This is used to get array in Key value Form
+*
+* @author   Rima Mehta
+* @access   public
+* @param    
+* @return   array
+*/
+if ( ! function_exists('GetKeyValueArrayCommon'))
+{
+       function GetKeyValueArrayCommon($arrData, $keyFieldName, $valueFieldname, $firstBlank='') {
+
+               $data = array();
+
+               if($firstBlank!='')
+                       $data[''] = "--- $firstBlank ---";
+
+               if($arrData)
+               {
+                       for($i=0; $i<count($arrData);$i++)
+                               $data[trim($arrData[$i][$keyFieldName])] = trim($arrData[$i][$valueFieldname]);
+               }
+
+               return $data;
+       }
+}
+
+
+
+function removeBlank($val){
+   return ($val || is_numeric($val));
+}
