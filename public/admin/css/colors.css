@@ -1,0 +1,14 @@
+
+.logopanel {background: #58BBC2!important;}
+.menutoggle{border-right: 1px solid #45A2A8!important;}
+.headerbar {border-left: 1px solid #45A2A8!important;background: #58BBC2!important;border-right: 1px solid #45A2A8!important;}
+.headermenu .tp-icon {background: #58BBC2}
+.headermenu .tp-icon:hover {background: #2b2b2b;color:#fff}
+.headermenu .dropdown-toggle {border-color: #45A2A8!important;background: #58BBC2!important;}
+.headermenu > li {border-left: 1px solid #45A2A8!important}
+.nav-bracket > li.active > a, .nav-bracket > li.active > a:hover, .nav-bracket > li.active > a:focus {background-color: #58BBC2!important;color: #fff!important;}
+
+
+
+
+
