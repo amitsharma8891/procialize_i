@@ -55,7 +55,7 @@ if (!function_exists('getCreatedUserId')) {
         $ci = & get_instance();
         $user_id = $ci->session->userdata('user_id');
         return $user_id
-                ;
+        ;
     }
 
 }
@@ -159,7 +159,6 @@ if (!function_exists('saveTags')) {
  * @return	int 
  * @author      Aatish Gore<aatish15@gmail.com>
  */
-
 if (!function_exists('menuArray')) {
 
     function menuArray() {
@@ -235,6 +234,7 @@ function generateMenu($type, $isAdmin = false) {
                 'manage/sponsor' => 'sponsor',
                 'manage/speaker' => 'speaker',
                 'manage/survey' => 'survey',
+                'manage/email_template' => 'email_template;',
                 '#' => 'Announcement',
             );
             break;
@@ -536,8 +536,7 @@ function front_image($type, $image) {
             $src_image = $upload_folder;
         else
             $src_image = 'avatar/' . $avatar;
-    }
-    else
+    } else
         $src_image = 'avatar/' . $avatar;
 
     return $src_image;
@@ -564,10 +563,10 @@ function getAttendee_dropdown() {
     return $ci->attendee_model->getDropdownValues(NULL, FALSE);
 }
 
-function sendMail($to, $subject, $message,$htmlMessage= 1,$from_email = 'admin@procialize.net',$from_name = 'Procialize Admin') {
+function sendMail($to, $subject, $message, $htmlMessage = 1, $from_email = 'admin@procialize.net', $from_name = 'Procialize Admin') {
 //    die('inside mail');
-	if($htmlMessage == 1)
-		$htmlMessage = $message;
+    if ($htmlMessage == 1)
+        $htmlMessage = $message;
 
     try {
         $mandrill = new Mandrill(MANDRILL_API_KEY);
@@ -687,8 +686,6 @@ function time_elapsed_string($datetime, $full = false) {
     return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
 
-
-
 function getClientNotification() {
     $CI = & get_instance();
     $id = $CI->session->userdata('client_attendee_id');
@@ -700,24 +697,23 @@ function getClientNotification() {
 function getSocialMessages() {
     $CI = & get_instance();
     $event_id = $CI->session->userdata('client_event_id');
-    if(!$event_id)
+    if (!$event_id)
         return false;
-    
+
     $attendee_id = $CI->session->userdata('client_attendee_id');
     $CI->load->model('client/client_notification_model');
-    $CI->client_notification_model->activity_flag                 = '';
+    $CI->client_notification_model->activity_flag = '';
     $notification = $CI->client_notification_model->getSocialMessage($attendee_id, $event_id);
     return $notification;
 }
 
-function socialNotification()
-{
+function socialNotification() {
     $CI = & get_instance();
     $event_id = $CI->session->userdata('client_event_id');
     $attendee_id = $CI->session->userdata('client_attendee_id');
-    if(!$attendee_id && $event_id)
+    if (!$attendee_id && $event_id)
         return FALSE;
-    
+
     $CI->load->model('client/client_notification_model');
     $notification = $CI->client_notification_model->socialNotificationCount($attendee_id, $event_id);
     return $notification;
@@ -738,22 +734,18 @@ function industry_functionality($industry, $functionality, $separator = ',') {
 //        /display($temp_func);
         $industry = '';
         $functionality = '';
-        if (@$temp_industry[0] && @$temp_industry[0] != '-')
-        {
+        if (@$temp_industry[0] && @$temp_industry[0] != '-') {
             $separator = ',';
-            $industry  = @$temp_industry[0];  
-        }
-        else
+            $industry = @$temp_industry[0];
+        } else
             $separator = '';
-        if (@$temp_func[0] && @$temp_func[0] != '-')
-        {
+        if (@$temp_func[0] && @$temp_func[0] != '-') {
             $separator = ',';
             $functionality = $temp_func[0];
-        }
-        else 
+        } else
             $separator = '';
-            
-            
+
+
 
         $string = $industry . $separator . ' ' . $functionality;
 
@@ -778,7 +770,7 @@ function designation_company($designation, $company, $separator = '-') {
     if ($designation || $company) {
         if (!$designation || !$company)
             $separator = '';
-        
+
 
         $string = $designation . ' ' . $separator . ' ' . $company;
 
@@ -786,26 +778,19 @@ function designation_company($designation, $company, $separator = '-') {
     }
 }
 
-function bracket_attendee_attribute($param1,$param2,$separator = ',')
-{
-	if(!$param1 || !$param2)
-		$separator = '';	
-	
-	$string = '';
-	if($param1 && $param2)
-	{
-		$string = '('.$param1.' '.$separator.' '.$param2.')';
-	}
-	elseif($param1 && !$param2)
-	{
-		$string = '('.$param1.')';
-	}
-	elseif(!$param1 && $param2)
-	{
-		$string = '('.$param2.')';
-	}
-	return $string;
-	
+function bracket_attendee_attribute($param1, $param2, $separator = ',') {
+    if (!$param1 || !$param2)
+        $separator = '';
+
+    $string = '';
+    if ($param1 && $param2) {
+        $string = '(' . $param1 . ' ' . $separator . ' ' . $param2 . ')';
+    } elseif ($param1 && !$param2) {
+        $string = '(' . $param1 . ')';
+    } elseif (!$param1 && $param2) {
+        $string = '(' . $param2 . ')';
+    }
+    return $string;
 }
 
 function saved_icon($page, $subject_id) {
@@ -844,17 +829,17 @@ function saved_icon($page, $subject_id) {
 
 function share_icon($page, $subject_id) {
     $CI = & get_instance();
-    $icon_html  = '';
+    $icon_html = '';
     $attendee_id = $CI->session->userdata('client_attendee_id');
     $CI->load->model('client/client_notification_model');
     $page_array = array(
         'attendee-detail',
         'speaker-detail',
         'exhibitor-detail',
-        //'event-detail',
+            //'event-detail',
     );
     if (in_array($page, $page_array) && is_numeric($subject_id)) {
-    $icon_html = '<li>
+        $icon_html = '<li>
             <div class="btn-group">
               <a href="#"  data-toggle="modal" data-target="#share">
 		<button class="btn btn-default dropdown-toggle tp-icon" >
@@ -865,7 +850,6 @@ function share_icon($page, $subject_id) {
           </li>';
     }
     return $icon_html;
-    
 }
 
 function passcode_validatation() {
@@ -883,127 +867,113 @@ function passcode_validatation() {
         return FALSE;
 }
 
-function getAttendeeType($attendee_id)
-{
+function getAttendeeType($attendee_id) {
     $CI = & get_instance();
     $CI->load->model('client/client_event_model');
     $attendee_type = $CI->client_event_model->getAttendeeType($attendee_id);
-    
+
     return $attendee_type;
 }
 
-function show_normal_ad()
-{
+function show_normal_ad() {
     $CI = & get_instance();
     $event_id = $CI->session->userdata('client_event_id');
-    if($event_id)
-    {
+    if ($event_id) {
         $CI->load->model('client/client_notification_model');
         $ad = $CI->client_notification_model->getNormalAd($event_id);
         //show_query();
         //display($ad);
         return $ad;
-    }
-    else
+    } else
         return FALSE;
-    
 }
 
-function check_access_token($api_access_token,$check_null = FALSE)
-{
-    if(!$api_access_token)
-    {
+function check_access_token($api_access_token, $check_null = FALSE) {
+    if (!$api_access_token) {
         $json_array['error'] = 'error';
-        $json_array['msg']   = 'Invalid Token!';
+        $json_array['msg'] = 'Invalid Token!';
         header('Content-Type: application/json');
-        echo json_encode($json_array);exit;
+        echo json_encode($json_array);
+        exit;
     }
     $CI = & get_instance();
     $CI->load->model('API/client_event_api_model');
-    $user_data  = $CI->client_event_api_model->getUser($api_access_token);
+    $user_data = $CI->client_event_api_model->getUser($api_access_token);
 
-    if($user_data)
-    {
+    if ($user_data) {
         //display($user_data);
         return $user_data;
-    }
-    else
-    {
+    } else {
         $json_array['error'] = 'error';
-        $json_array['msg']   = 'Invalid Token!';
+        $json_array['msg'] = 'Invalid Token!';
         header('Content-Type: application/json');
-        echo json_encode($json_array);exit;
+        echo json_encode($json_array);
+        exit;
         return FALSE;
     }
-        
 }
 
-function json_output($json_array)
-{
+function json_output($json_array) {
     header('Content-Type: application/json');
-    echo json_encode($json_array);exit;
+    echo json_encode($json_array);
+    exit;
 }
 
-function getTwitterHashTag()
-{
+function getTwitterHashTag() {
     $CI = & get_instance();
     $event_id = $CI->session->userdata('client_event_id');
     $CI->load->model('client/client_event_model');
-    
-    if(!$event_id)
+
+    if (!$event_id)
         return FALSE;
-    
-    
-    $twitter_hashtag   = $CI->client_event_model->getHashTag($event_id);
-    
+
+
+    $twitter_hashtag = $CI->client_event_model->getHashTag($event_id);
+
     return $twitter_hashtag;
 }
 
-function push_analytics($type,$subject_id,$subject_type)
-{
+function push_analytics($type, $subject_id, $subject_type) {
     $CI = & get_instance();
     $object_id = $attendee_id = $CI->session->userdata('client_attendee_id');
     $object_type = $attendee_type = $CI->session->userdata('client_user_type');
     $event_id = $CI->session->userdata('client_event_id');
     $CI->load->model('client/client_event_model');
-    
-    $CI->client_event_model->push_analytics($type,$object_id,$object_type,$subject_id,$subject_type,$event_id);
-    
-    
-    
+
+    $CI->client_event_model->push_analytics($type, $object_id, $object_type, $subject_id, $subject_type, $event_id);
 }
 
-function createDateRangeArray($start, $end) 
-{
+function createDateRangeArray($start, $end) {
     $range = array();
-    if (is_string($start) === true) $start = strtotime($start);
-    if (is_string($end) === true ) $end = strtotime($end);
-    if ($start > $end) return createDateRangeArray($end, $start);
+    if (is_string($start) === true)
+        $start = strtotime($start);
+    if (is_string($end) === true)
+        $end = strtotime($end);
+    if ($start > $end)
+        return createDateRangeArray($end, $start);
     do {
-    $range[] = date('Y-m-d', $start);
-    $start = strtotime("+ 1 day", $start);
-    }
-    while($start <= $end);
+        $range[] = date('Y-m-d', $start);
+        $start = strtotime("+ 1 day", $start);
+    } while ($start <= $end);
     return $range;
 }
-function update_rightside_notification()
-{
+
+function update_rightside_notification() {
     $CI = & get_instance();
     $event_id = $CI->session->userdata('client_event_id');
     $attendee_id = $CI->session->userdata('client_attendee_id');
-    if(!$attendee_id && $event_id)
+    if (!$attendee_id && $event_id)
         return FALSE;
-    
+
     $CI->load->model('client/client_notification_model');
     $notification = $CI->client_notification_model->insertSocialNotificationCount($attendee_id, $event_id);
 }
 
-function check_DND($attendee_id)
-{
+function check_DND($attendee_id) {
     $CI = & get_instance();
-    if(!$attendee_id)
+    if (!$attendee_id)
         return FALSE;
-    
+
     $CI->load->model('client/client_notification_model');
     $get_dnd = $CI->client_notification_model->getDND($attendee_id);
     //show_query();
@@ -1011,9 +981,7 @@ function check_DND($attendee_id)
     return $get_dnd;
 }
 
-
-function getSetting()
-{
+function getSetting() {
     $CI = & get_instance();
     $CI->load->model('setting_model');
     $setting_data = json_decode($CI->setting_model->get_setting());
@@ -1021,15 +989,13 @@ function getSetting()
     return $setting_data;
 }
 
-function getSession()
-{
+function getSession() {
     $CI = & get_instance();
     $event_id = $CI->session->userdata('client_event_id');
     $CI->load->model('client/client_event_model');
-    
-    $getSession = $CI->client_event_model->getSession(NULL,$event_id);
+
+    $getSession = $CI->client_event_model->getSession(NULL, $event_id);
     return $getSession;
-    
 }
 
 function get_email_template($email_template_name) {
