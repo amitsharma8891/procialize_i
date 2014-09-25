@@ -276,7 +276,7 @@ $usr_id = $this->session->userdata('client_user_id');
             designation: "required",
             company: "required",
             city: "required",
-            description: "required",
+            //description: "required",
             functionality_id: "required",
             industry_id: "required",
 <?php if (!$usr_id) { ?>
@@ -298,7 +298,7 @@ $usr_id = $this->session->userdata('client_user_id');
                     designation: "Please enter your Designation",
                     company: "Please enter your Company",
                     City: "Please enter your City",
-                    description: "Please enter your description",
+                    //description: "Please enter your description",
                     functionality_id: "Please Select your functionality",
                     industry_id: "Please Select your industry",
 <?php if (!$usr_id) { ?>
