@@ -89,13 +89,13 @@ define('IMAGE_BASEPATH1',  '/httpdocs/beta/');
 
 #######################################################client constants#############################################################################
 
-define('SITE_URL',                                                               'http://192.168.2.148/procialize/');
+define('SITE_URL',                                                               'http://192.168.2.181/procialize_i/');
 define('CLIENT',                                                                'client/');
 define('IMAGES',                                                                'images/');
 define('SCRIPTS',                                                               'scripts/');
 define('CSS',                                                                   'css/');
 define('INCLUDES',                                                              'includes/');
-define('UPLOADS',                                                               $_SERVER['DOCUMENT_ROOT'].'/procialize/uploads/');
+define('UPLOADS',                                                               $_SERVER['DOCUMENT_ROOT'].'/procialize_i/uploads/');
 
 //client ui
 define('CLIENT_CSS',                                                            SITE_URL.'public/'.CLIENT.'css/');
