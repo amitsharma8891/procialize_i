@@ -221,6 +221,58 @@ class Image_maping extends CI_Controller {
         $this->load->view('admin/default', $arrData);
     }
 
+    function add_child($maped_event_image_id = NULL) {
+//        setcookie("postarray", "", time() - 3600);
+        $config['upload_path'] = UPLOADS . 'event_image_maping/';
+        $config['allowed_types'] = 'gif|jpg|png';
+        $config['overwrite'] = FALSE;
+        $config['quality'] = 100;
+        $config['create_thumb'] = TRUE;
+        $config['maintain_ratio'] = TRUE;
+        $this->load->library('upload', $config);
+        if ($this->input->post()) {
+            if (!$this->upload->do_upload('image_name')) //{
+                $error = array('error' => $this->upload->display_errors());
+            $id = $maped_event_image_id;
+            $arrInsert = $this->input->post();
+            $arrInsert['map_id'] = $arrInsert['image_map_id'];
+            $map_exhibitor_id = $arrInsert['map_exhibitor_id'];
+            if ($map_exhibitor_id) {
+                $postarray = json_encode($arrInsert);
+                setcookie('postarray', $postarray);
+                $arrInsert['created'] = date("Y-m-d H:i:s");
+                $arrInsert['modified'] = date("Y-m-d H:i:s");
+                unset($arrInsert['image_map_id']);
+                $status = $this->map_exhibitor_model->saveAll($arrInsert, $map_exhibitor_id);
+            } else {
+                $postarray = json_encode($arrInsert);
+                setcookie('postarray', $postarray);
+                $arrInsert['created'] = date("Y-m-d H:i:s");
+                $arrInsert['modified'] = date("Y-m-d H:i:s");
+                unset($arrInsert['image_map_id']);
+                $status = $this->map_exhibitor_model->saveAll($arrInsert);
+            }
+            if ($status) {
+                $this->session->set_flashdata('message', 'Image Maping Added Successfully !!');
+                redirect('manage/image_maping/add_child/' . $maped_event_image_id);
+            } else {
+                $this->session->set_flashdata('message', 'Failed to Add Image Maping !!');
+                redirect('manage/image_maping/add_child/' . $maped_event_image_id);
+            }
+        }
+        $search = "";
+        $field = "";
+        $arrData['list'] = $this->model->getAll($maped_event_image_id, '1', $search, $field, 'image_map.id', 'AND');
+        $event_id = $arrData['list']->event_id;
+        $arrData['exhhibitor_list'] = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
+        $arrData['thisPage'] = 'Default Image Maping';
+        $arrData['breadcrumb'] = ' Image Maping';
+        $arrData['breadcrumb_tag'] = ' Description for Image Maping goes here';
+        $arrData['breadcrumb_class'] = 'fa-home';
+        $arrData['middle'] = 'admin/image_maping/add_child';
+        $this->load->view('admin/default', $arrData);
+    }
+
     function get_exhibitor($maped_event_image_id = NULL) {
         $map_id = $this->input->post('map_id');
         $event_id = $this->input->post('event_id');

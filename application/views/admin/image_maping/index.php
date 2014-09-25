@@ -25,21 +25,27 @@
                         <tbody>
                             <?php
                             foreach ($list as $value):
+
+//                                display($value);
                                 ?>
                                 <tr>
                                     <td class="tdalign"><?php echo $value['name'] ?></td>
                                     <td class="tdalign"><?php echo $value['image_name'] ?></td>
-                                    <!--<td class="tdalign"><?php //echo ($value['status'] == 1) ? 'E' : 'D';     ?></td>-->
+                                    <!--<td class="tdalign"><?php //echo ($value['status'] == 1) ? 'E' : 'D';                 ?></td>-->
                                     <td class="table-action tdalign">
                                         <a title="Edit" href="<?php echo base_url('manage/image_maping/add/' . $value['id']); ?>"><i class="fa fa-pencil"></i></a>
                                     </td>
-                                    <td class="table-action tdalign">
-                                        <a title="Map" href="<?php echo base_url('manage/image_maping/map_exhibitor/' . $value['id']); ?>"><i class="fa fa-picture-o"></i></a>
-                                    </td>
-                                    <td class="table-action tdalign">
+                                    <?php if (!$value['parent_id']) {
+                                        ?>
+                                        <td class="table-action tdalign">
+                                            <a title="Map" href="<?php echo base_url('manage/image_maping/map_exhibitor/' . $value['id']); ?>"><i class="fa fa-picture-o"></i></a>
+                                        </td>
 
-                                        <a title="Delete" href="<?php echo base_url('manage/image_maping/delete/' . $value['id']); ?>" onclick="return confirm('Are you sure want to delete this image map ?')"><i class="fa fa-trash-o"></i></a>
-                                    </td>
+                                        <td class="table-action tdalign">
+
+                                            <a title="Delete" href="<?php echo base_url('manage/image_maping/delete/' . $value['id']); ?>" onclick="return confirm('Are you sure want to delete this image map ?')"><i class="fa fa-trash-o"></i></a>
+                                        </td>
+                                    <?php } ?>
                                     <?php if ($this->session->userdata('is_superadmin') == 1) { ?>
 
 

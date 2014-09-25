@@ -87,13 +87,11 @@
                                     $seletcted = "";
                                 }
                             }
-
                             if ($i == 0) {
 //                                if (isset($list->parent_id) && $list->parent_id != 0) {
-                                
-                                    ?>
-                                    <option value = "0">Select Parent</option>
-                                    <?php
+                                ?>
+                                <option value = "0">Select Parent Map Image</option>
+                                <?php
 //                                }
                             } else {
                                 ?>
