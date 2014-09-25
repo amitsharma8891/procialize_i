@@ -27,7 +27,7 @@
         ?>
             <div class="col-xs-12">
 <!--                <a href="<?php //echo ?>">-->
-                <?php //echo $anchor;?>
+                <?php echo $anchor;?>
 			  <div class="stat well well-sm attnd">
                 <div class="row">
                   <div class="col-xs-4">
