@@ -73,7 +73,9 @@
                 <div class="col-sm-6">
                     <input type="file" name="image_name">
                     <span id="image_name_err" style="color: red"></span>
-                    <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" height="200px" width="200px" />
+                    <?php if($list->id) { ?>
+                        <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" height="200px" width="200px" />
+                    <?php } ?>
                 </div>
             </div>
             <div class="form-group">
