@@ -24,7 +24,7 @@
         coordinates = coords;
     });
 </script>-->
-<div class="modal fade" id="map_exhibitor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="map_exhibitor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -59,7 +59,7 @@
 //                    echo "<pre>";
 //                    print_r($event_list); 
                                 ?>
-                                <select  id="exhibitor_id" name="exhibitor_id" class="form-control chosen-select"> 
+                                <select type="select" id="exhibitor_id" name="exhibitor_id" class="form-control chosen-select"> 
                                     <?php
                                     $seletcted = "";
 
@@ -72,7 +72,7 @@
                                             }
                                         }
                                         ?>
-                                        <option value = "<?php echo $value['attendee_id'] ?>"><?php echo $value['name']; ?></option>
+                                        <option <?php echo $seletcted ?> value = "<?php echo $value['attendee_id'] ?>"><?php echo $value['name']; ?></option>
 
                                     <?php }
                                     ?>
@@ -145,18 +145,13 @@
             success: function(res)
             {
                 if (res.id) {
-//                    alert(res.exhibitor_id);
                     $("#exhibitor_id option[value='" + res.exhibitor_id + "']").attr('selected', 'selected');
-//                    $("#exhibitor_id ").chosen();
-//                    $("#exhibitor_id ").val(res.exhibitor_id);
-//                    $('#exhibitor_id').trigger("liszt:updated")
                     $('#name').val(res.name);
                     $('#image_map_id').val(res.map_id);
                     $('#map_exhibitor_id').val(res.id);
                     $('#event_id').val(res.event_id);
                     $('#coordinates').val(res.coordinates);
                     $('#description').html(res.description);
-                    $("#exhibitor_id").trigger("liszt:updated");
                 } else {
                     $('#name').val('');
                     $('#description').html('');

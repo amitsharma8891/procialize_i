@@ -25,6 +25,7 @@
 
     <ul class="nav nav-pills nav-stacked nav-bracket">
         <?php
+//        display($this->session->all_userdata());
         $type = $this->session->userdata('type_of_user');
         $superadmin = $this->session->userdata('is_superadmin');
         $user_id = $this->session->userdata('user_id');

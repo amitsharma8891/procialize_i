@@ -4,13 +4,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
 
-        <title>Metropolis - Networking Simplified</title>
+        <title><?php echo getSetting()->app_name; ?> - Networking Simplified</title>
         <meta name="description" content="Procialize enables event attendees to network with one another, without barriers of acquaintance. Exhibitors and sponsors can feature their products and services, and thereby provide them a better return on their investment at events. Finally, event organizers a platform on which they can manage networking at their events and earn more revenues from each stakeholder i.e Exhibitors, Speakers, Sponsors and Attendees.">
         <meta name="keywords" content="procialize, procialize app, procialize application, procialize mobile app, procialize mobile application, event organizing app, event listings, event agenda, event management, event management app, event management mobile appication, procialize plus, procialize +, event sessions, exhibitor listing">
         <meta name="author" content="Infini Systems">
         <meta charset="UTF-8">
         <link rel="shortcut icon" href="<?php echo CLIENT_IMAGES ?>favicon.png" type="image/png">
-        
+
 
 
 
@@ -31,7 +31,7 @@
         <![endif]-->
 
         <script type="text/javascript">
-             SITE_URL = '<?php echo SITE_URL ?>';
+            SITE_URL = '<?php echo SITE_URL ?>';
             var FB_APP_ID = '<?php echo FB_APP_ID ?>';
             var LI_APP_ID = '<?php echo LI_APP_ID ?>';
 
@@ -79,40 +79,40 @@
                         <a href="<?php echo SITE_URL ?>profile-view">       
                             <div class="">   
                                 <div class="media userlogged">
-                                <?php
-                                $profile_pic_path = '';
-                                if ($this->session->userdata('client_user_type') == 'A')
-                                    $profile_pic_path = 'attendee';
-                                elseif ($this->session->userdata('client_user_type') == 'E')
-                                    $profile_pic_path = 'exhibitor';
-                                elseif ($this->session->userdata('client_user_type') == 'S')
-                                    $profile_pic_path = 'speaker';
-                                ?>
+                                    <?php
+                                    $profile_pic_path = '';
+                                    if ($this->session->userdata('client_user_type') == 'A')
+                                        $profile_pic_path = 'attendee';
+                                    elseif ($this->session->userdata('client_user_type') == 'E')
+                                        $profile_pic_path = 'exhibitor';
+                                    elseif ($this->session->userdata('client_user_type') == 'S')
+                                        $profile_pic_path = 'speaker';
+                                    ?>
                                     <img alt="" src="<?php echo SITE_URL . 'uploads/' . front_image($profile_pic_path, $this->session->userdata('client_user_image')) ?>" class="media-object">
                                     <div class="media-body">
                                         <span class="pull-right pr10"> <i class="fa fa-cog fa_font_14"></i></span>
                                         <h4><?php echo $this->session->userdata('client_user_name'); ?></h4>
                                         <span><?php echo $this->session->userdata('client_user_designation'); ?> </span>
-    <?php if ($this->session->userdata('client_user_designation')) echo '<br/>'; ?>
+                                        <?php if ($this->session->userdata('client_user_designation')) echo '<br/>'; ?>
                                         <span> <?php echo $this->session->userdata('client_user_company'); ?></span>
                                     </div>
 
                                 </div>
                             </div>
                         </a>
-<?php } ?>
+                    <?php } ?>
                     <ul class="nav nav-pills nav-stacked nav-bracket">
                         <li><a href="<?php echo SITE_URL ?>events"><i class="fa fa-home"></i> <span>Home</span></a></li>
                         <li><a href="<?php echo SITE_URL ?>search"><i class="fa fa-search"></i> <span>Search Events</span></a></li>
-<?php if ($this->session->userdata('client_user_id') && $this->session->userdata('client_event_id')) { ?>
+                        <?php if ($this->session->userdata('client_user_id') && $this->session->userdata('client_event_id')) { ?>
                             <li><a href="<?php echo SITE_URL ?>user/saved/exhibitor"><i class="fa fa-briefcase"></i> <span>Saved Exhibitors</span></a></li>
                             <li><a href="<?php echo SITE_URL ?>user/saved/attendee"><i class="fa fa-user"></i> <span>Saved Attendees</span></a></li>
                             <li><a href="<?php echo SITE_URL ?>user/saved/speaker"><i class="fa fa-microphone"></i> <span>Saved Speakers</span></a></li>
                             <li><a href="javascript:;"  data-toggle="modal" data-target="#share_left_procialize" onClick="share_social('Event')"><i class="fa fa-share-alt"></i> <span>Share Procialize</span></a></li>
-<?php } ?>
+                        <?php } ?>
 
                         <li><a href="<?php echo SITE_URL ?>welcome"><i class="fa fa-list-ul"></i> <span>About <?php echo getSetting()->app_name; ?></span></a></li>
-<?php if ($this->session->userdata('client_user_id')) { ?>
+                        <?php if ($this->session->userdata('client_user_id')) { ?>
                             <li><a href="<?php echo SITE_URL ?>client/event/logout"><i class="glyphicon glyphicon-log-out"></i> <span>Logout</span></a></li>
                         <?php } ?>
                     </ul>      
@@ -124,12 +124,12 @@
                     <div class="bg-img" id="px_background_img"></div>
                 </div>
 
-<?php
-$count = 0;
-if ($this->session->userdata('client_event_id') && $this->uri->segment(1) == 'events' && $this->uri->segment(2) != '') {
-    $add = (show_normal_ad());
-    //display($add);
-    ?>
+                <?php
+                $count = 0;
+                if ($this->session->userdata('client_event_id') && $this->uri->segment(1) == 'events' && $this->uri->segment(2) != '') {
+                    $add = (show_normal_ad());
+                    //display($add);
+                    ?>
 
 
                     <?php
@@ -190,10 +190,10 @@ if ($this->session->userdata('client_event_id') && $this->uri->segment(1) == 'ev
 
                     <div class="header-right">
                         <ul class="headermenu">
-<?php
-$save_icon = saved_icon($this->uri->segment(2), $this->uri->segment(3));
-echo $save_icon;
-?>
+                            <?php
+                            $save_icon = saved_icon($this->uri->segment(2), $this->uri->segment(3));
+                            echo $save_icon;
+                            ?>
 
                             <?php
                             $share_icon = share_icon($this->uri->segment(2), $this->uri->segment(3));
@@ -204,26 +204,26 @@ echo $save_icon;
                                     <a href="<?php echo SITE_URL ?>notification">
                                         <button class="btn btn-default dropdown-toggle tp-icon">
                                             <i class="glyphicon glyphicon-envelope"></i>
-                            <?php
-                            if (getClientNotification())
-                                echo '<span class="badge message_badge">' . getClientNotification() . '</span>';
-                            else
-                                echo '<span class="badge message_badge"></span>';
-                            ?>
+                                            <?php
+                                            if (getClientNotification())
+                                                echo '<span class="badge message_badge">' . getClientNotification() . '</span>';
+                                            else
+                                                echo '<span class="badge message_badge"></span>';
+                                            ?>
                                         </button></a>
                                 </div>
                             </li>
                             <li>
                                 <a href="javascript:;" onClick="updateSocialNotification()" id="chatview" class="btn btn-default tp-icon chat-icon">
                                     <i class="glyphicon glyphicon-comment mt3"></i>
-<?php
+                                    <?php
 //display(socialNotification());
 //show_query();
-if (socialNotification())
-    echo '<span class="badge social_badge">!</span>';
-else
-    echo '<span class="badge social_badge"></span>';
-?>
+                                    if (socialNotification())
+                                        echo '<span class="badge social_badge">!</span>';
+                                    else
+                                        echo '<span class="badge social_badge"></span>';
+                                    ?>
 
 
                                 </a>
@@ -269,31 +269,31 @@ else
 
                                 </div>
                                 <hr class="mt9">
-<?php
-$title = '';
-$image = '';
-$description = '';
-$url = '';
-if (isset($target_user_type) && isset($fb_share_data)) {
-    $share_date = $fb_share_data;
-    if ($target_user_type == 'A') {
-        $title = $share_date['attendee_name'];
-        $image = SITE_URL . 'uploads/' . front_image('attendee', $share_date['attendee_image']);
-        $description = $share_date['attendee_description'];
-        $url = SITE_URL . 'events/attendee-detail/' . $share_date['attendee_id'];
-    } elseif ($target_user_type == 'E') {
-        $title = $share_date['exhibitor_name'];
-        $image = SITE_URL . 'uploads/' . front_image('exhibitor', $share_date['exhibitor_logo']);
-        $description = $share_date['exhibitor_description'];
-        $url = SITE_URL . 'events/exhibitor-detail/' . $share_date['exhibitor_id'];
-    } elseif ($target_user_type == 'S') {
-        $title = $share_date['attendee_name'];
-        $image = SITE_URL . 'uploads/' . front_image('speaker', $share_date['attendee_image']);
-        $description = $share_date['attendee_description'];
-        $url = SITE_URL . 'events/speaker-detail/' . $share_date['attendee_id'];
-    }
-}
-?>
+                                <?php
+                                $title = '';
+                                $image = '';
+                                $description = '';
+                                $url = '';
+                                if (isset($target_user_type) && isset($fb_share_data)) {
+                                    $share_date = $fb_share_data;
+                                    if ($target_user_type == 'A') {
+                                        $title = $share_date['attendee_name'];
+                                        $image = SITE_URL . 'uploads/' . front_image('attendee', $share_date['attendee_image']);
+                                        $description = $share_date['attendee_description'];
+                                        $url = SITE_URL . 'events/attendee-detail/' . $share_date['attendee_id'];
+                                    } elseif ($target_user_type == 'E') {
+                                        $title = $share_date['exhibitor_name'];
+                                        $image = SITE_URL . 'uploads/' . front_image('exhibitor', $share_date['exhibitor_logo']);
+                                        $description = $share_date['exhibitor_description'];
+                                        $url = SITE_URL . 'events/exhibitor-detail/' . $share_date['exhibitor_id'];
+                                    } elseif ($target_user_type == 'S') {
+                                        $title = $share_date['attendee_name'];
+                                        $image = SITE_URL . 'uploads/' . front_image('speaker', $share_date['attendee_image']);
+                                        $description = $share_date['attendee_description'];
+                                        $url = SITE_URL . 'events/speaker-detail/' . $share_date['attendee_id'];
+                                    }
+                                }
+                                ?>
                                 <!--<a href="javascript:;" class="socialShare" ><h4><i class="fa fa-facebook-square"></i> Facebook</h4></a>-->
                                 <a href="<?php echo $url ?>" data-image="<?php echo $image ?>" data-title="<?php echo $title ?>" data-desc="<?php echo $description ?>" class="socialShare"><h4><i class="fa fa-facebook-square"></i> Facebook</h4></a>
 
@@ -312,7 +312,7 @@ if (isset($target_user_type) && isset($fb_share_data)) {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                <h4 class="modal-title" id="myModalLabel">Share Procialize</h4>
+                                <h4 class="modal-title" id="myModalLabel">Share <?php echo getSetting()->app_name; ?></h4>
                             </div>
 
                             <div class="modal-body">

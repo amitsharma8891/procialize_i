@@ -69,11 +69,51 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-sm-2 control-label">Parent Map</label>
+                <div class="col-sm-6">
+                    <?php
+//                    echo "<pre>";
+//                    print_r($event_list); 
+                    ?>
+                    <select type="select" name="parent_id" class="form-control chosen-select"> 
+                        <?php
+                        $seletcted = "";
+                        $i = 0;
+                        foreach ($parent_list as $key => $value) {
+                            if (isset($list->parent_id)) {
+                                if ($list->parent_id == $value['id']) {
+                                    $seletcted = 'selected="selected"';
+                                } else {
+                                    $seletcted = "";
+                                }
+                            }
+
+                            if ($i == 0) {
+//                                if (isset($list->parent_id) && $list->parent_id != 0) {
+                                
+                                    ?>
+                                    <option value = "0">Select Parent</option>
+                                    <?php
+//                                }
+                            } else {
+                                ?>
+                                <option <?php echo $seletcted ?> value = "<?php echo $value['id'] ?>"><?php echo $value['name']; ?></option>
+                                <?php
+                            }
+                            $i++;
+                            ?>
+
+                        <?php }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-sm-2 control-label"> Mapping Image</label>
                 <div class="col-sm-6">
                     <input type="file" name="image_name">
                     <span id="image_name_err" style="color: red"></span>
-                    <?php if($list->id) { ?>
+                    <?php if ($list->id) { ?>
                         <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" height="200px" width="200px" />
                     <?php } ?>
                 </div>

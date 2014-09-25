@@ -7,7 +7,7 @@
   <meta name="author" content="">
   <link rel="shortcut icon" href="images/favicon.png" type="image/png">
 
-  <title>Metropolis Admin</title>
+  <title><?php echo getSetting()->app_name; ?> Admin</title>
 
   <link href="<?php echo base_url(); ?>public/admin/css/style.default.css" rel="stylesheet">
   <?php include_once 'setting.php';?>
@@ -36,12 +36,12 @@
                 
                 <div class="signin-info">
                     <div class="">
-                        <h1>Metropolis</h1>
+                        <h1><?php echo getSetting()->app_name; ?></h1>
                     </div><!-- logopanel -->
                 
                     <div class="mb20"></div>
                 
-                    <h5><strong>Welcome to Metropolis!</strong></h5>
+                    <h5><strong>Welcome to <?php echo getSetting()->app_name; ?>!</strong></h5>
                     <ul>
                         <li><i class="fa fa-arrow-circle-o-right mr5"></i> Event Sessions</li>
                         <li><i class="fa fa-arrow-circle-o-right mr5"></i> Interact with Speakers &amp; Attendees</li>
@@ -65,7 +65,7 @@
         
         <div class="signup-footer">
             <div class="pull-left">
-                &copy; 2014. All Rights Reserved. Procialize
+                &copy; 2014. All Rights Reserved. <?php echo getSetting()->app_name; ?>
             </div>
             <div class="pull-right">
                 <!--Created By: <a href="http://www.infinisystem.com/" target="_blank">Infini Systems</a>-->

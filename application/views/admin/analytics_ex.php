@@ -8,7 +8,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="shortcut icon" href="<?php echo base_url() ?>public/admin/images/favicon.png" type="image/png">
-        <title>Procialize Dashboard</title>
+        <title><?php echo getSetting()->app_name; ?> Dashboard</title>
         <link href="<?php echo base_url(); ?>public/admin/css/style.default.css" rel="stylesheet">
         <link href="<?php echo base_url(); ?>public/admin/css/jquery.datatables.css" rel="stylesheet">
         <style type="text/css">

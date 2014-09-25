@@ -11,7 +11,7 @@ error_reporting(0);
         <meta name="author" content="">
         <link rel="shortcut icon" href="<?php echo base_url() ?>/public/admin/images/favicon.png" type="image/png">
 
-        <title>Default Organizer - Procialize</title>
+        <title>Default Organizer - <?php echo getSetting()->app_name; ?></title>
 
         <link href="<?php echo base_url(); ?>public/admin/css/style.default.css" rel="stylesheet">
         <link rel="stylesheet" href="<?php echo base_url(); ?>public/admin/css/jquery.tagsinput.css" />

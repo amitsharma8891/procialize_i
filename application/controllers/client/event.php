@@ -18,6 +18,9 @@ class Event extends CI_Controller {
         $this->load->model('client/client_login_model');
         $this->load->model('common_model/common_transaction_model');
         $this->load->model('common_user_model');
+        $this->load->model('map_exhibitor_model');
+        $this->load->model('image_map_model');
+        $this->load->model('attendee_model');
         $this->load->model('mobile_model');
         $this->load->helper('emailer_helper');
     }
@@ -478,7 +481,7 @@ class Event extends CI_Controller {
         $event_id = $this->input->post('event_id');
         if ($attendee_id && $message && $target_attendee_id && $message_id) {
 //$send_msg                                                           = $this->model->send_mesage($attendee_id,$message_id,$target_attendee_id,"A",$message,$event_id);
-            
+
             $this->common_transaction_model->message_id = $message_id;
             $this->common_transaction_model->message = $message;
             $this->common_transaction_model->event_id = $event_id;
@@ -541,7 +544,7 @@ class Event extends CI_Controller {
                 $this->model->search = $keyword;
                 $data = $this->model->getExhibitor(NULL, $event_id);
                 $json_array['user'] = $this->getExhibitorListHtml($data);
-            }elseif ($user_type == 'speaker') {
+            } elseif ($user_type == 'speaker') {
                 $this->model->search = $keyword;
                 $this->model->attendee_type = 'S';
                 $data = $this->model->getAttendee(NULL, $event_id);
@@ -617,28 +620,25 @@ class Event extends CI_Controller {
         }
         return $html;
     }
-    
-    function getSpeakerListHtml($data)
-    {
+
+    function getSpeakerListHtml($data) {
         $html = '';
-        if ($data) 
-        {
-            foreach ($data as $key => $attendee) 
-            {
-                $anchor   = '<a href="'.SITE_URL.EVENT_CONTROLLER_PATH.'speaker-detail/'.$attendee['attendee_id'].'">';
-                    if(!passcode_validatation())
-                        $anchor   = '<a href="javascript:;" class=""  data-toggle="modal" data-target="#SignUp">';
-                $html .= '<div class="col-xs-12">'.$anchor.' <div class="stat well well-sm attnd"><div class="row"><div class="col-xs-4"><div class="thumb">
-                        <img src="'.SITE_URL.'uploads/'.front_image('speaker',$attendee['attendee_image']).'" alt="" class="img-responsive userlogo"/></div></div>
-                        <div class="col-xs-8 eventdet"><h4>'.$attendee['attendee_name'].'</h4>
-                    <small class="stat-label mr10">'. designation_company($attendee['attendee_designation'],$attendee['attendee_company']).'</small>
-                    <small class="stat-label mr10">'.industry_functionality($attendee['attendee_industry'],$attendee['attendee_functionality']).'</small>
-                    <small class="stat-label mr10">'.$attendee['attendee_city'].'</small></div></div></div></a></div>'; 
+        if ($data) {
+            foreach ($data as $key => $attendee) {
+                $anchor = '<a href="' . SITE_URL . EVENT_CONTROLLER_PATH . 'speaker-detail/' . $attendee['attendee_id'] . '">';
+                if (!passcode_validatation())
+                    $anchor = '<a href="javascript:;" class=""  data-toggle="modal" data-target="#SignUp">';
+                $html .= '<div class="col-xs-12">' . $anchor . ' <div class="stat well well-sm attnd"><div class="row"><div class="col-xs-4"><div class="thumb">
+                        <img src="' . SITE_URL . 'uploads/' . front_image('speaker', $attendee['attendee_image']) . '" alt="" class="img-responsive userlogo"/></div></div>
+                        <div class="col-xs-8 eventdet"><h4>' . $attendee['attendee_name'] . '</h4>
+                    <small class="stat-label mr10">' . designation_company($attendee['attendee_designation'], $attendee['attendee_company']) . '</small>
+                    <small class="stat-label mr10">' . industry_functionality($attendee['attendee_industry'], $attendee['attendee_functionality']) . '</small>
+                    <small class="stat-label mr10">' . $attendee['attendee_city'] . '</small></div></div></div></a></div>';
             }
         }else {
             $html .= '<div class="col-xs-12">No Attendee Found</div>';
         }
-        
+
         return $html;
     }
 
@@ -696,38 +696,34 @@ class Event extends CI_Controller {
     }
 
     function event_login() {
-        $passcode = mysql_real_escape_string($this->input->post('passcode',TRUE));
+        $passcode = mysql_real_escape_string($this->input->post('passcode', TRUE));
         $event_id = $this->session->userdata('client_event_id');
         $attendee_id = $this->session->userdata('client_attendee_id');
         $json_array['error'] = 'error';
         $json_array['msg'] = 'Invalid Passcode!';
-        
-        $passcode_detail = $this->model->get_paascode_detail($event_id,$passcode);
-        if($passcode_detail)
-        {
+
+        $passcode_detail = $this->model->get_paascode_detail($event_id, $passcode);
+        if ($passcode_detail) {
             if ($passcode && $event_id && ($passcode_detail->attendee_id == $attendee_id)) {
-                    $this->db->where('attendee_id', $attendee_id);
-                    $this->db->where('event_id', $event_id);
-                    $this->db->update('event_has_attendee', array('status' => 1));
-                    $json_array['error'] = 'success';
-                    $json_array['msg'] = 'Success';
-            }
-            else
-            {
-                $passcode_attendee_id = $passcode_detail->attendee_id; 
+                $this->db->where('attendee_id', $attendee_id);
+                $this->db->where('event_id', $event_id);
+                $this->db->update('event_has_attendee', array('status' => 1));
+                $json_array['error'] = 'success';
+                $json_array['msg'] = 'Success';
+            } else {
+                $passcode_attendee_id = $passcode_detail->attendee_id;
                 $this->db->where('attendee_id', $attendee_id);
                 $this->db->where('event_id', $event_id);
                 $this->db->delete('event_has_attendee');
                 $this->db->where('passcode', $passcode);
                 $this->db->where('event_id', $event_id);
-                $this->db->update('event_has_attendee', array('attendee_id'=> $attendee_id,'status' => 1));
+                $this->db->update('event_has_attendee', array('attendee_id' => $attendee_id, 'status' => 1));
                 $json_array['error'] = 'success';
                 $json_array['msg'] = 'Success';
             }
-    }
+        }
 
         echo json_encode($json_array);
-        
     }
 
     function session_rsvp() {
@@ -1097,14 +1093,12 @@ class Event extends CI_Controller {
         $attendee_id = $user_data->attendee_id;
         $json_array['error'] = 'error';
         $json_array['msg'] = 'Invalid Passcode!';
-        if($user_data && $passcode && $event_id)
-        {
-            $passcode_validation = $this->common_transaction_model->common_notification_passcode_validation($event_id, $attendee_id,$passcode);
+        if ($user_data && $passcode && $event_id) {
+            $passcode_validation = $this->common_transaction_model->common_notification_passcode_validation($event_id, $attendee_id, $passcode);
             $json_array['error'] = $passcode_validation['error'];
             $json_array['msg'] = $passcode_validation['msg'];
         }
         echo json_encode($json_array);
-         
     }
 
     function email_test() {
@@ -1138,18 +1132,71 @@ class Event extends CI_Controller {
 
         return json_encode($user_data);
     }
-    
-    function getAttendeeType($attendee_id)
-        {
-            if($attendee_id)
-            {
-                $query =  $this->db
-                        -> select('attendee_type')
-                        -> from('attendee')
-                        -> where('id',$attendee_id)
-                        -> get()->row();
-                return @$query->attendee_type;
+
+    function getAttendeeType($attendee_id) {
+        if ($attendee_id) {
+            $query = $this->db
+                            ->select('attendee_type')
+                            ->from('attendee')
+                            ->where('id', $attendee_id)
+                            ->get()->row();
+            return @$query->attendee_type;
+        }
+    }
+
+    function get_image_map_exhibitor($maped_event_image_id = null) {
+//        if ($exhibitor_id) {
+//            $result = $this->db
+//                            ->select('*')
+//                            ->from('map_exhibitor')
+//                            ->where('id', $exhibitor_id)
+//                            ->get()->row();
+//            display($result);
+//            $this->load->view('client/event/client_event_image_map', $result);
+//            return $result;
+//        }
+//        setcookie("postarray", "", time() - 3600);
+        //$maped_event_image_id = 2;//$this->session->userdata('client_event_id');die;
+        if ($this->input->post()) {
+            $id = $maped_event_image_id;
+            $arrInsert = $this->input->post();
+            $arrInsert['map_id'] = $arrInsert['image_map_id'];
+            $map_exhibitor_id = $arrInsert['map_exhibitor_id'];
+            if ($map_exhibitor_id) {
+                $postarray = json_encode($arrInsert);
+                setcookie('postarray', $postarray);
+                $arrInsert['created'] = date("Y-m-d H:i:s");
+                $arrInsert['modified'] = date("Y-m-d H:i:s");
+                unset($arrInsert['image_map_id']);
+                $status = $this->map_exhibitor_model->saveAll($arrInsert, $map_exhibitor_id);
+            } else {
+                $postarray = json_encode($arrInsert);
+                setcookie('postarray', $postarray);
+                $arrInsert['created'] = date("Y-m-d H:i:s");
+                $arrInsert['modified'] = date("Y-m-d H:i:s");
+                unset($arrInsert['image_map_id']);
+                $status = $this->map_exhibitor_model->saveAll($arrInsert);
+            }
+            if ($status) {
+                $this->session->set_flashdata('message', 'Image Maping Added Successfully !!');
+//                redirect('manage/image_maping/map_exhibitor/' . $maped_event_image_id);
+            } else {
+                $this->session->set_flashdata('message', 'Failed to Add Image Maping !!');
+//                redirect('manage/image_maping/map_exhibitor/' . $maped_event_image_id);
             }
         }
+        $search = $maped_event_image_id;
+        $field = array('image_map.event_id');
+        $arrData['list'] = $this->image_map_model->getAll(NULL, '1', $search, $field, NULL, 'AND');
+//        display($arrData['list']);
+        $event_id = $arrData['list']->event_id;
+        $arrData['exhhibitor_list'] = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
+//        $arrData['thisPage'] = 'Default Image Maping';
+//        $arrData['breadcrumb'] = ' Image Maping';
+//        $arrData['breadcrumb_tag'] = ' Description for Image Maping goes here';
+//        $arrData['breadcrumb_class'] = 'fa-home';
+//        $arrData['middle'] = 'admin/image_maping/map_exhibitor';
+        $this->load->view('client/event/client_event_image_map.php',$arrData);
+    }
 
 }

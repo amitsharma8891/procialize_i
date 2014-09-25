@@ -27,7 +27,7 @@
 //echo  validation_errors();
         ?>
         <?php // print_r($list->name); ?>
-         <!--<form onsubmit="return false" id="email_template_form"  action="<?php //echo SITE_URL                                                 ?>manage/organizer/add_edit">-->
+         <!--<form onsubmit="return false" id="email_template_form"  action="<?php //echo SITE_URL                                                  ?>manage/organizer/add_edit">-->
         <form  onsubmit="return false" method="post" accept-charset="utf-8" id="form1" name="form1" role="form" enctype="multipart/form-data">
             <div  class='form-group'   >
                 <div  class='col-sm-6'   >
@@ -101,7 +101,7 @@
                         if (file_exists('uploads/organizer/logo/' . $list->organiser_photo) && $list->organiser_photo)
                             echo '<img src="' . SITE_URL . 'uploads/organizer/logo/' . $list->organiser_photo . '" height="100" width="100"/>';
                         ?>
-                        <input type="hidden" name="app_logo_image" id="app_logo_image" value="<?php //echo $setting['app_logo_big'];                                                ?>">
+                        <input type="hidden" name="app_logo_image" id="app_logo_image" value="<?php //echo $setting['app_logo_big'];                                                 ?>">
                     </div>
                     <div id="logo_filelist" ></div>
                 </div>
@@ -159,7 +159,7 @@
                 <div  class='form-group'>
                     <div  class='col-sm-6'>
                         <lable  class='col-sm-1 control-label form-label-placeholder'   >
-                            <div>Current Password <span class="field_required">*</span></div>
+                            <div>Current Password <span class="field_required">*</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo base_url('manage/login/forgot_password'); ?>"><small>Forgot Your Password?</small></a></div>
                         </lable>
                         <input type="password" name="current_password" value="" id="current_password" class="form-control" placeholder="Enter Current Password." validate="required" error="Password"  />
                         <span id="current_password_err" style="color: red"></span>

@@ -8,7 +8,7 @@
   <meta name="author" content="">
   <link rel="shortcut icon" href="images/favicon.png" type="image/png">
 
-  <title>Super Admin - Procialize</title>
+  <title>Super Admin - <?php echo getSetting()->app_name; ?></title>
 
   <link href="css/style.default.css" rel="stylesheet">
   <link href="css/jquery.datatables.css" rel="stylesheet">
@@ -45,7 +45,7 @@
       <div class="breadcrumb-wrapper">
         <span class="label">You are here:</span>
         <ol class="breadcrumb">
-          <li><a href="index.php">Procialize</a></li>
+          <li><a href="index.php"><?php echo getSetting()->app_name; ?></a></li>
           <li class="active">Events</li>
         </ol>
       </div>
