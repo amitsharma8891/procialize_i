@@ -570,7 +570,7 @@ class Exhibitor extends CI_Controller {
 
     function downloadSample() {
 
-        $file = IMAGE_BASEPATH . '/uploads/csv_sample/Exhibitor Upload_Sample.csv';
+        /*$file = IMAGE_BASEPATH . '/uploads/csv_sample/Exhibitor Upload_Sample.csv';
         header('Content-Type: text/csv');
         header("Content-Disposition:attachment;filename=Exhibitor_Upload_Template.csv");
         header('Pragma: no-cache');
@@ -579,7 +579,11 @@ class Exhibitor extends CI_Controller {
         ob_clean();
         flush();
         echo readfile($file);
-        exit;
+        exit;*/
+        $this->load->helper('download');
+        $data = file_get_contents(UPLOADS."csv_sample/Exhibitor_Upload_Sample.csv"); // Read the file's contents
+        $name = 'Exhibitor_Upload_Sample.csv';
+        force_download($name, $data);
     }
 
     function csvFieldValueRegex($type, $value, $key) {
