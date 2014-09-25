@@ -555,7 +555,7 @@ class Attendee extends CI_Controller {
     }
 
     function downloadSample() {
-        echo $file = IMAGE_BASEPATH . '/uploads/csv_sample/Attendee_Upload_Sample.csv';
+        /*echo $file = IMAGE_BASEPATH . '/uploads/csv_sample/Attendee_Upload_Sample.csv';
         header('Content-Type: text/csv');
         header("Content-Disposition:attachment;filename=Attendee_Upload_Template.csv");
         header('Pragma: no-cache');
@@ -565,7 +565,11 @@ class Attendee extends CI_Controller {
         flush();
 
         echo readfile($file);
-        exit;
+        exit;*/
+        $this->load->helper('download');
+        $data = file_get_contents(UPLOADS."csv_sample/Attendee_Upload_Sample.csv"); // Read the file's contents
+        $name = 'Attendee_Upload_Sample.csv';
+        force_download($name, $data);
     }
 
     /*
