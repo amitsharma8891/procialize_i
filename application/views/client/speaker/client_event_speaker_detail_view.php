@@ -64,9 +64,12 @@
 					<div class="panel-body">
 					<div class="tab-content">
 					  <div class="tab-pane active" id="info">
-						<p><strong>Industry:</strong> <?php echo $attendee['attendee_industry']?></p>
-						<p><strong>Functionality:</strong> <?php echo $attendee['attendee_functionality']?></p>
-                                                <p><strong>Website:</strong> <?php echo $attendee['attendee_website']?></p><br>
+                                              <?php 
+                                                echo $attendee['attendee_industry'] != '' ? '<p><strong>Industry:</strong> '.$attendee['attendee_industry'].'</p>' : '';
+                                                echo $attendee['attendee_functionality'] != '' ? '<p><strong>Industry:</strong> '.$attendee['attendee_functionality'].'</p>' : '';
+                                                echo $attendee['attendee_website'] != '' ? '<p><strong>Industry:</strong> '.$attendee['attendee_website'].'</p><br>' : '';
+                                              ?>
+						
                                                 
 <!--						<div class="row mt5 mb5">
                                                     <div class="col-xs-4">
