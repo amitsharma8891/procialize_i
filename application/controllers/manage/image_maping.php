@@ -34,6 +34,7 @@ class Image_maping extends CI_Controller {
      * @return	void
      */
     public function index($order = NULL) {
+        //sjdgfjgdsgfgdsjfgjdsgfgdjsgfdsgfjdsj
         setcookie("postarray", "", time() - 3600);
 //        $this->model->status = array("0", "1");
         $this->model->name = 'image_map.name';
