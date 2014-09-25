@@ -31,11 +31,9 @@
                                     <td class="tdalign"><?php echo $value['image_name'] ?></td>
                                     <!--<td class="tdalign"><?php //echo ($value['status'] == 1) ? 'E' : 'D';     ?></td>-->
                                     <td class="table-action tdalign">
-
                                         <a title="Edit" href="<?php echo base_url('manage/image_maping/add/' . $value['id']); ?>"><i class="fa fa-pencil"></i></a>
                                     </td>
                                     <td class="table-action tdalign">
-
                                         <a title="Map" href="<?php echo base_url('manage/image_maping/map_exhibitor/' . $value['id']); ?>"><i class="fa fa-picture-o"></i></a>
                                     </td>
                                     <td class="table-action tdalign">

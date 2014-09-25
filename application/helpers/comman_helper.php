@@ -176,7 +176,7 @@ if (!function_exists('menuArray')) {
             'manage/industry' => 'industry',
             'manage/functionality' => 'functionality',
 //            'manage/tag' => 'tag',
-            'manage/email_template' => 'email_template;',
+            'manage/email_template' => 'Email template',
         );
 
         return $menuArray;
@@ -220,7 +220,11 @@ function generateMenu($type, $isAdmin = false) {
         return $arrAllMenu;
     $arrAllowed = array();
     $ci = & get_instance();
-
+    $is_pvt_app = $ci->session->userdata('is_pvt_id');
+    $allow_email_temp_menu = array('#' => 'Announcement');
+    if ($is_pvt_app) {
+        $allow_email_temp_menu = array('manage/email_template' => 'email_template', '#' => 'Announcement');
+    }
     if ($type == '')
         return $menuArray;
     switch ($type) {
@@ -234,9 +238,8 @@ function generateMenu($type, $isAdmin = false) {
                 'manage/sponsor' => 'sponsor',
                 'manage/speaker' => 'speaker',
                 'manage/survey' => 'survey',
-                'manage/email_template' => 'email_template;',
-                '#' => 'Announcement',
             );
+            $menuArray = array_merge($menuArray, $allow_email_temp_menu);
             break;
         case 'E':
             $menuArray = array(

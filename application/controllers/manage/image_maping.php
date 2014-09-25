@@ -82,20 +82,20 @@ class Image_maping extends CI_Controller {
             $postarray = json_encode($arrInsert);
             setcookie('postarray', $postarray);
             if (TRUE) {
-                if ($this->form_validation->run() == FALSE) {
-//                    echo $this->form_validation->display_error();
-               echo form_error('name');
-               echo form_error('coordinates');
-               echo form_error('event_id');
-                    echo "error";
-
-                    die;
-                } else {
-//                    echo $this->form_validation->display_error();
-                    echo "not errore";
-
-                    die;
-                }
+//                if ($this->form_validation->run() == FALSE) {
+////                    echo $this->form_validation->display_error();
+//               echo form_error('name');
+//               echo form_error('coordinates');
+//               echo form_error('event_id');
+//                    echo "error";
+//
+//                    die;
+//                } else {
+////                    echo $this->form_validation->display_error();
+//                    echo "not errore";
+//
+//                    die;
+//                }
                 if (!$this->upload->do_upload('image_name')) //{
                     $error = array('error' => $this->upload->display_errors());
 //                } else {
@@ -126,9 +126,11 @@ class Image_maping extends CI_Controller {
 //                }
             }
         }
-        $result = $this->db->get('keywords_detail');
         $arrData['event_list'] = $event_list;
-        $arrData['keyword_deatail'] = $result->result_array();
+        $parent_list = $this->db->where('image_map.parent_id', 0);
+        $parent_list = $this->db->get('image_map');
+        $parent_list = $parent_list->result_array();
+        $arrData['parent_list'] = $parent_list;
         $arrData['list'] = $this->model->get($id);
         $arrData['thisPage'] = 'Default Image Maping';
         $arrData['breadcrumb'] = 'Add Image Maping';

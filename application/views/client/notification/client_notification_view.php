@@ -153,8 +153,8 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="stat well well-sm attnd">
-                                <h4 align="justify">Metropolis Support - <br>Contact <a href="mailto:nitin.sharma@mci-group.com">nitin.sharma@mci-group.com</a> for any issues / queries.</h4>
-                                <small class="stat-label">Metropolis</small>
+                                <h4 align="justify"><?php echo getSetting()->app_name; ?> Support - <br>Contact <a href="mailto:nitin.sharma@mci-group.com">nitin.sharma@mci-group.com</a> for any issues / queries.</h4>
+                                <small class="stat-label"><?php echo getSetting()->app_name; ?></small>
                                 <!--<small class="stat-label">25 Jan 2014</small>-->
                             </div>
                         </div>
@@ -162,8 +162,8 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="stat well well-sm attnd">
-                                <h4 align="justify">Welcome to Metropolis, official App for the XI Metropolis World Congress, being held in Hyderabad from 6th-11th October, 2014.</h4>
-                                <small class="stat-label">Metropolis</small>
+                                <h4 align="justify">Welcome to <?php echo getSetting()->app_name; ?>, official App for the XI <?php echo getSetting()->app_name; ?> World Congress, being held in Hyderabad from 6th-11th October, 2014.</h4>
+                                <small class="stat-label"><?php echo getSetting()->app_name; ?></small>
                                 <!--<small class="stat-label">25 Jan 2014</small>-->
                             </div>
                         </div>

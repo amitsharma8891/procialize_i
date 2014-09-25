@@ -8,7 +8,7 @@
   <meta name="author" content="">
   <link rel="shortcut icon" href="images/favicon.png" type="image/png">
 
-  <title>Private Organizer - Procialize</title>
+  <title>Private Organizer - <?php echo getSetting()->app_name; ?></title>
 
   <link href="css/style.default.css" rel="stylesheet">
   <link rel="stylesheet" href="css/jquery.tagsinput.css" />

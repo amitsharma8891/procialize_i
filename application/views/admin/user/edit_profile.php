@@ -66,7 +66,7 @@
             <div  class='form-group'>
                 <div  class='col-sm-6'>
                     <lable  class='col-sm-1 control-label form-label-placeholder'   >
-                        <div>Current Password <span class="field_required">*</span></div>
+                        <div>Current Password <span class="field_required">*</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo base_url('manage/login/forgot_password'); ?>"><small>Forgot Your Password?</small></a></div>
                     </lable>
                     <input type="password" name="current_password" value="" id="current_password" class="form-control" placeholder="Enter Current Password." validate="required" error="Password"  />
                     <span id="current_password_err" style="color: red"></span>

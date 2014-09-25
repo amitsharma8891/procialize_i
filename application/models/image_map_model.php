@@ -16,6 +16,7 @@ class image_map_model extends CI_Model {
     public $fields = array(
         "id",
         "name",
+        "parent_id",
         "image_name",
         "event_id",
         "coordinates",

@@ -71,7 +71,6 @@ class Agenda extends CI_Controller {
 //            $start_date = date('Y-m-d', $strtoStartTime);
 //            $strtoEndTime = strtotime($event->event_end);
 //            $end_date = date('Y-m-d', $strtoEndTime);
-
             //set next and prev as per event start date
             $arrData['next'] = date('Y-m-d', strtotime(get_cookie('current_day') . ' + 1 days'));
             $arrData['prev'] = date('Y-m-d', strtotime(get_cookie('current_day') . ' - 1 days'));
@@ -143,7 +142,7 @@ class Agenda extends CI_Controller {
                 'allDay' => FALSE);
         }
         setcookie('current_day', $arrData['active_date']);
-		//echo '<pre>';print_r($arrList);exit;
+        //echo '<pre>';print_r($arrList);exit;
         $arrSpeaker = $this->speaker_model->getDropdownValuesForEvent(NULL, FALSE);
         $arrData['speakers'] = $arrSpeaker;
         $arrData['tracks'] = $arrTracks;
@@ -222,6 +221,9 @@ class Agenda extends CI_Controller {
                 $arrTags[$i]['session_id'] = $session_id;
                 $arrTags[$i]['attendee_id'] = $speaker_id;
                 $arrTags[$i]['pvt_org_id'] = getPrivateOrgId();
+                $arrsession_hs_speaker[$i]['session_id'] = $session_id;
+                $arrsession_hs_speaker[$i]['speaker_id'] = $speaker_id;
+                $arrsession_hs_speaker[$i]['pvt_org_id'] = getPrivateOrgId();
                 $i++;
             }
             $this->has_model->tableName = 'session_has_attendee';
@@ -232,6 +234,13 @@ class Agenda extends CI_Controller {
                     $error = TRUE;
             }
             $this->has_model->save($arrTags);
+            $this->has_model->tableName = 'session_has_speaker';
+            if (!is_null($id)) {
+                $arrHasDelete = array("session_id" => $session_id);
+                if (!$this->has_model->delete($arrHasDelete))
+                    $error = TRUE;
+            }
+            $this->has_model->save($arrsession_hs_speaker);
         }
         if ($json == 'json')
             echo json_encode($session_id);

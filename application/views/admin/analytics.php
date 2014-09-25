@@ -8,7 +8,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="shortcut icon" href="<?php echo base_url() ?>public/admin/images/favicon.png" type="image/png">
-        <title>Procialize Dashboard</title>
+        <title><?php echo getSetting()->app_name; ?> Dashboard</title>
         <link href="<?php echo base_url(); ?>public/admin/css/style.default.css" rel="stylesheet">
         <link href="<?php echo base_url(); ?>public/admin/css/jquery.datatables.css" rel="stylesheet">
         <style type="text/css">
@@ -16,12 +16,12 @@
                 width:100%;
                 margin-top:20px;
             }
-            
+
             .dataTables_filter input {
                 width:92%;
             }
         </style>
-        <?php include_once 'setting.php';?>
+        <?php include_once 'setting.php'; ?>
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
           <script src="<?php echo base_url(); ?>public/admin/js/html5shiv.js"></script>
@@ -336,87 +336,87 @@
                         </div>
                     </div>
 
-		<div class="row">
-		<?php if(count($arr_splash_ad) > 0){ ?>
-      	  <div class="col-sm-4 col-md-6">
-				<div class="panel panel-dark panel-alt widget-slider">
-				<div class="panel-heading">
-					<h5 class="panel-title">Splash Ad</h5>
-				</div>
-				<div class="panel-body">
-					<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                    <div class="row">
+                        <?php if (count($arr_splash_ad) > 0) { ?>
+                            <div class="col-sm-4 col-md-6">
+                                <div class="panel panel-dark panel-alt widget-slider">
+                                    <div class="panel-heading">
+                                        <h5 class="panel-title">Splash Ad</h5>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 
-						<!-- Wrapper for slides -->
-						<div class="carousel-inner">
+                                            <!-- Wrapper for slides -->
+                                            <div class="carousel-inner">
 
-						  <div class="item active">
-							<div class="media">
-								<a href="#" class="pull-left">
-								  <img alt="80x60" src="<?php echo base_url().UPLOAD_SPONSOR_SPLASH_DISPLAY.$arr_splash_ad[0]['splash_ad']; ?>" class="media-object" data-src="holder.js/80x60/#666:#fff" style="width: 80px; height: 60px;">
-								</a>
-								<div class="media-body">
-								  <h4 class="media-heading"><a href="#"><?php echo $arr_splash_ad[0]['name']; ?></a></h4>
-								  <small class="media-desc font_13">Total Number of Hits : <span class="num_of_hits"><?php echo $arr_splash_ad[0]['cnt']; ?></span></small>
-								</div>
-							</div><!-- media -->
-						  </div><!-- item -->
-						</div><!-- carousel-inner -->
+                                                <div class="item active">
+                                                    <div class="media">
+                                                        <a href="#" class="pull-left">
+                                                            <img alt="80x60" src="<?php echo base_url() . UPLOAD_SPONSOR_SPLASH_DISPLAY . $arr_splash_ad[0]['splash_ad']; ?>" class="media-object" data-src="holder.js/80x60/#666:#fff" style="width: 80px; height: 60px;">
+                                                        </a>
+                                                        <div class="media-body">
+                                                            <h4 class="media-heading"><a href="#"><?php echo $arr_splash_ad[0]['name']; ?></a></h4>
+                                                            <small class="media-desc font_13">Total Number of Hits : <span class="num_of_hits"><?php echo $arr_splash_ad[0]['cnt']; ?></span></small>
+                                                        </div>
+                                                    </div><!-- media -->
+                                                </div><!-- item -->
+                                            </div><!-- carousel-inner -->
 
-						
-					</div><!-- carousel -->
 
-				</div><!-- panel-body -->
-			  </div>
-          </div>
-		  <?php } ?>
-          
-          <div class="col-sm-4 col-md-6">
-		  <?php if(count($arr_spo_ad)) { ?>
-      		<div class="panel panel-dark panel-alt widget-slider">
-            <div class="panel-heading">
-                <h5 class="panel-title">Sponsors Ad</h5>
-            </div>
-            <div class="panel-body">
-                <div id="carousel-example-generic1" class="carousel slide" data-ride="carousel">
+                                        </div><!-- carousel -->
 
-                    <!-- Wrapper for slides -->
-                    <div class="carousel-inner">
-					<?php
-					$i = 0;
-					foreach($arr_spo_ad as $spo_ad){ 
-						$i++;
-					?>
-                      <div class="item <?php echo ($i == 1)?'active':''; ?> ">
-                        <div class="media">
-                            <a href="#" class="pull-left">
-                              <img alt="80x60" src="<?php echo base_url().UPLOAD_SPONSOR_NORMAL_DISPLAY.$spo_ad['normal_ad']; ?>" class="media-object" data-src="holder.js/80x60/#666:#fff" style="width: 80px; height: 60px;">
-                            </a>
-                            <div class="media-body">
-                              <h4 class="media-heading"><a href="#"><?php echo $spo_ad['name']; ?></a></h4>
-                              <small class="media-desc font_13">Total Number of Hits : <span class="num_of_hits"> <?php echo $spo_ad['cnt'] ?></span></small>
+                                    </div><!-- panel-body -->
+                                </div>
                             </div>
-                        </div><!-- media -->
-                      </div><!-- item -->
-					  <?php } ?>
-                      
-                      
-                    </div><!-- carousel-inner -->
+                        <?php } ?>
 
-                    <!-- Controls -->
-                    <a class="left carousel-control1 carousel-control1-l" href="#carousel-example-generic1" data-slide="prev">
-                      <span class="fa fa-angle-left"></span>
-                    </a>
-                    <a class="right carousel-control1 carousel-control1-r" href="#carousel-example-generic1" data-slide="next">
-                      <span class="fa fa-angle-right"></span>
-                    </a>
-                </div><!-- carousel -->
+                        <div class="col-sm-4 col-md-6">
+                            <?php if (count($arr_spo_ad)) { ?>
+                                <div class="panel panel-dark panel-alt widget-slider">
+                                    <div class="panel-heading">
+                                        <h5 class="panel-title">Sponsors Ad</h5>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div id="carousel-example-generic1" class="carousel slide" data-ride="carousel">
 
-            </div><!-- panel-body -->
-          </div>
-		  <?php } ?>
-          </div>
+                                            <!-- Wrapper for slides -->
+                                            <div class="carousel-inner">
+                                                <?php
+                                                $i = 0;
+                                                foreach ($arr_spo_ad as $spo_ad) {
+                                                    $i++;
+                                                    ?>
+                                                    <div class="item <?php echo ($i == 1) ? 'active' : ''; ?> ">
+                                                        <div class="media">
+                                                            <a href="#" class="pull-left">
+                                                                <img alt="80x60" src="<?php echo base_url() . UPLOAD_SPONSOR_NORMAL_DISPLAY . $spo_ad['normal_ad']; ?>" class="media-object" data-src="holder.js/80x60/#666:#fff" style="width: 80px; height: 60px;">
+                                                            </a>
+                                                            <div class="media-body">
+                                                                <h4 class="media-heading"><a href="#"><?php echo $spo_ad['name']; ?></a></h4>
+                                                                <small class="media-desc font_13">Total Number of Hits : <span class="num_of_hits"> <?php echo $spo_ad['cnt'] ?></span></small>
+                                                            </div>
+                                                        </div><!-- media -->
+                                                    </div><!-- item -->
+                                                <?php } ?>
 
-      </div>
+
+                                            </div><!-- carousel-inner -->
+
+                                            <!-- Controls -->
+                                            <a class="left carousel-control1 carousel-control1-l" href="#carousel-example-generic1" data-slide="prev">
+                                                <span class="fa fa-angle-left"></span>
+                                            </a>
+                                            <a class="right carousel-control1 carousel-control1-r" href="#carousel-example-generic1" data-slide="next">
+                                                <span class="fa fa-angle-right"></span>
+                                            </a>
+                                        </div><!-- carousel -->
+
+                                    </div><!-- panel-body -->
+                                </div>
+                            <?php } ?>
+                        </div>
+
+                    </div>
 
                     <div class="row">  
                         <div class="panel panel-default">
@@ -549,18 +549,18 @@
 
                                         <div class="col-sm-3">
                                             <select name="type_of_user" id="type_of_user" class="form-control input-sm mb15">
-                                                <option <?php echo ($tou == 'A')? 'selected':'' ?> value='A'>Attendees </option>
-                                                <option <?php echo ($tou == 'E')? 'selected':'' ?> value='E'>Exhibitor </option>
-                                                <option <?php echo ($tou == 'S')? 'selected':'' ?> value='S'>Speaker </option>
+                                                <option <?php echo ($tou == 'A') ? 'selected' : '' ?> value='A'>Attendees </option>
+                                                <option <?php echo ($tou == 'E') ? 'selected' : '' ?> value='E'>Exhibitor </option>
+                                                <option <?php echo ($tou == 'S') ? 'selected' : '' ?> value='S'>Speaker </option>
                                             </select>
                                         </div>
-                                        
+
                                         <div class="col-sm-3">
                                             <select name="type_of_stat" class="form-control input-sm mb15" id="type_of_stat">
-                                                <option <?php echo ($tos == 'industry')? 'selected':'' ?> value="industry">Industry </option>
-                                                <option <?php echo ($tos == 'functionality')? 'selected':'' ?> value="functionality">Functionality</option>
-                                                <option <?php echo ($tos == 'city')? 'selected':'' ?> value="city">City</option>
-                                                <option <?php echo ($tos == 'country')? 'selected':'' ?> value="country">Country</option>
+                                                <option <?php echo ($tos == 'industry') ? 'selected' : '' ?> value="industry">Industry </option>
+                                                <option <?php echo ($tos == 'functionality') ? 'selected' : '' ?> value="functionality">Functionality</option>
+                                                <option <?php echo ($tos == 'city') ? 'selected' : '' ?> value="city">City</option>
+                                                <option <?php echo ($tos == 'country') ? 'selected' : '' ?> value="country">Country</option>
                                             </select>
                                         </div>
                                     </form>
@@ -572,11 +572,11 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach($interests as $interest) { ?>
-                                            <tr>
-                                                <td><?php echo $interest['display_name']; ?></td>
-                                            <td><?php echo $interest['cnt']; ?></td>
-                                            </tr>
+                                            <?php foreach ($interests as $interest) { ?>
+                                                <tr>
+                                                    <td><?php echo $interest['display_name']; ?></td>
+                                                    <td><?php echo $interest['cnt']; ?></td>
+                                                </tr>
                                             <?php } ?>
                                         </tbody>
                                     </table>
@@ -799,15 +799,15 @@
 <?php if ($this->session->flashdata('show_popup')) { ?>
                     $('#tour').modal('show');
 <?php } ?>
-               $('#type_of_user,#type_of_stat').change(function(){
-                   $('#city_country_stat').submit();
-               });
+                $('#type_of_user,#type_of_stat').change(function() {
+                    $('#city_country_stat').submit();
+                });
             });
 
         </script>
 
         <div class="modal fade" id="compose" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		
+
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -908,7 +908,7 @@
                 </div>
             </div>
 
-		</div>
+        </div>
 
 
     </body>

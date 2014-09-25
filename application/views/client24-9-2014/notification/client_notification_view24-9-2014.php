@@ -135,8 +135,8 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="stat well well-sm attnd">
-                                <h4 align="justify">Procialize Support - <br>Contact <a href="mailto:abhay@procialize.in">abhay@procialize.in</a> for any issues / queries.</h4>
-                                <small class="stat-label">Procialize</small>
+                                <h4 align="justify"><?php echo getSetting()->app_name; ?> Support - <br>Contact <a href="mailto:abhay@procialize.in">abhay@procialize.in</a> for any issues / queries.</h4>
+                                <small class="stat-label"><?php echo getSetting()->app_name; ?></small>
                                 <!--<small class="stat-label">25 Jan 2014</small>-->
                             </div>
                         </div>
@@ -144,8 +144,8 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="stat well well-sm attnd">
-                                <h4 align="justify">Welcome to Procialize, a network to Professionally Socialize! Search for Events that suits your profile (by Industry, Functionality, Location, etc.), register for them and start Pro-cializing with the people of your interest.</h4>
-                                <small class="stat-label">Procialize</small>
+                                <h4 align="justify">Welcome to <?php echo getSetting()->app_name; ?>, a network to Professionally Socialize! Search for Events that suits your profile (by Industry, Functionality, Location, etc.), register for them and start Pro-cializing with the people of your interest.</h4>
+                                <small class="stat-label"><?php echo getSetting()->app_name; ?></small>
                                 <!--<small class="stat-label">25 Jan 2014</small>-->
                             </div>
                         </div>
