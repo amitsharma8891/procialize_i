@@ -10,6 +10,7 @@
   <title><?php echo getSetting()->app_name; ?> Admin</title>
 
   <link href="<?php echo base_url(); ?>public/admin/css/style.default.css" rel="stylesheet">
+  <?php include_once 'setting.php';?>
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
