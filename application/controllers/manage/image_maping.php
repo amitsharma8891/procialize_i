@@ -38,8 +38,10 @@ class Image_maping extends CI_Controller {
         setcookie("postarray", "", time() - 3600);
 //        $this->model->status = array("0", "1");
         $this->model->name = 'image_map.name';
+//        $search = "0";
+//        $field = array('image_map.parent_id');
         $search = "";
-        $field = "";
+        $field = '';
         $arrData['list'] = $this->model->getAll(NULL, FALSE, $search, $field, 'image_map.id', 'AND');
         $arrData['thisPage'] = 'Default Image Maping';
         $arrData['breadcrumb'] = ' Image Maping';
@@ -233,25 +235,57 @@ class Image_maping extends CI_Controller {
         if ($this->input->post()) {
             if (!$this->upload->do_upload('image_name')) //{
                 $error = array('error' => $this->upload->display_errors());
-            $id = $maped_event_image_id;
+//            $id = $maped_event_image_id;
             $arrInsert = $this->input->post();
-            $arrInsert['map_id'] = $arrInsert['image_map_id'];
-            $map_exhibitor_id = $arrInsert['map_exhibitor_id'];
-            if ($map_exhibitor_id) {
-                $postarray = json_encode($arrInsert);
-                setcookie('postarray', $postarray);
+            $arrInsert['parent_id'] = $arrInsert['parent_id'];
+            $id = $arrInsert['child_id'];
+            // add_child***********
+            $image_data = $this->upload->data();
+            if ($id) {
+                if (isset($image_data['file_name']) && !empty($image_data['file_name']))
+                    $arrInsert['image_name'] = $image_data['file_name'];
+                unset($arrInsert['btnSave']);
+                unset($arrInsert['cpassword']);
                 $arrInsert['created'] = date("Y-m-d H:i:s");
                 $arrInsert['modified'] = date("Y-m-d H:i:s");
-                unset($arrInsert['image_map_id']);
-                $status = $this->map_exhibitor_model->saveAll($arrInsert, $map_exhibitor_id);
-            } else {
-                $postarray = json_encode($arrInsert);
-                setcookie('postarray', $postarray);
+//                echo "update";
+//                display($arrInsert);
+//                die;
+                $status = $this->model->saveAll($arrInsert, $id);
+            }else {
+                $arrInsert['image_name'] = $image_data['file_name'];
+                unset($arrInsert['btnSave']);
+                unset($arrInsert['cpassword']);
                 $arrInsert['created'] = date("Y-m-d H:i:s");
                 $arrInsert['modified'] = date("Y-m-d H:i:s");
-                unset($arrInsert['image_map_id']);
-                $status = $this->map_exhibitor_model->saveAll($arrInsert);
+//                echo "save";
+//                display($arrInsert);
+//                die;
+                $status = $this->model->saveAll($arrInsert);
             }
+            if ($status) {
+                $this->session->set_flashdata('message', 'Image Maping Added Successfully !!');
+                redirect('manage/image_maping');
+            } else {
+                $this->session->set_flashdata('message', 'Failed to Add Image Maping !!');
+                redirect('manage/image_maping/add');
+            }
+            //add_chil end*****************
+//            if ($map_exhibitor_id) {
+//                $postarray = json_encode($arrInsert);
+//                setcookie('postarray', $postarray);
+//                $arrInsert['created'] = date("Y-m-d H:i:s");
+//                $arrInsert['modified'] = date("Y-m-d H:i:s");
+//                unset($arrInsert['image_map_id']);
+////                $status = $this->map_exhibitor_model->saveAll($arrInsert, $map_exhibitor_id);
+//            } else {
+//                $postarray = json_encode($arrInsert);
+//                setcookie('postarray', $postarray);
+//                $arrInsert['created'] = date("Y-m-d H:i:s");
+//                $arrInsert['modified'] = date("Y-m-d H:i:s");
+//                unset($arrInsert['image_map_id']);
+//                $status = $this->map_exhibitor_model->saveAll($arrInsert);
+//            }
             if ($status) {
                 $this->session->set_flashdata('message', 'Image Maping Added Successfully !!');
                 redirect('manage/image_maping/add_child/' . $maped_event_image_id);
@@ -277,15 +311,45 @@ class Image_maping extends CI_Controller {
         $map_id = $this->input->post('map_id');
         $event_id = $this->input->post('event_id');
         $coordinates = $this->input->post('coordinates');
-        $this->db->where('map_exhibitor.map_id', $map_id);
-        $this->db->where('map_exhibitor.event_id', $event_id);
-        $this->db->where('map_exhibitor.coordinates', $coordinates);
-        $result = $this->db->get('map_exhibitor')->row();
+        $this->db->where('image_map.parent_id', $map_id);
+        $this->db->where('image_map.event_id', $event_id);
+        $this->db->where('image_map.child_coords', $coordinates);
+        $image_map_result = $this->db->get('image_map')->row();
+        if (!empty($image_map_result)) {
+            echo json_encode($image_map_result);
+        } else {
+            $this->db->where('map_exhibitor.map_id', $map_id);
+            $this->db->where('map_exhibitor.event_id', $event_id);
+            $this->db->where('map_exhibitor.coordinates', $coordinates);
+            $result = $this->db->get('map_exhibitor')->row();
+            echo json_encode($result);
+        }
+    }
+
+    function get_child_image_map($maped_event_image_id = NULL) {
+        $map_id = $this->input->post('map_id');
+        $event_id = $this->input->post('event_id');
+        $child_coords = $this->input->post('child_coords');
+//        $this->db->where('map_exhibitor.map_id', $map_id);
+//        $this->db->where('map_exhibitor.event_id', $event_id);
+//        $this->db->where('map_exhibitor.coordinates', $child_coords);
+//        $result = $this->db->get('map_exhibitor')->row();
+//        if (!empty($result)) {
+//            $result->status = 1;
+//            echo json_encode($result);
+//        } else {
+        $this->db->where('image_map.parent_id', $map_id);
+        $this->db->where('image_map.event_id', $event_id);
+        $this->db->where('image_map.child_coords', $child_coords);
+        $result = $this->db->get('image_map')->row();
+//            $result->status = 0;
         echo json_encode($result);
+//        }
     }
 
     function delete($map_id) {
         $this->db->where('id', $map_id);
+        $this->db->or_where('parent_id', $map_id);
         $this->db->delete('image_map');
         $this->db->where('map_id', $map_id);
         $this->db->delete('map_exhibitor');

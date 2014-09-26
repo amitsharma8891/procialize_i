@@ -10,22 +10,22 @@
         }*/
 </style>
 <script>
-    $(document).ready(function() {
-        CKEDITOR.replace('coordinates',
-                {
-                    height: '500px'
-//		extraPlugins : 'uicolor',
-//                toolbar: [ [ 'Bold', 'Italic' ], [ 'UIColor' ] ]
-                });
-
-        $("#keyword_detail").change(function()
-        {
-            var keyword = $("#keyword_detail").val();
-            CKEDITOR.instances.email_temp_body.insertText(keyword);
-            CKEDITOR.instances.email_temp_body.insertHtml(CKEDITOR.instances.email_temp_body.getSelection().getNative())
-        });
-
-    });
+//    $(document).ready(function() {
+//        CKEDITOR.replace('coordinates',
+//                {
+//                    height: '500px'
+////		extraPlugins : 'uicolor',
+////                toolbar: [ [ 'Bold', 'Italic' ], [ 'UIColor' ] ]
+//                });
+//
+//        $("#keyword_detail").change(function()
+//        {
+//            var keyword = $("#keyword_detail").val();
+//            CKEDITOR.instances.email_temp_body.insertText(keyword);
+//            CKEDITOR.instances.email_temp_body.insertHtml(CKEDITOR.instances.email_temp_body.getSelection().getNative())
+//        });
+//
+//    });
 
     var SITE_URL = '<?php echo SITE_URL ?>';
 </script>
@@ -68,12 +68,12 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="display: none">
                 <label class="col-sm-2 control-label">Parent Map</label>
                 <div class="col-sm-6">
                     <?php
 //                    echo "<pre>";
-//                    print_r($event_list); 
+//                    print_r($parent_list);
                     ?>
                     <select type="select" name="parent_id" class="form-control chosen-select"> 
                         <?php
@@ -93,11 +93,11 @@
                                 <option value = "0">Select Parent Map Image</option>
                                 <?php
 //                                }
-                            } else {
+                            } 
                                 ?>
                                 <option <?php echo $seletcted ?> value = "<?php echo $value['id'] ?>"><?php echo $value['name']; ?></option>
                                 <?php
-                            }
+                            
                             $i++;
                             ?>
 
@@ -120,7 +120,7 @@
 
                 <label class="col-sm-2 control-label">Image coordinates</label>
                 <div class="col-sm-7">
-                    <textarea name="coordinates" id="coordinates" class ="form-control  ckeditor" placeholder="Please Enter Image coordinates">
+                    <textarea name="coordinates" id="coordinates" class ="form-control" placeholder="Please Enter Image coordinates">
                         <?php echo $list->coordinates ?>
                     </textarea>
                     <span id="coordinates_err" style="color: red"></span>
@@ -131,7 +131,7 @@
 
             <div class = "form-group">
                 <div class = "col-sm-4">
-                    <a title="Back" class = "btn btn-danger btn-block" href="<?php echo base_url('manage/email_template/'); ?>">Back</a>
+                    <a title="Back" class = "btn btn-danger btn-block" href="<?php echo base_url('manage/image_maping/'); ?>">Back</a>
 
                     <!--<input type = "button" class = "btn btn-danger btn-block" value = "Cancel"/>-->
                 </div>

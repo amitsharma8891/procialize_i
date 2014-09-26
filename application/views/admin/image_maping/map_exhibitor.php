@@ -2,8 +2,18 @@
 
 
 <div class="contentpanel"><!-- Content Panel -->
-    <?php if (!empty($list)) {  //echo '<pre>'; print_r($list); 
+    <?php
+    if (!empty($list)) {  //echo '<pre>'; print_r($list); 
+        if ($list->parent_id == 0) {
+            ?>
+            <div class="row mb20"><!-- Exhibitor Row -->
+                <div class="col-sm-12 col-md-12">
+                    <button class="btn btn-success btn-block" onclick="window.location = '<?php echo base_url('manage/image_maping/add_child/' . $list->id); ?>'">Add Child Image map</button>
+                </div>
+            </div>
+        <?php }
         ?>
+
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map">
@@ -24,6 +34,7 @@
         coordinates = coords;
     });
 </script>-->
+<?php //display($list); ?>
 <div class="modal fade" id="map_exhibitor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="panel panel-default">
@@ -42,7 +53,7 @@
                     <form id="image_maping_form" enctype="multipart/form-data" method="POST">
 
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Maping Name</label>
+                            <label class="col-sm-3 control-label">Exhibitor Name</label>
                             <div class="col-sm-6">
                                 <input type="text" name="name"  id="name" class ="form-control " placeholder="Please Enter Maping Image Name" value=""/>
                                 <input type="hidden" id="image_map_id" name="image_map_id" value="<?php echo $list->id ?>">
@@ -59,7 +70,7 @@
 //                    echo "<pre>";
 //                    print_r($event_list); 
                                 ?>
-                                <select  id="exhibitor_id" name="exhibitor_id" class="form-control chosen-select"> 
+                                <select  id="exhibitor_id" name="exhibitor_id" class="form-control"> 
                                     <?php
                                     $seletcted = "";
 
@@ -92,7 +103,7 @@
                             <label class="col-sm-3 control-label">Descriptions </label>
                             <div class="col-sm-7">
                                 <textarea name="description" id="description" class ="form-control" placeholder="Please Enter Image Map Description">
-                                    <?php //echo $list->coordinates ?>
+                                    <?php //echo $list->coordinates   ?>
                                 </textarea>
                                 <span id="description_err" style="color: red"></span>
                             </div>
@@ -102,9 +113,9 @@
 
                         <div class = "form-group">
                             <div class = "col-sm-4">
-                                <a title="Back" class = "btn btn-danger btn-block" href="<?php echo base_url('manage/email_template/'); ?>">Back</a>
+                                <a title="Back" class = "btn btn-danger btn-block" href="<?php echo base_url('manage/image_maping/'); ?>">Back</a>
 
-                    <!--<input type = "button" class = "btn btn-danger btn-block" value = "Cancel"/>-->
+                        <!--<input type = "button" class = "btn btn-danger btn-block" value = "Cancel"/>-->
                             </div>
                             <div class = "col-sm-4">
                                 <input type = "submit" class = "btn btn-success btn-block" value = "Save"/>
@@ -121,14 +132,13 @@
 </div>
 <script>
     var coordinates;
+    var SITE_URL = '<?php echo SITE_URL; ?>';
     $(document).ready(function() {
-
         $('area').click(function() {
             var coords = $(this).attr('coords');
             $("#coordinates").val(coords);
             coordinates = coords;
             get_exibitor(coordinates);
-
         });
     });
     function get_exibitor(coordinates = NULL) {
@@ -150,6 +160,9 @@
 //                    $("#exhibitor_id ").chosen();
 //                    $("#exhibitor_id ").val(res.exhibitor_id);
 //                    $('#exhibitor_id').trigger("liszt:updated")
+                    if (res.parent_id) {
+                        window.location.href = SITE_URL + "manage/image_maping/map_exhibitor/" + res.id;
+                    }
                     $('#name').val(res.name);
                     $('#image_map_id').val(res.map_id);
                     $('#map_exhibitor_id').val(res.id);
@@ -166,3 +179,7 @@
     }
 
 </script>
+<style>
+    #exhibitor_id{display:block !important;}
+    #exhibitor_id_chosen{display:none !important;}
+</style>

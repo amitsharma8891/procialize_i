@@ -267,7 +267,7 @@ class Agenda extends CI_Controller {
 //        echo $this->db->last_query();exit;
         redirect('manage/agenda');
 
-        ;
+        
     }
 
 }

@@ -20,6 +20,7 @@ class image_map_model extends CI_Model {
         "image_name",
         "event_id",
         "coordinates",
+        "child_coords",
         "created",
         "modified"
     );
@@ -278,16 +279,13 @@ class image_map_model extends CI_Model {
         //  echo $this->order_name; echo $this->order_by;  var_dump($search); die;
         if (!is_null($id))
             $this->db->where($where, $id);
-
         $this->db->select('image_map.*');
         if (!(is_null($search)) && !empty($fields)) {
             foreach ($fields as $field) {
                 if ($type == 'LIKE') {
                     $where = "$field LIKE '%$search%'";
                     $this->db->or_where($where);
-                    //
                 } else if ($type == 'AND') {
-
                     $this->db->where($field, $search);
                 } else if ($type = 'or') {
                     $this->db->or_where($field, $search);
