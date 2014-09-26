@@ -230,8 +230,8 @@ class Agenda extends CI_Controller {
             if (!is_null($id)) {
                 $arrHasDelete = array("session_id" => $session_id);
 
-                if (!$this->has_model->delete($arrHasDelete))
-                    $error = TRUE;
+//                if (!$this->has_model->delete($arrHasDelete))
+//                    $error = TRUE;
             }
             $this->has_model->save($arrTags);
             $this->has_model->tableName = 'session_has_speaker';
