@@ -33,7 +33,7 @@
                                     <tr>
                                         <td class="tdalign"><?php echo $value['name'] ?></td>
                                         <td class="tdalign"><?php echo $value['image_name'] ?></td>
-                                        <!--<td class="tdalign"><?php //echo ($value['status'] == 1) ? 'E' : 'D';                             ?></td>-->
+                                        <!--<td class="tdalign"><?php //echo ($value['status'] == 1) ? 'E' : 'D';                              ?></td>-->
                                         <td class="table-action tdalign">
                                             <a title="Edit" href="<?php echo base_url('manage/image_maping/add/' . $value['id']); ?>"><i class="fa fa-pencil"></i></a>
                                         </td>
@@ -60,7 +60,7 @@
                                             <tr>
                                                 <td class="tdalign" style="padding-left: 4%"><?php echo $child['name'] ?></td>
                                                 <td class="tdalign"><?php echo $child['image_name'] ?></td>
-                                                <!--<td class="tdalign"><?php //echo ($child['status'] == 1) ? 'E' : 'D';                             ?></td>-->
+                                                <!--<td class="tdalign"><?php //echo ($child['status'] == 1) ? 'E' : 'D';                              ?></td>-->
                                                 <td class="table-action tdalign">
                                                     <a title="Edit" href="<?php echo base_url('manage/image_maping/add/' . $child['id']); ?>"><i class="fa fa-pencil"></i></a>
                                                 </td>

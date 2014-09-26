@@ -261,7 +261,7 @@ class event_model extends CI_Model {
 //                "id" => "",
                 "class" => "form-control payment_type chosen-select",
 //               "placeholder" => array('0' => "On procialize", '1' => "On Organizer Website"),
-                "options" => array('0' => getSetting()->app_name." Payment Gateway", '1' => "Direct Users to Organizer's Payment Gateway"),
+                "options" => array('0' => getSetting()->app_name . " Payment Gateway", '1' => "Direct Users to Organizer's Payment Gateway"),
                 "validate" => '',
                 "error" => 'payment_type',
                 "value" => set_value('payment_type', (isset($arrResult->payment_type) ? $arrResult->payment_type : (isset($postarray['payment_type']) ? $postarray['payment_type'] : 0))),
@@ -697,7 +697,7 @@ class event_model extends CI_Model {
                 "id" => "logo",
                 "class" => "form-control",
                 "placeholder" => "Logo",
-                "validate" => '',
+                "validate" => 'required',
                 "upload_config" => array(
                     "upload_path" => UPLOAD_EVENT_LOGO_DISPLAY,
                     "allowed_types" => 'jpg|png|jpeg',
@@ -1447,7 +1447,8 @@ class event_model extends CI_Model {
             $this->db->where('exhibitor.user_id', $user_id);
         }
 
-        $this->db->order_by('event_start', 'DESC');
+//        $this->db->order_by('event_start', 'DESC');
+        $this->db->order_by('event.id', 'ASC');
         $result = $this->db->get('event');
 
         return $result->result_array();

@@ -38,12 +38,15 @@
         $arrEvents = getEvents($user_id, $superadmin, $type);
         ?>
         <?php
+//        display($arrEvents);
+//        show_query();
         $arrSkipArrow = array('exhibitor profile', 'Profile', 'Announcement', 'Survey', 'Dashboard', 'Survey', 'Industry', 'Functionality', 'Tag','Email Template');
         if (!$superadmin) {
             $i = 0;
             if (count($arrEvents) > 0) {
                 setcookie("event_id",$arrEvents[0]['event_id'],time() + 3600 * 3600,'/');
             }
+            
             foreach ($arrEvents as $event) {
                 $i++;
                 ?>

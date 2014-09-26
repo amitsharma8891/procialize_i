@@ -289,6 +289,7 @@ class attendee_model extends CI_Model {
                 "id" => "photo",
                 "class" => "form-control",
                 "placeholder" => "photo",
+                "validate" => "required",
                 "upload_config" => array(
                     "upload_path" => UPLOAD_ATTENDEE_PHOTO,
                     "allowed_types" => 'jpg|png|jpeg',

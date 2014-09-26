@@ -196,7 +196,7 @@ class Attendee extends CI_Controller {
 //        die;
 //        show_query();
         $arrData['selected_event'] = $selected_event;
-        $arrData['event_dropdown'] = $this->event_model->getDropdownValues(NULL, true);
+        $arrData['event_dropdown'] = $this->event_model->getDropdownValues(NULL );
 //        echo '<pre>'; print_r($arrData['event_dropdown']);exit;
         $arrData['breadcrumb'] = 'Attendee';
         $arrData['breadcrumb_tag'] = ' Description for attendee goes here';
@@ -219,6 +219,7 @@ class Attendee extends CI_Controller {
     function add() {
 
         $arrData['fields'] = $fields = $this->model->generate_fields();
+//        display($arrData['fields']);
         if ($this->input->post()) {
             formVaidation($arrData['fields'], $this);
             if ($this->form_validation->run() === TRUE) {
