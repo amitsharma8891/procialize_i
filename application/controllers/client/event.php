@@ -1146,11 +1146,9 @@ class Event extends CI_Controller {
 
     function get_image_map_exhibitor($type = NULL, $maped_event_image_id = null) {
         $data = array();
-
         $event_id = $maped_event_image_id; //$this->uri->segment(3);
         $this->model->event_id = $event_id;
         $data = $this->model->getCount();
-
 //        $search = 1;
 //        $field = array('image_map.event_id');
 //        $data['list'] = $this->image_map_model->getAll(NULL, '1', $search, $field, NULL, 'AND');
@@ -1164,15 +1162,10 @@ class Event extends CI_Controller {
         $data['list'] = $this->db->get('image_map')->row();
         $event_id = $data['list']->event_id;
         $data['exhhibitor_list'] = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
-//display($data);
-        // $json = $this->uri->segment(4);
         if (is_numeric($event_id)) {
-//            display($data);
-
             $data['event_detail'] = $this->model->getAll($event_id, TRUE, NULL);
             if ($data['event_detail']['event_list']) {
                 $data['event_id'] = $event_id;
-
                 $data['event'] = $data['event_detail']['event_list'][0];
                 $this->session->set_userdata(array('client_paid_event' => $data['event']['paid_event'], 'client_event_payment_type' => $data['event']['payment_type'], 'client_event_payment_url' => $data['event']['payment_url'], 'client_event_cost' => $data['event']['event_cost'], 'client_event_id' => $event_id, 'client_event_name' => $data['event']['event_name'], 'client_event_twitter_hastag' => $data['event']['twitter']));
                 $data['target_user_type'] = 'Event';
@@ -1180,28 +1173,16 @@ class Event extends CI_Controller {
                 $data['analytic_type'] = 'view';
                 $data['common_location'] = array();
                 $data['common_industry'] = array();
-//echo '--------->'.$this->session->userdata('client_user_industry');
                 if ($this->session->userdata('client_user_city'))
                     $data['common_location'] = $this->model->common_connection($event_id, $this->session->userdata('client_user_city'), ''); //array();
                 if ($this->session->userdata('client_user_industry'))
                     $data['common_industry'] = $this->model->common_connection($event_id, '', $this->session->userdata('client_user_industry'));
-
-//                if (isset($json) && $json != NULL) {
-//                    if ($json == 'json') {
-//                        echo json_encode($data);
-//                        exit;
-//                    } else {
-//                        exit;
-//                    }
-//                }
-
                 if ($this->session->userdata('client_user_id'))
                     $this->load->view(CLIENT_EVENT_IMAGE_MAP, $data);
                 else
                     $this->load->view(CLIENT_LOGIN_VIEW, $data);
             }
             else {
-//echo 'Something Went wrong';
                 $data['error_message'] = 'Event Not Found!';
                 $this->load->view(CLIENT_DATA_ERROR_VIEW, $data);
             }

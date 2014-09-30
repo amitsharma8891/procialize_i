@@ -1,12 +1,12 @@
 <!--<div class="contentpanel"> Content Panel 
 <?php if (!empty($list)) {  //echo '<pre>'; print_r($list); 
     ?>
-                                                            <div class="row">
-                                                                <div class="col-sm-12 col-md-12">
-                                                                    <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map">
+                                                                                                                                            <div class="row">
+                                                                                                                                                <div class="col-sm-12 col-md-12">
+                                                                                                                                                    <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map">
     <?php echo $list->coordinates; ?>
-                                                                </div>
-                                                            </div>
+                                                                                                                                                </div>
+                                                                                                                                            </div>
     <?php
 } else {
     echo 'No Image Map event Present';
@@ -69,7 +69,7 @@ foreach ($exhhibitor_list as $key => $value) {
         }
     }
     ?>
-                                                                                            <option <?php echo $seletcted ?> value = "<?php echo $value['attendee_id'] ?>"><?php echo $value['name']; ?></option>
+                                                                                                                                                                            <option <?php echo $seletcted ?> value = "<?php echo $value['attendee_id'] ?>"><?php echo $value['name']; ?></option>
 
 <?php }
 ?>
@@ -179,7 +179,7 @@ foreach ($exhhibitor_list as $key => $value) {
 
                 <div class="col-xs-12">
                     <div class="stat well well-sm">
-                        <h4 class="tits_1"><?php //echo $event['event_name']              ?></h4>
+                        <h4 class="tits_1"><?php //echo $event['event_name']                                  ?></h4>
                         <div class="row">
                             <div class="col-xs-4">
                                 <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map">
@@ -219,7 +219,6 @@ foreach ($exhhibitor_list as $key => $value) {
 
                                 }
                                 var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
                                 var marker = new google.maps.Marker({
                                     position: myLatlng,
                                     map: map,
@@ -228,12 +227,10 @@ foreach ($exhhibitor_list as $key => $value) {
                             }
 
                             google.maps.event.addDomListener(window, 'load', initialize);
-                            google.maps.event.addDomListener(window, 'resize', initialize);
-
-                        </script>
+                            google.maps.event.addDomListener(window, 'resize', initialize);</script>
 
                         <!---google map integrations ends---->
-                                      <!--<img src="http://maps.googleapis.com/maps/api/staticmap?center=<?php //echo $event['event_latitude']                ?>,<?php //echo $event['event_longitude']                ?>&zoom=14&size=400x400&sensor=false" class="img-responsive thumb mapimg mb9">-->
+                                      <!--<img src="http://maps.googleapis.com/maps/api/staticmap?center=<?php //echo $event['event_latitude']                                    ?>,<?php //echo $event['event_longitude']                                    ?>&zoom=14&size=400x400&sensor=false" class="img-responsive thumb mapimg mb9">-->
 
 
 
@@ -341,15 +338,17 @@ if (@$_SERVER['HTTP_REFERER'] == SITE_URL . 'events/' || @$_SERVER['HTTP_REFERER
                         <a href="#" class="close" data-dismiss="modal" aria-hidden="true">&times;</a>
                     </div>
                     <h4 class="panel-title">Map Exhibitor</h4>
-                    <p>By this You can Map Exhibitor in image</p>
+                    <p>By this You can see Exhibitor on Map</p>
                 </div>
-
                 <div class="panel-body panel-body-nopadding">
-
                     <!-- BASIC WIZARD -->
                     <div id="basicWizard" class="basic-wizard">
                         <form id="image_maping_form" enctype="multipart/form-data" method="POST">
-
+                            <div class="form-group">
+                                <div class="col-sm-6">
+                                    <div id="image" ></div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Exhibitor Name : </label>
                                 <div class="col-sm-6">
@@ -363,39 +362,8 @@ if (@$_SERVER['HTTP_REFERER'] == SITE_URL . 'events/' || @$_SERVER['HTTP_REFERER
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Maping event Exhibitor</label>
-                                <div class="col-sm-6">
-                                    <?php 
-                                    $exhibitor_name='';
-                                    if (empty($exhhibitor_list)) { ?>
-                                        <div style="color: red"> Their is no Exhibitor to tag with this coordinates!
-                                        </div>
-                                    <?php } else { ?>
-                                        <select  id="exhibitor_id" name="exhibitor_id" class="form-control"> 
-                                            <?php
-                                            $seletcted = "";
-
-                                            foreach ($exhhibitor_list as $key => $value) {
-                                                if (isset($list->exhibitor_id)) {
-                                                    if ($list->exhibitor_id == $value['attendee_id']) {
-                                                        $seletcted = 'selected="selected"';
-                                                        $exhibitor_name = $value['name'];
-                                                    } else {
-                                                        $seletcted = "";
-                                                    }
-                                                }
-                                                ?>
-                                                <option value = "<?php echo $value['attendee_id'] ?>"><?php echo $value['name']; ?></option>
-
-                                                <?php
-                                            }
-                                            ?>
-                                        </select>
-                                        <?php
-                                    }
-                                    echo $exhibitor_name;
-                                    ?>
-
+                                <label class="col-sm-3 control-label">Maped Exhibitor Name : </label>
+                                <div class="col-sm-6" id="exhibitor_id">
                                 </div>
                             </div>
                             <!--                        <div class="form-group">
@@ -408,11 +376,11 @@ if (@$_SERVER['HTTP_REFERER'] == SITE_URL . 'events/' || @$_SERVER['HTTP_REFERER
                                                     </div>-->
                             <div class="form-group">
 
-                                <label class="col-sm-3 control-label">Descriptions </label>
+                                <label class="col-sm-3 control-label">Descriptions : </label>
                                 <div class="col-sm-7">
                                     <div id="description"></div>
     <!--                                    <textarea name="description" id="description" class ="form-control" placeholder="Please Enter Image Map Description">
-                                    <?php //echo $list->coordinates     ?>
+                                    <?php //echo $list->coordinates      ?>
                                  </textarea>-->
                                     <span id="description_err" style="color: red"></span>
                                 </div>
@@ -444,7 +412,6 @@ if ($splash_show_flag) {
 
         });
     });
-
     function open_gallery(image)
     {
         alert($(this).attr("src"));
@@ -482,21 +449,32 @@ if ($splash_show_flag) {
             success: function(res)
             {
                 if (res.id) {
-                    $("#exhibitor_id option[value='" + res.exhibitor_id + "']").attr('selected', 'selected');
+//                    $("#exhibitor_id option[value='" + res.exhibitor_id + "']").attr('selected', 'selected');
                     if (res.parent_id) {
                         window.location.href = SITE_URL + "client/event/get_image_map_exhibitor/child/" + res.id;
                     }
+                    var SITE_URL = '<?php echo SITE_URL; ?>';
                     $('#name').html(res.name);
                     $('#image_map_id').val(res.map_id);
                     $('#map_exhibitor_id').val(res.id);
                     $('#event_id').val(res.event_id);
                     $('#coordinates').val(res.coordinates);
                     $('#description').html(res.description);
-                    $("#exhibitor_id").trigger("liszt:updated");
+//                    $("#exhibitor_id").trigger("liszt:updated");
+                    $.each(res.exhhibitor_list, function(i, val) {
+                        if (val.attendee_id == res.exhibitor_id) {
+                            $("#exhibitor_id").html(val.name);
+                            var image = '<img style="float:right;" src="' + SITE_URL + '/uploads/attendee/' + val.photo + '">';
+                            $("#image").html(image);
+                        }
+                    });
                 } else {
-                    $('#name').val('');
+                    $('#name').html('');
                     $('#description').html('');
+                    $('#exhibitor_id').html('');
+                    $('#image').html('');
                 }
+                // console.clear();
             }
         });
     }

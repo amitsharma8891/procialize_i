@@ -276,6 +276,9 @@ class Image_maping extends CI_Controller {
             $this->db->where('map_exhibitor.event_id', $event_id);
             $this->db->where('map_exhibitor.coordinates', $coordinates);
             $result = $this->db->get('map_exhibitor')->row();
+            if (!empty($result)) {
+                $result->exhhibitor_list = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
+            }
             echo json_encode($result);
         }
     }
@@ -299,7 +302,6 @@ class Image_maping extends CI_Controller {
         $this->db->delete('map_exhibitor');
         $this->session->set_flashdata('message', 'Image Maping deleted Successfully !!');
         redirect('manage/image_maping/');
-        
     }
 
 }
