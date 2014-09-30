@@ -427,9 +427,9 @@ class common_transaction_model extends CI_Model {
                 $email_template['setting']['app_name'],
                 $organizer_data->event_name,
                 $organizer_data->organizer_name,
-                $this->session->userdata('client_first_name'),
-                $this->session->userdata('client_email'),
-                $this->session->userdata('client_first_name'),
+                $user_data->first_name,
+                $user_data->email,
+                $user_data->first_name,
                 $email_template['setting']['app_contact_email'],
                 SITE_URL,
                 CLIENT_IMAGES,
@@ -446,32 +446,29 @@ class common_transaction_model extends CI_Model {
         return array('error' => $error, 'msg' => $msg);
     }
 
-    function common_notification_passcode_validation($event_id, $attendee_id,$passcode) {
-        $passcode_detail = $this->common_user_model->get_paascode_detail($event_id,$passcode);
+    function common_notification_passcode_validation($event_id, $attendee_id, $passcode) {
+        $passcode_detail = $this->common_user_model->get_paascode_detail($event_id, $passcode);
         $json_array['error'] = 'error';
         $json_array['msg'] = 'Invalid Passcode';
-        if($passcode_detail)
-        {
+        if ($passcode_detail) {
             if ($passcode && $event_id && ($passcode_detail->attendee_id == $attendee_id)) {
-                    $this->db->where('attendee_id', $attendee_id);
-                    $this->db->where('event_id', $event_id);
-                    $this->db->update('event_has_attendee', array('status' => 1));
-                    $json_array['error'] = 'success';
-                    $json_array['msg'] = 'Success';
-            }
-            else
-            {
+                $this->db->where('attendee_id', $attendee_id);
+                $this->db->where('event_id', $event_id);
+                $this->db->update('event_has_attendee', array('status' => 1));
+                $json_array['error'] = 'success';
+                $json_array['msg'] = 'Success';
+            } else {
                 $this->db->where('attendee_id', $attendee_id);
                 $this->db->where('event_id', $event_id);
                 $this->db->delete('event_has_attendee');
                 $this->db->where('passcode', $passcode);
                 $this->db->where('event_id', $event_id);
-                $this->db->update('event_has_attendee', array('attendee_id'=> $attendee_id,'status' => 1));
+                $this->db->update('event_has_attendee', array('attendee_id' => $attendee_id, 'status' => 1));
                 $json_array['error'] = 'success';
                 $json_array['msg'] = 'Success';
             }
         }
-       return $json_array;
+        return $json_array;
     }
 
 // email template sybncronization  start
