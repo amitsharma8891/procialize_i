@@ -34,12 +34,12 @@ class Image_maping extends CI_Controller {
      * @return	void
      */
     public function index($order = NULL) {
-
         setcookie("postarray", "", time() - 3600);
-//        $this->model->status = array("0", "1");
         $this->model->name = 'image_map.name';
-//        $search = "0";
-//        $field = array('image_map.parent_id');
+        $this->db->select('event.name,event.id');
+        $event_list = $this->db->get('event');
+        $event_list = $event_list->result_array();
+        $arrData['event_list'] = $event_list;
         $search = "";
         $field = '';
         $arrData['list'] = $this->model->getAll(NULL, FALSE, $search, $field, 'image_map.id', 'AND');
@@ -47,7 +47,6 @@ class Image_maping extends CI_Controller {
         $arrData['breadcrumb'] = ' Image Maping';
         $arrData['breadcrumb_tag'] = ' Description for Image Maping goes here';
         $arrData['breadcrumb_class'] = 'fa-home';
-//        $arrData['organizers'] = $this->model->getAll();
         $arrData['middle'] = 'admin/image_maping/index';
         $this->load->view('admin/default', $arrData);
     }
@@ -63,15 +62,12 @@ class Image_maping extends CI_Controller {
      * @return  void
      */
     function add($id = NULL) {
-//        echo $id;die;
         $config['upload_path'] = UPLOADS . 'event_image_maping/';
         $config['allowed_types'] = 'gif|jpg|png';
         $config['overwrite'] = FALSE;
         $config['quality'] = 100;
         $config['create_thumb'] = TRUE;
         $config['maintain_ratio'] = TRUE;
-//        $config['width'] = 200;
-//        $config['height'] = 200;
         $this->db->select('event.name,event.id');
         $event_list = $this->db->get('event');
         $event_list = $event_list->result_array();
@@ -83,49 +79,31 @@ class Image_maping extends CI_Controller {
             $arrInsert = $this->input->post();
             $postarray = json_encode($arrInsert);
             setcookie('postarray', $postarray);
-            if (TRUE) {
-//                if ($this->form_validation->run() == FALSE) {
-////                    echo $this->form_validation->display_error();
-//               echo form_error('name');
-//               echo form_error('coordinates');
-//               echo form_error('event_id');
-//                    echo "error";
-//
-//                    die;
-//                } else {
-////                    echo $this->form_validation->display_error();
-//                    echo "not errore";
-//
-//                    die;
-//                }
-                if (!$this->upload->do_upload('image_name')) //{
-                    $error = array('error' => $this->upload->display_errors());
-//                } else {
-                $image_data = $this->upload->data();
-                if ($id) {
-                    if (isset($image_data['file_name']) && !empty($image_data['file_name']))
-                        $arrInsert['image_name'] = $image_data['file_name'];
-                    unset($arrInsert['btnSave']);
-                    unset($arrInsert['cpassword']);
-                    $arrInsert['created'] = date("Y-m-d H:i:s");
-                    $arrInsert['modified'] = date("Y-m-d H:i:s");
-                    $status = $this->model->saveAll($arrInsert, $id);
-                }else {
+            if (!$this->upload->do_upload('image_name')) //{
+                $error = array('error' => $this->upload->display_errors());
+            $image_data = $this->upload->data();
+            if ($id) {
+                if (isset($image_data['file_name']) && !empty($image_data['file_name']))
                     $arrInsert['image_name'] = $image_data['file_name'];
-                    unset($arrInsert['btnSave']);
-                    unset($arrInsert['cpassword']);
-                    $arrInsert['created'] = date("Y-m-d H:i:s");
-                    $arrInsert['modified'] = date("Y-m-d H:i:s");
-                    $status = $this->model->saveAll($arrInsert);
-                }
-                if ($status) {
-                    $this->session->set_flashdata('message', 'Image Maping Added Successfully !!');
-                    redirect('manage/image_maping');
-                } else {
-                    $this->session->set_flashdata('message', 'Failed to Add Image Maping !!');
-                    redirect('manage/image_maping/add');
-                }
-//                }
+                unset($arrInsert['btnSave']);
+                unset($arrInsert['cpassword']);
+                $arrInsert['created'] = date("Y-m-d H:i:s");
+                $arrInsert['modified'] = date("Y-m-d H:i:s");
+                $status = $this->model->saveAll($arrInsert, $id);
+            }else {
+                $arrInsert['image_name'] = $image_data['file_name'];
+                unset($arrInsert['btnSave']);
+                unset($arrInsert['cpassword']);
+                $arrInsert['created'] = date("Y-m-d H:i:s");
+                $arrInsert['modified'] = date("Y-m-d H:i:s");
+                $status = $this->model->saveAll($arrInsert);
+            }
+            if ($status) {
+                $this->session->set_flashdata('message', 'Image Maping Added Successfully !!');
+                redirect('manage/image_maping');
+            } else {
+                $this->session->set_flashdata('message', 'Failed to Add Image Maping !!');
+                redirect('manage/image_maping/add');
             }
         }
         $arrData['event_list'] = $event_list;
@@ -140,7 +118,6 @@ class Image_maping extends CI_Controller {
         $arrData['breadcrumb_class'] = 'fa-flask';
         $arrData['middle'] = 'admin/image_maping/add';
         $this->load->view('admin/default', $arrData);
-//        $this->load->view('admin/image_maping/add');
     }
 
     /**
@@ -224,7 +201,6 @@ class Image_maping extends CI_Controller {
     }
 
     function add_child($maped_event_image_id = NULL) {
-//        setcookie("postarray", "", time() - 3600);
         $config['upload_path'] = UPLOADS . 'event_image_maping/';
         $config['allowed_types'] = 'gif|jpg|png';
         $config['overwrite'] = FALSE;
@@ -235,7 +211,6 @@ class Image_maping extends CI_Controller {
         if ($this->input->post()) {
             if (!$this->upload->do_upload('image_name')) //{
                 $error = array('error' => $this->upload->display_errors());
-//            $id = $maped_event_image_id;
             $arrInsert = $this->input->post();
             $arrInsert['parent_id'] = $arrInsert['parent_id'];
             $id = $arrInsert['child_id'];
@@ -248,9 +223,6 @@ class Image_maping extends CI_Controller {
                 unset($arrInsert['cpassword']);
                 $arrInsert['created'] = date("Y-m-d H:i:s");
                 $arrInsert['modified'] = date("Y-m-d H:i:s");
-//                echo "update";
-//                display($arrInsert);
-//                die;
                 $status = $this->model->saveAll($arrInsert, $id);
             }else {
                 $arrInsert['image_name'] = $image_data['file_name'];
@@ -258,9 +230,6 @@ class Image_maping extends CI_Controller {
                 unset($arrInsert['cpassword']);
                 $arrInsert['created'] = date("Y-m-d H:i:s");
                 $arrInsert['modified'] = date("Y-m-d H:i:s");
-//                echo "save";
-//                display($arrInsert);
-//                die;
                 $status = $this->model->saveAll($arrInsert);
             }
             if ($status) {
@@ -271,21 +240,6 @@ class Image_maping extends CI_Controller {
                 redirect('manage/image_maping/add');
             }
             //add_chil end*****************
-//            if ($map_exhibitor_id) {
-//                $postarray = json_encode($arrInsert);
-//                setcookie('postarray', $postarray);
-//                $arrInsert['created'] = date("Y-m-d H:i:s");
-//                $arrInsert['modified'] = date("Y-m-d H:i:s");
-//                unset($arrInsert['image_map_id']);
-////                $status = $this->map_exhibitor_model->saveAll($arrInsert, $map_exhibitor_id);
-//            } else {
-//                $postarray = json_encode($arrInsert);
-//                setcookie('postarray', $postarray);
-//                $arrInsert['created'] = date("Y-m-d H:i:s");
-//                $arrInsert['modified'] = date("Y-m-d H:i:s");
-//                unset($arrInsert['image_map_id']);
-//                $status = $this->map_exhibitor_model->saveAll($arrInsert);
-//            }
             if ($status) {
                 $this->session->set_flashdata('message', 'Image Maping Added Successfully !!');
                 redirect('manage/image_maping/add_child/' . $maped_event_image_id);
@@ -330,21 +284,11 @@ class Image_maping extends CI_Controller {
         $map_id = $this->input->post('map_id');
         $event_id = $this->input->post('event_id');
         $child_coords = $this->input->post('child_coords');
-//        $this->db->where('map_exhibitor.map_id', $map_id);
-//        $this->db->where('map_exhibitor.event_id', $event_id);
-//        $this->db->where('map_exhibitor.coordinates', $child_coords);
-//        $result = $this->db->get('map_exhibitor')->row();
-//        if (!empty($result)) {
-//            $result->status = 1;
-//            echo json_encode($result);
-//        } else {
         $this->db->where('image_map.parent_id', $map_id);
         $this->db->where('image_map.event_id', $event_id);
         $this->db->where('image_map.child_coords', $child_coords);
         $result = $this->db->get('image_map')->row();
-//            $result->status = 0;
         echo json_encode($result);
-//        }
     }
 
     function delete($map_id) {
@@ -355,6 +299,7 @@ class Image_maping extends CI_Controller {
         $this->db->delete('map_exhibitor');
         $this->session->set_flashdata('message', 'Image Maping deleted Successfully !!');
         redirect('manage/image_maping/');
+        
     }
 
 }
