@@ -1144,59 +1144,71 @@ class Event extends CI_Controller {
         }
     }
 
-    function get_image_map_exhibitor($maped_event_image_id = null) {
-//        if ($exhibitor_id) {
-//            $result = $this->db
-//                            ->select('*')
-//                            ->from('map_exhibitor')
-//                            ->where('id', $exhibitor_id)
-//                            ->get()->row();
-//            display($result);
-//            $this->load->view('client/event/client_event_image_map', $result);
-//            return $result;
-//        }
-//        setcookie("postarray", "", time() - 3600);
-        //$maped_event_image_id = 2;//$this->session->userdata('client_event_id');die;
-        if ($this->input->post()) {
-            $id = $maped_event_image_id;
-            $arrInsert = $this->input->post();
-            $arrInsert['map_id'] = $arrInsert['image_map_id'];
-            $map_exhibitor_id = $arrInsert['map_exhibitor_id'];
-            if ($map_exhibitor_id) {
-                $postarray = json_encode($arrInsert);
-                setcookie('postarray', $postarray);
-                $arrInsert['created'] = date("Y-m-d H:i:s");
-                $arrInsert['modified'] = date("Y-m-d H:i:s");
-                unset($arrInsert['image_map_id']);
-                $status = $this->map_exhibitor_model->saveAll($arrInsert, $map_exhibitor_id);
-            } else {
-                $postarray = json_encode($arrInsert);
-                setcookie('postarray', $postarray);
-                $arrInsert['created'] = date("Y-m-d H:i:s");
-                $arrInsert['modified'] = date("Y-m-d H:i:s");
-                unset($arrInsert['image_map_id']);
-                $status = $this->map_exhibitor_model->saveAll($arrInsert);
-            }
-            if ($status) {
-                $this->session->set_flashdata('message', 'Image Maping Added Successfully !!');
-//                redirect('manage/image_maping/map_exhibitor/' . $maped_event_image_id);
-            } else {
-                $this->session->set_flashdata('message', 'Failed to Add Image Maping !!');
-//                redirect('manage/image_maping/map_exhibitor/' . $maped_event_image_id);
-            }
+    function get_image_map_exhibitor($type = NULL, $maped_event_image_id = null) {
+        $data = array();
+
+        $event_id = $maped_event_image_id; //$this->uri->segment(3);
+        $this->model->event_id = $event_id;
+        $data = $this->model->getCount();
+
+//        $search = 1;
+//        $field = array('image_map.event_id');
+//        $data['list'] = $this->image_map_model->getAll(NULL, '1', $search, $field, NULL, 'AND');
+
+        if ($type == 'parent') {
+            $this->db->where('image_map.parent_id', 0);
+            $this->db->where('image_map.event_id', $event_id);
+        } else {
+            $this->db->where('image_map.id', $event_id);
         }
-        $search = $maped_event_image_id;
-        $field = array('image_map.event_id');
-        $arrData['list'] = $this->image_map_model->getAll(NULL, '1', $search, $field, NULL, 'AND');
-//        display($arrData['list']);
-        $event_id = $arrData['list']->event_id;
-        $arrData['exhhibitor_list'] = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
-//        $arrData['thisPage'] = 'Default Image Maping';
-//        $arrData['breadcrumb'] = ' Image Maping';
-//        $arrData['breadcrumb_tag'] = ' Description for Image Maping goes here';
-//        $arrData['breadcrumb_class'] = 'fa-home';
-//        $arrData['middle'] = 'admin/image_maping/map_exhibitor';
-        $this->load->view('client/event/client_event_image_map.php',$arrData);
+        $data['list'] = $this->db->get('image_map')->row();
+        $event_id = $data['list']->event_id;
+        $data['exhhibitor_list'] = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
+//display($data);
+        // $json = $this->uri->segment(4);
+        if (is_numeric($event_id)) {
+//            display($data);
+
+            $data['event_detail'] = $this->model->getAll($event_id, TRUE, NULL);
+            if ($data['event_detail']['event_list']) {
+                $data['event_id'] = $event_id;
+
+                $data['event'] = $data['event_detail']['event_list'][0];
+                $this->session->set_userdata(array('client_paid_event' => $data['event']['paid_event'], 'client_event_payment_type' => $data['event']['payment_type'], 'client_event_payment_url' => $data['event']['payment_url'], 'client_event_cost' => $data['event']['event_cost'], 'client_event_id' => $event_id, 'client_event_name' => $data['event']['event_name'], 'client_event_twitter_hastag' => $data['event']['twitter']));
+                $data['target_user_type'] = 'Event';
+                $data['target_user_id'] = $event_id;
+                $data['analytic_type'] = 'view';
+                $data['common_location'] = array();
+                $data['common_industry'] = array();
+//echo '--------->'.$this->session->userdata('client_user_industry');
+                if ($this->session->userdata('client_user_city'))
+                    $data['common_location'] = $this->model->common_connection($event_id, $this->session->userdata('client_user_city'), ''); //array();
+                if ($this->session->userdata('client_user_industry'))
+                    $data['common_industry'] = $this->model->common_connection($event_id, '', $this->session->userdata('client_user_industry'));
+
+//                if (isset($json) && $json != NULL) {
+//                    if ($json == 'json') {
+//                        echo json_encode($data);
+//                        exit;
+//                    } else {
+//                        exit;
+//                    }
+//                }
+
+                if ($this->session->userdata('client_user_id'))
+                    $this->load->view(CLIENT_EVENT_IMAGE_MAP, $data);
+                else
+                    $this->load->view(CLIENT_LOGIN_VIEW, $data);
+            }
+            else {
+//echo 'Something Went wrong';
+                $data['error_message'] = 'Event Not Found!';
+                $this->load->view(CLIENT_DATA_ERROR_VIEW, $data);
+            }
+        } else {
+            $data['error_message'] = 'Event Not Found!';
+            $this->load->view(CLIENT_DATA_ERROR_VIEW, $data);
+        }
     }
 
 }
