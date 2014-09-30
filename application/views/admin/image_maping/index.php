@@ -8,7 +8,9 @@
         </div>
     </div>
 
-    <?php if (!empty($list)) { //echo '<pre>'; print_r($list); exit;
+    <?php
+    if (!empty($list)) { //echo '<pre>'; print_r($list); exit;
+//        display($event_list);
         ?>
         <div class="row">
             <div class="col-sm-12 col-md-12">
@@ -20,7 +22,7 @@
                                 <th>Mapped Image</th>
                                 <th>Mapped Event Name</th>
                                 <!--<th>Status (E/D)</th>-->
-                                <th>&nbsp;</th>
+                                <th colspan="3" style="text-align: center;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,7 +35,16 @@
                                     <tr>
                                         <td class="tdalign"><?php echo $value['name'] ?></td>
                                         <td class="tdalign"><?php echo $value['image_name'] ?></td>
-                                        <!--<td class="tdalign"><?php //echo ($value['status'] == 1) ? 'E' : 'D';                              ?></td>-->
+                                        <td>
+                                            <?php
+                                            foreach ($event_list as $event_value):
+                                                if ($event_value['id'] == $value['event_id']) {
+                                                    echo $event_value['name'];
+                                                }
+                                            endforeach;
+                                            ?>
+                                        </td>
+                                        <!--<td class="tdalign"><?php //echo ($value['status'] == 1) ? 'E' : 'D';                                    ?></td>-->
                                         <td class="table-action tdalign">
                                             <a title="Edit" href="<?php echo base_url('manage/image_maping/add/' . $value['id']); ?>"><i class="fa fa-pencil"></i></a>
                                         </td>
@@ -60,7 +71,16 @@
                                             <tr>
                                                 <td class="tdalign" style="padding-left: 4%"><?php echo $child['name'] ?></td>
                                                 <td class="tdalign"><?php echo $child['image_name'] ?></td>
-                                                <!--<td class="tdalign"><?php //echo ($child['status'] == 1) ? 'E' : 'D';                              ?></td>-->
+                                                <!--<td class="tdalign"><?php //echo ($child['status'] == 1) ? 'E' : 'D';                                    ?></td>-->
+                                                <td>
+                                                    <?php
+                                                    foreach ($event_list as $event_value):
+                                                        if ($event_value['id'] == $child['event_id']) {
+                                                            echo $event_value['name'];
+                                                        }
+                                                    endforeach;
+                                                    ?>
+                                                </td>
                                                 <td class="table-action tdalign">
                                                     <a title="Edit" href="<?php echo base_url('manage/image_maping/add/' . $child['id']); ?>"><i class="fa fa-pencil"></i></a>
                                                 </td>

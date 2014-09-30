@@ -67,8 +67,7 @@
 //
 //                    });
 
-                    var SITE_URL = '<?php echo SITE_URL ?>';
-                </script>
+                            var SITE_URL = '<?php echo SITE_URL ?>';</script>
                 <div class="contentpanel"><!-- Content Panel -->
                     <div class="col-sm-13"><!-- Add Exhibitor Row -->
                         <form id="image_maping_form" enctype="multipart/form-data" method="POST">
@@ -104,8 +103,8 @@
                                     }
                                 }
                                 ?>
-                                                                                                                                                                <option <?php echo $seletcted ?> value = "<?php echo $value['id'] ?>"><?php echo $value['name']; ?></option>
-                                                                                                                    
+                                                                                                                                                                                                            <option <?php echo $seletcted ?> value = "<?php echo $value['id'] ?>"><?php echo $value['name']; ?></option>
+                                                                                                                                                                
                             <?php }
                             ?>
                                                                 </select>
@@ -133,17 +132,17 @@
                                 if ($i == 0) {
 //                                if (isset($list->parent_id) && $list->parent_id != 0) {
                                     ?>
-                                                                                                                                                                                                                                                            <option value = "0">Select Parent Map Image</option>
+                                                                                                                                                                                                                                                                                                                                                    <option value = "0">Select Parent Map Image</option>
                                     <?php
 //                                }
                                 } else {
                                     ?>
-                                                                                                                                                                                                                                                            <option <?php echo $seletcted ?> value = "<?php echo $value['id'] ?>"><?php echo $value['name']; ?></option>
+                                                                                                                                                                                                                                                                                                                                                    <option <?php echo $seletcted ?> value = "<?php echo $value['id'] ?>"><?php echo $value['name']; ?></option>
                                     <?php
                                 }
                                 $i++;
                                 ?>
-                                                                                                                    
+                                                                                                                                                                
                             <?php }
                             ?>
                                                                 </select>
@@ -156,7 +155,7 @@
                                     <span id="image_name_err" style="color: red"></span>
                                     <div id="edit_child_image">
                                         <?php if ($list->id) { ?>
-                                            <!--<img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" height="150px" width="150px" />-->
+                                                                                        <!--<img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" height="150px" width="150px" />-->
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -166,7 +165,7 @@
                                 <label class="col-sm-2 control-label">Image coordinates</label>
                                 <div class="col-sm-7">
                                     <textarea name="coordinates" id="coordinates" class ="form-control" placeholder="Please Enter Image coordinates">
-                                        <?php //echo $list->coordinates ?>
+                                        <?php //echo $list->coordinates  ?>
                                     </textarea>
                                     <span id="coordinates_err" style="color: red"></span>
                                 </div>
@@ -196,58 +195,82 @@
     </div>
 </div>
 <script>
-    var coordinates;
-    $(document).ready(function() {
+            var coordinates;
+            $(document).ready(function() {
 
-        $('area').click(function() {
-            var coords = $(this).attr('coords');
+    $('area').click(function() {
+    var coords = $(this).attr('coords');
 //            $("#coordinates").val(coords);
             $("#child_coords").val(coords);
-
             child_coords = coords;
             get_exibitor(child_coords);
-
-        });
     });
-    function get_exibitor(child_coords = NULL) {
-        var map_id = $('#parent_id').val();
-        var event_id = $('#event_id').val();
-        var child_coords = $('#child_coords').val();
-        $.ajax({
-            type: 'POST',
-            url: '<?php echo SITE_URL; ?>' + "manage/image_maping/get_child_image_map",
-            dataType: 'json',
-            data: {
-                map_id: map_id, event_id: event_id, child_coords: child_coords
-            },
-            success: function(res)
-            {
-                if (res.status) {
-                    alert('Exhibitor For this Coordinates is already added');
-                    window.location.href = SITE_URL + "manage/image_maping/add_child/" + map_id;
-                }
-                if (res.id) {
+    });
+            function get_exibitor(child_coords = NULL) {
+            var map_id = $('#parent_id').val();
+                    var event_id = $('#event_id').val();
+                    var child_coords = $('#child_coords').val();
+                    $.ajax({
+                    type: 'POST',
+                            url: '<?php echo SITE_URL; ?>' + "manage/image_maping/get_child_image_map",
+                            dataType: 'json',
+                            data: {
+                            map_id: map_id, event_id: event_id, child_coords: child_coords
+                            },
+                            success: function(res)
+                            {
+                            if (res.status) {
+                            alert('Exhibitor For this Coordinates is already added');
+                                    window.location.href = SITE_URL + "manage/image_maping/add_child/" + map_id;
+                            }
+                            if (res.id) {
 //                    alert(res.coordinates);
-                    $("#exhibitor_id option[value='" + res.exhibitor_id + "']").attr('selected', 'selected');
-                    $('#name').val(res.name);
-                    var image = '<img src="<?php echo SITE_URL . 'uploads/event_image_maping/'; ?>' + res.image_name + '" height="150px" width="150px" />';
-                    $('#edit_child_image').html(image);
-                    $('#parent_id').val(res.parent_id);
-                    $('#child_id').val(res.id);
-                    $('#event_id').val(res.event_id);
-                    $('#child_coords').val(res.child_coords);
-                    $('#coordinates').html(res.coordinates);
+                            $("#exhibitor_id option[value='" + res.exhibitor_id + "']").attr('selected', 'selected');
+                                    $('#name').val(res.name);
+                                    var image = '<img src="<?php echo SITE_URL . 'uploads/event_image_maping/'; ?>' + res.image_name + '" height="150px" width="150px" />';
+                                    $('#edit_child_image').html(image);
+                                    $('#parent_id').val(res.parent_id);
+                                    $('#child_id').val(res.id);
+                                    $('#event_id').val(res.event_id);
+                                    $('#child_coords').val(res.child_coords);
+                                    $('#coordinates').html(res.coordinates);
 //                    $('#coordinates').val(res.coordinates);
-                    $("#exhibitor_id").trigger("liszt:updated");
-                } else {
-                    $('#name').val('');
-                    $('#description').html('');
-                    $('#edit_child_image').html('');
-                    $('#coordinates').html('');
-                    $('#child_id').val('');
-                }
+                                    $("#exhibitor_id").trigger("liszt:updated");
+                            } else {
+                            $('#name').val('');
+                                    $('#description').html('');
+                                    $('#edit_child_image').html('');
+                                    $('#coordinates').html('');
+                                    $('#child_id').val('');
+                            }
+                            }
+                    });
             }
-        });
-    }
 
+</script>
+<script type = "text/javascript">
+    $().ready(function() {
+
+    jQuery(".chosen-select").chosen({'width': '100%', 'white-space': 'nowrap'});
+            $("#image_maping_form").validate({
+    rules: {
+    name: "required",
+<?php if (!$list->id) { ?>
+        image_name: "required",
+<?php } ?>
+    coordinates: "required",
+    },
+            messages: {
+            name: "Please enter your Map Name",
+<?php if (!$list->id) { ?>
+                image_name: "Please Select Image",
+<?php } ?>
+            coordinates: "Please enter your Coordinates",
+            },
+            submitHandler: function(form) {
+            form.submit();
+            }
+
+    });
+    });
 </script>

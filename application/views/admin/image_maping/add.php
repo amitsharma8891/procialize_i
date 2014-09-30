@@ -27,8 +27,7 @@
 //
 //    });
 
-    var SITE_URL = '<?php echo SITE_URL ?>';
-</script>
+            var SITE_URL = '<?php echo SITE_URL ?>';</script>
 <div class="contentpanel"><!-- Content Panel -->
     <div class="col-sm-13"><!-- Add Exhibitor Row -->
         <form id="image_maping_form" enctype="multipart/form-data" method="POST">
@@ -93,11 +92,10 @@
                                 <option value = "0">Select Parent Map Image</option>
                                 <?php
 //                                }
-                            } 
-                                ?>
-                                <option <?php echo $seletcted ?> value = "<?php echo $value['id'] ?>"><?php echo $value['name']; ?></option>
-                                <?php
-                            
+                            }
+                            ?>
+                            <option <?php echo $seletcted ?> value = "<?php echo $value['id'] ?>"><?php echo $value['name']; ?></option>
+                            <?php
                             $i++;
                             ?>
 
@@ -117,7 +115,6 @@
                 </div>
             </div>
             <div class="form-group">
-
                 <label class="col-sm-2 control-label">Image coordinates</label>
                 <div class="col-sm-7">
                     <textarea name="coordinates" id="coordinates" class ="form-control" placeholder="Please Enter Image coordinates">
@@ -127,8 +124,6 @@
                 </div>
             </div>
 <!--            <div class="iframe"><iframe></iframe></div>-->
-
-
             <div class = "form-group">
                 <div class = "col-sm-4">
                     <a title="Back" class = "btn btn-danger btn-block" href="<?php echo base_url('manage/image_maping/'); ?>">Back</a>
@@ -141,40 +136,30 @@
             </div>
         </form>
     </div>
-
-
 </div>
-<script>
-//    (function($, undefined) {
-//        $.fn.getCursorPosition = function() {
-////            alert('fdgdfgfdg');
-//            var el = $(this).get(0);
-//            var pos = 0;
-//            console.log(el);
-////            var etstst  = el.getSelection().getRanges();
-////            alert(etstst);
-//            if ('selectionStart' in el) {
-//                pos = el.selectionStart;
-//                console.log(document);
-////            } else if ('selection' in document) {
-//                el.focus();
-//                var Sel = document.selection.createRange();
-//                var SelLength = document.selection.createRange().text.length;
-//                Sel.moveStart('character', -el.value.length);
-//                pos = Sel.text.length - SelLength;
-//                pos
-//            }
-//            return pos;
-//        }
-//    })(jQuery);
-//    $('#name').click(function() {
-//
-//        var position = $("#email_temp_body").getCursorPosition()
-//        alert(position);
-//    });
+<script type = "text/javascript">
+            $().ready(function() {
 
-//
-//    var content = $('#email_temp_body').val();
-//    var newContent = content.substr(0, position) + "text to insert" + content.substr(position);
-//    $('#email_temp_body').val(newContent);
+    jQuery(".chosen-select").chosen({'width': '100%', 'white-space': 'nowrap'});
+            $("#image_maping_form").validate({
+    rules: {
+    name: "required",
+<?php if (!$list->id) { ?>
+        image_name: "required",
+<?php } ?>
+    coordinates: "required",
+    },
+            messages: {
+            name: "Please enter your Map Name",
+<?php if (!$list->id) { ?>
+                image_name: "Please Select Image",
+<?php } ?>
+            coordinates: "Please enter your Coordinates",
+            },
+            submitHandler: function(form) {
+            form.submit();
+            }
+
+    });
+    });
 </script>
