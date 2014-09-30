@@ -123,6 +123,7 @@
                                 <?php } ?>
 				
 				<address>
+                                    <strong>Exhibitor Map:</strong> <a href="<?php echo SITE_URL.'client/event/get_image_map_exhibitor/parent/'.$this->session->userdata('client_event_id');?>">Show Exhibitor Map</a><br>
 				<strong>Venue:</strong> <?php echo $event['event_location']?><br>
 				<strong>Email:</strong> <?php echo $event['contact_email']?><br>
                                 <?php if($event['website']) {?>
