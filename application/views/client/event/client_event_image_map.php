@@ -1,12 +1,12 @@
 <!--<div class="contentpanel"> Content Panel 
 <?php if (!empty($list)) {  //echo '<pre>'; print_r($list); 
     ?>
-                                                                                                                                            <div class="row">
-                                                                                                                                                <div class="col-sm-12 col-md-12">
-                                                                                                                                                    <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map">
+                                                                                                                                                                                        <div class="row">
+                                                                                                                                                                                            <div class="col-sm-12 col-md-12">
+                                                                                                                                                                                                <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map">
     <?php echo $list->coordinates; ?>
-                                                                                                                                                </div>
-                                                                                                                                            </div>
+                                                                                                                                                                                            </div>
+                                                                                                                                                                                        </div>
     <?php
 } else {
     echo 'No Image Map event Present';
@@ -69,7 +69,7 @@ foreach ($exhhibitor_list as $key => $value) {
         }
     }
     ?>
-                                                                                                                                                                            <option <?php echo $seletcted ?> value = "<?php echo $value['attendee_id'] ?>"><?php echo $value['name']; ?></option>
+                                                                                                                                                                                                                        <option <?php echo $seletcted ?> value = "<?php echo $value['attendee_id'] ?>"><?php echo $value['name']; ?></option>
 
 <?php }
 ?>
@@ -171,83 +171,107 @@ foreach ($exhhibitor_list as $key => $value) {
 <!----event top navigation---->
 </div>
 <?php //display($list)?>
-<div class="contentpanel">
-    <div class="panel panel-default panel-stat">
-        <div class="">
+<?php if (!empty($list)) { ?>
+    <div class="contentpanel">
+        <div class="panel panel-default panel-stat">
+            <div class="">
 
-            <div class="row">
+                <div class="row">
 
-                <div class="col-xs-12">
-                    <div class="stat well well-sm">
-                        <h4 class="tits_1"><?php //echo $event['event_name']                                  ?></h4>
-                        <div class="row">
-                            <div class="col-xs-4">
-                                <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map">
-                                <?php echo $list->coordinates; ?>
-                                <input type="hidden" id="image_map_id" name="image_map_id" value="<?php echo $list->id ?>">
-                                <input type="hidden" id="coordinates" name="coordinates" value="">
-                                <input type="hidden" id="map_exhibitor_id" name="map_exhibitor_id" value="">
-                                <input type="hidden" id="event_id" name="event_id" value="<?php echo $list->event_id ?>">
+                    <div class="col-xs-12">
+                        <div class="stat well well-sm">
+                            <h4 class="tits_1"><?php //echo $event['event_name']                                             ?></h4>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map">
+                                    <!--<img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" height="50px" width="50px">-->
+                                    <!--        left: rpos.x, 306,194,503,353
+                                                top: rpos.y-->
+                                    <?php echo $list->coordinates; ?>
+                                    <input type="hidden" id="image_map_id" name="image_map_id" value="<?php echo $list->id ?>">
+                                    <input type="hidden" id="coordinates" name="coordinates" value="">
+                                    <input type="hidden" id="map_exhibitor_id" name="map_exhibitor_id" value="">
+                                    <input type="hidden" id="event_id" name="event_id" value="<?php echo $list->event_id ?>">
 
-                            </div>
-                            <div class="col-xs-8 eventdet">
-                                <span class="pull-right mr10">
-                                    <small class="stat-label">
-                                        <!--                                        <div class="thumb">
-                                                                                    <img src="<?php echo SITE_URL . 'uploads/organizer/logo/' . $event['organiser_photo'] ?>" class="img-responsive userlogor" alt="Organizer"/>
-                                                                                </div>-->
-                                    </small>
+                                </div>
+                                <div class="col-xs-8 eventdet">
+                                    <span class="pull-right mr10">
+                                        <small class="stat-label">
+                                            <!--                                        <div class="thumb">
+                                                                                        <img src="<?php echo SITE_URL . 'uploads/organizer/logo/' . $event['organiser_photo'] ?>" class="img-responsive userlogor" alt="Organizer"/>
+                                                                                    </div>-->
+                                        </small>
 
-                                </span>
+                                    </span>
 
-                            </div>
-                        </div><!-- row -->
-                        <br>
-                        <!---google map integrations---->
+                                </div>
+                            </div><!-- row -->
+                            <br>
+                            <!---google map integrations---->
 
-                        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-                        <script>
-                            function initialize() {
-                                var myLatlng = new google.maps.LatLng('<?php echo $event['event_latitude'] ?>', '<?php echo $event['event_longitude'] ?>');
-                                var mapOptions = {
-                                    zoom: 12,
-                                    center: myLatlng,
-                                    //mapTypeControl: false,
-                                    //scrollwheel: false,
-                                    //keyboardShortcuts: false,
-                                    //draggable: false,
+                            <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+                            <script>
+                                function initialize() {
+                                    var myLatlng = new google.maps.LatLng('<?php echo $event['event_latitude'] ?>', '<?php echo $event['event_longitude'] ?>');
+                                    var mapOptions = {
+                                        zoom: 12,
+                                        center: myLatlng,
+                                        //mapTypeControl: false,
+                                        //scrollwheel: false,
+                                        //keyboardShortcuts: false,
+                                        //draggable: false,
 
+                                    }
+                                    var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+                                    var marker = new google.maps.Marker({
+                                        position: myLatlng,
+                                        map: map,
+                                        //title: 'Hello World!'
+                                    });
                                 }
-                                var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-                                var marker = new google.maps.Marker({
-                                    position: myLatlng,
-                                    map: map,
-                                    //title: 'Hello World!'
-                                });
-                            }
 
-                            google.maps.event.addDomListener(window, 'load', initialize);
-                            google.maps.event.addDomListener(window, 'resize', initialize);</script>
+                                google.maps.event.addDomListener(window, 'load', initialize);
+                                google.maps.event.addDomListener(window, 'resize', initialize);</script>
 
-                        <!---google map integrations ends---->
-                                      <!--<img src="http://maps.googleapis.com/maps/api/staticmap?center=<?php //echo $event['event_latitude']                                    ?>,<?php //echo $event['event_longitude']                                    ?>&zoom=14&size=400x400&sensor=false" class="img-responsive thumb mapimg mb9">-->
+                            <!---google map integrations ends---->
+                                          <!--<img src="http://maps.googleapis.com/maps/api/staticmap?center=<?php //echo $event['event_latitude']                                               ?>,<?php //echo $event['event_longitude']                                               ?>&zoom=14&size=400x400&sensor=false" class="img-responsive thumb mapimg mb9">-->
 
 
 
-                        <?php
-                        if (!passcode_validatation()) {
-                            ?>
-                            <a href="javascript:;" data-toggle="modal" data-target="#SignUp" class="btn btn-success input-sm btn-block mb9">Event Registration</a>
-                        <?php } ?>
+                            <?php
+                            if (!passcode_validatation()) {
+                                ?>
+                                <!--<a href="javascript:;" data-toggle="modal" data-target="#SignUp" class="btn btn-success input-sm btn-block mb9">Event Registration</a>-->
+                            <?php } ?>
 
-                    </div><!-- stat -->
-                </div><!-- col-sm-6 -->
+                        </div><!-- stat -->
+                    </div><!-- col-sm-6 -->
 
-            </div><!-- row -->
+                </div><!-- row -->
+            </div>
         </div>
-    </div>
-</div><!-- contentpanel -->
+    </div><!-- contentpanel -->
+<?php } else { ?>
+    <div class="contentpanel">
+        <div class="panel panel-default panel-stat">
+            <div class="">
 
+                <div class="row">
+
+                    <div class="col-xs-12">
+                        <div class="stat well well-sm">
+                            <h4 class="tits_1"></h4>
+                            <div class="row" style="text-align: center">
+                               
+                                    There is no Mapped image available for this event!!
+                            </div> 
+                        </div>
+                    </div>
+                </div> 
+            </div> 
+        </div> 
+    </div>
+<?php } ?>
 </div><!-- mainpanel -->
 
 <div class="rightpanel">
@@ -448,12 +472,13 @@ if ($splash_show_flag) {
             },
             success: function(res)
             {
+                var SITE_URL = '<?php echo SITE_URL; ?>';
                 if (res.id) {
 //                    $("#exhibitor_id option[value='" + res.exhibitor_id + "']").attr('selected', 'selected');
                     if (res.parent_id) {
                         window.location.href = SITE_URL + "client/event/get_image_map_exhibitor/child/" + res.id;
                     }
-                    var SITE_URL = '<?php echo SITE_URL; ?>';
+
                     $('#name').html(res.name);
                     $('#image_map_id').val(res.map_id);
                     $('#map_exhibitor_id').val(res.id);

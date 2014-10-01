@@ -1147,8 +1147,6 @@ class Event extends CI_Controller {
     function get_image_map_exhibitor($type = NULL, $maped_event_image_id = null) {
         $data = array();
         $event_id = $maped_event_image_id; //$this->uri->segment(3);
-        $this->model->event_id = $event_id;
-        $data = $this->model->getCount();
 //        $search = 1;
 //        $field = array('image_map.event_id');
 //        $data['list'] = $this->image_map_model->getAll(NULL, '1', $search, $field, NULL, 'AND');
@@ -1159,9 +1157,24 @@ class Event extends CI_Controller {
         } else {
             $this->db->where('image_map.id', $event_id);
         }
-        $data['list'] = $this->db->get('image_map')->row();
-        $event_id = $data['list']->event_id;
-        $data['exhhibitor_list'] = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
+
+
+        $image_map_data = $this->db->get('image_map')->row();
+        if (!empty($image_map_data)) {
+            $this->model->event_id = $image_map_data->event_id;
+            $data = $this->model->getCount();
+        } else {
+            if ($type == 'parent') {
+                $this->model->event_id = $event_id;
+                $data = $this->model->getCount();
+            }
+        }
+        $data['list'] = $image_map_data;
+        if (!empty($data['list'])) {
+            $event_id = $data['list']->event_id;
+            $data['exhhibitor_list'] = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
+        }
+
         if (is_numeric($event_id)) {
             $data['event_detail'] = $this->model->getAll($event_id, TRUE, NULL);
             if ($data['event_detail']['event_list']) {

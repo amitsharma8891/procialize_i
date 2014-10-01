@@ -110,7 +110,7 @@
                             <li><a href="<?php echo SITE_URL ?>user/saved/speaker"><i class="fa fa-microphone"></i> <span>Saved Speakers</span></a></li>
                             <li><a href="javascript:;"  data-toggle="modal" data-target="#share_left_procialize" onClick="share_social('Event')"><i class="fa fa-share-alt"></i> <span>Share Procialize</span></a></li>
                         <?php } ?>
-
+<!--                        <li><a href="http://procialize.net/metropolis-sponsors" target="blank"><i class="fa fa-money"></i> <span>Our Sponsors</span></a></li>-->
                         <li><a href="<?php echo SITE_URL ?>welcome"><i class="fa fa-list-ul"></i> <span>About <?php echo getSetting()->app_name; ?></span></a></li>
                         <?php if ($this->session->userdata('client_user_id')) { ?>
                             <li><a href="<?php echo SITE_URL ?>client/event/logout"><i class="glyphicon glyphicon-log-out"></i> <span>Logout</span></a></li>

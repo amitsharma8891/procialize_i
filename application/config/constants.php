@@ -122,6 +122,7 @@ define('CLIENT_LOGIN_VIEW',      						CLIENT_LOGIN_VIEWS_FOLDER.'client_login_v
 define('CLIENT_EVENT_VIEWS_FOLDER', 						CLIENT_VIEWS_FOLDER.'event/');
 define('CLIENT_EVENT_LIST_VIEW',      						CLIENT_EVENT_VIEWS_FOLDER.'client_event_list_view.php');
 define('CLIENT_EVENT_DETAIL_VIEW',                                              CLIENT_EVENT_VIEWS_FOLDER.'client_event_detail_view.php');
+define('CLIENT_EVENT_IMAGE_MAP',                                              CLIENT_EVENT_VIEWS_FOLDER.'client_event_image_map.php');
 
 define('CLIENT_AGENDA_VIEWS_FOLDER', 						CLIENT_VIEWS_FOLDER.'agenda/');
 define('CLIENT_EVENT_SETUP_MEETING_VIEW',       				CLIENT_AGENDA_VIEWS_FOLDER.'client_event_setup_meeting_view.php');
