@@ -108,7 +108,7 @@
                             <li><a href="<?php echo SITE_URL ?>user/saved/exhibitor"><i class="fa fa-briefcase"></i> <span>Saved Exhibitors</span></a></li>
                             <li><a href="<?php echo SITE_URL ?>user/saved/attendee"><i class="fa fa-user"></i> <span>Saved Attendees</span></a></li>
                             <li><a href="<?php echo SITE_URL ?>user/saved/speaker"><i class="fa fa-microphone"></i> <span>Saved Speakers</span></a></li>
-                            <li><a href="javascript:;"  data-toggle="modal" data-target="#share_left_procialize" onClick="share_social('Event')"><i class="fa fa-share-alt"></i> <span>Share Procialize</span></a></li>
+                            <li><a href="javascript:;"  data-toggle="modal" data-target="#share_left_procialize" onClick="share_social('Event')"><i class="fa fa-share-alt"></i> <span>Share <?php echo getSetting()->app_name; ?></span></a></li>
                         <?php } ?>
 <!--                        <li><a href="http://procialize.net/metropolis-sponsors" target="blank"><i class="fa fa-money"></i> <span>Our Sponsors</span></a></li>-->
                         <li><a href="<?php echo SITE_URL ?>welcome"><i class="fa fa-list-ul"></i> <span>About <?php echo getSetting()->app_name; ?></span></a></li>
@@ -335,7 +335,7 @@
 
                                         <div class="form-group">
                                             <textarea class="form-control" rows="3" name="share_procialize_message_body" id="share_procialize_message_body" placeholder="Write your message here">
-                                                    Your connection <?php echo $this->session->userdata('client_first_name') . ',' . $this->session->userdata('client_user_company') ?> is using Procialize to network with other attendees, speakers and exhibitors at <?php echo $this->session->userdata('client_event_name') ?>
+                                                    Your connection <?php echo $this->session->userdata('client_first_name') . ',' . $this->session->userdata('client_user_company') ?> is using <?php echo getSetting()->app_name; ?> to network with other attendees, speakers and exhibitors at <?php echo $this->session->userdata('client_event_name') ?>
                                             </textarea>
                                         </div>
                                         <div class="form-group">
@@ -347,7 +347,7 @@
                                 </div>
                                 <hr class="mt9">
 <!--                                        <a href="javascript:;" ><h4><i class="fa fa-facebook-square"></i> Facebook</h4></a>-->
-                                <a href="<?php echo SITE_URL ?>" data-image="<?php echo CLIENT_IMAGES ?>pl.png" data-title="Procialize" data-desc="A Platform to professionally socialize" class="btnShare"><h4><i class="fa fa-facebook-square"></i> Facebook</h4></a>
+                                <a href="<?php echo SITE_URL ?>" data-image="<?php echo CLIENT_IMAGES ?>pl.png" data-title="<?php echo getSetting()->app_name; ?>" data-desc="A Platform to professionally socialize" class="btnShare"><h4><i class="fa fa-facebook-square"></i> Facebook</h4></a>
                             </div>
                         </div>
                     </div>

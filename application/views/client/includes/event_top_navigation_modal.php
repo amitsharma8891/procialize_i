@@ -99,11 +99,11 @@
                 <div class="form-group">
                     <!--<input type="button" class="btn btn-success input-sm btn-block" value="Add" id="addmoreat">-->
                 </div>
-                <div class="form-group">
+<!--                <div class="form-group">
                     <div class="checkbox-inline">
                         <label> <input type="checkbox" name="mesaage_checkbox" id="mesaage_checkbox"> All Attendees, Speakers, Exhibitors</label>
                     </div>
-                </div>
+                </div>-->
                 <div class="form-group">
                     <textarea class="form-control" rows="3" name="message_text" id="message_text_val" placeholder="Write your message here"></textarea>
                      <div id="message_text_val_err" style="color: red;"></div>

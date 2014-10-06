@@ -92,12 +92,12 @@ class User_notification extends CI_Controller {
 
             $get_target_attendee = $this->client_login_model->getUserData($data['subject_id']);
             $company_and_designation = "";
-            $cmpny_designation = $this->session->userdata('client_user_designation');
+            $cmpny_designation = $user_data->designation;
             if (!empty($cmpny_designation)) {
                 if (isset($user_data->company_name) && !empty($user_data->company_name)) {
-                    $company_and_designation = '(' . $this->session->userdata('client_user_designation') . ',' . $user_data->company_name . ')'; //$this->session->userdata('client_user_designation');
+                    $company_and_designation = '(' . $user_data->designation . ',' . $user_data->company_name . ')'; //$this->session->userdata('client_user_designation');
                 } else {
-                    $company_and_designation = '(' . $this->session->userdata('client_user_designation') . ')'; //$this->session->userdata('client_user_designation');
+                    $company_and_designation = '(' . $user_data->designation . ')'; //$this->session->userdata('client_user_designation');
                 }
             }
             //MAIL TEMLATE START
@@ -106,15 +106,17 @@ class User_notification extends CI_Controller {
             $replace_with = array(
                 $email_template['setting']['app_name'],
                 $get_organizer->event_name,
-                $this->session->userdata('client_first_name'),
+                $user_data->first_name,
                 $get_target_attendee->first_name,
                 $save_social,
-                $this->session->userdata('client_first_name'),
+                $user_data->first_name,
                 $company_and_designation,
                 $email_template['setting']['app_contact_email'],
                 SITE_URL,
                 CLIENT_IMAGES,
-                '<img src="' . SITE_URL . 'uploads/app_logo/' . $email_template['setting']['app_logo_big'] . '">', '<a href=' . $email_template['setting']['apple_app_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . APPLE_APP_STORE_IMAGE . '"></a>', '<a href=' . $email_template['setting']['google_play_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . GOOGLE_PLAY_STORE_IMAGE . '"></a>'
+                '<img src="' . SITE_URL . 'uploads/app_logo/' . $email_template['setting']['app_logo_big'] . '">',
+                '<a href=' . $email_template['setting']['apple_app_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . APPLE_APP_STORE_IMAGE . '"></a>', 
+                '<a href=' . $email_template['setting']['google_play_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . GOOGLE_PLAY_STORE_IMAGE . '"></a>'
             );
             $subject = str_replace($keywords, $replace_with, $email_template['subject']);
             $html = str_replace($keywords, $replace_with, $email_template['body']);
@@ -176,7 +178,7 @@ class User_notification extends CI_Controller {
             if ($data['to']) {
                 $to_array = explode(',', $data['to']);
                 if ($to_array) {
-                    //share_by_email
+                    //
                     //MAIL TEMLATE START
                     $email_template = get_email_template('share_by_email');
                     $keywords = array('{app_name}', '{mail_content}', '{app_contact_email}', '{site_url}', '{IMAGE_PATH}', '{logo_image}', '{apple_app_store}', '{google_play_store}');

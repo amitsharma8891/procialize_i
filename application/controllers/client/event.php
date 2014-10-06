@@ -235,7 +235,6 @@ class Event extends CI_Controller {
     function exhibitor_detail() {
         if (!passcode_validatation())
             redirect(SITE_URL . 'events');
-
         $json = $this->uri->segment(4);
         $exhibitor_id = $this->uri->segment(3);
         $event_id = $this->model->event_id = $this->session->userdata('client_event_id');
@@ -1173,6 +1172,15 @@ class Event extends CI_Controller {
         if (!empty($data['list'])) {
             $event_id = $data['list']->event_id;
             $data['exhhibitor_list'] = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
+            $exhibitor_list_data = array();
+            $ii = 0;
+            foreach ($data['exhhibitor_list'] as $ex_value) {
+                if ($ex_value['api_access_token'] !== '') {
+                    $exhibitor_list_data[$ii] = $ex_value;
+                    $ii++;
+                }
+            }
+            $data['exhhibitor_list'] = $exhibitor_list_data;
         }
 
         if (is_numeric($event_id)) {

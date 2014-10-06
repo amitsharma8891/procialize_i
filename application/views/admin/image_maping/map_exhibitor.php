@@ -1,6 +1,8 @@
 <script src="<?php echo SITE_URL ?>public/client/jsvalidation/jquery.validate.js" type="text/javascript"></script>
+
 <link rel="stylesheet" href="<?php echo SITE_URL ?>public/client/jsvalidation/screen.css" type="text/css" media="screen" title="no title" charset="utf-8" />
 <div class="contentpanel"><!-- Content Panel -->
+
     <?php
     if (!empty($list)) {  //echo '<pre>'; print_r($list); 
         if ($list->parent_id == 0) {
@@ -46,10 +48,11 @@
                         <form id="image_maping_form" enctype="multipart/form-data" method="POST">
 
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Exhibitor Name</label>
+                                <label class="col-sm-3 control-label">Exhibitor Name </label>
                                 <div class="col-sm-6">
                                     <input type="text" name="name"  id="name" class ="form-control " placeholder="Please Enter Maping Image Name" value=""/>
-                                    <input type="hidden" id="image_map_id" name="image_map_id" value="<?php echo $list->id ?>">
+                                    <input type="hidden" id="image_map_id" name="image_map_id" data-value='<?php echo $list->id ?>' value="<?php echo $list->id ?>"/>
+                                    <input type="hidden" id="child_map_id" name="child_map_id" value="<?php echo $list->id ?>"/>
                                     <input type="hidden" id="coordinates" name="coordinates" value="">
                                     <input type="hidden" id="map_exhibitor_id" name="map_exhibitor_id" value="">
                                     <input type="hidden" id="event_id" name="event_id" value="<?php echo $list->event_id ?>">
@@ -133,6 +136,9 @@
     });
     function get_exibitor(coordinates = NULL) {
         var map_id = $('#image_map_id').val();
+        if (map_id == "") {
+            map_id = $('#image_map_id').attr("data-value");
+        }
         var event_id = $('#event_id').val();
         var coordinates = $('#coordinates').val();
         $.ajax({
@@ -151,6 +157,10 @@
                     }
                     $('#name').val(res.name);
                     $('#image_map_id').val(res.map_id);
+                    if (res.child_map_id != 0) {
+                        $('#image_map_id').val(res.child_map_id);
+                    }
+                    $('#child_map_id').val(res.child_map_id);
                     $('#map_exhibitor_id').val(res.id);
                     $('#event_id').val(res.event_id);
                     $('#coordinates').val(res.coordinates);
@@ -159,6 +169,7 @@
                 } else {
                     $('#name').val('');
                     $('#description').html('');
+                    $('#child_map_id').html('');
                 }
             }
         });
@@ -191,3 +202,9 @@
         });
     });
 </script>
+<style>
+    #Map a{background-color: red !important;}
+    /*a{background-color: red !important;}*/
+    #Map area{background-color: red !important;}
+    area{background-color: red !important;}
+</style>

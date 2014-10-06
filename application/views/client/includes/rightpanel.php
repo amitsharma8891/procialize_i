@@ -20,7 +20,7 @@
                     $this->client_notification_model->notification_type              = '';
                     $this->client_notification_model->attendee_type                  = '';
                     $social_message     = getSocialMessages();
-//                    /display($social_message);
+                    //display($social_message);
                     if($social_message && $this->session->userdata('client_user_id') && $this->session->userdata('client_event_id'))
                     {
                         foreach($social_message as $social)
