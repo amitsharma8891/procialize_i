@@ -16,11 +16,11 @@ if (!empty($list)) {
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="stat well well-sm">
-                            <h4 class="tits_1"><?php //echo $event['event_name']                                                                ?></h4>
+                            <h4 class="tits_1"><?php //echo $event['event_name']                                                                      ?></h4>
                             <div class="row">
                                 <div class="col-xs-12">
                                     <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map" > <!--class='img-responsive'-->
-                                    <!--<img src="<?php //echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name;                   ?>" height="50px" width="50px">-->
+                                    <!--<img src="<?php //echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name;                         ?>" height="50px" width="50px">-->
                                     <?php echo $list->coordinates; ?>
                                     <input type="hidden" id="image_map_id" name="image_map_id" data-value='<?php echo $list->id ?>' value="<?php echo $list->id ?>">
                                     <input type="hidden" id="coordinates" name="coordinates" value="">
@@ -223,7 +223,7 @@ if (!empty($list)) {
                     $('#description').html(res.description);
 //                    $("#exhibitor_id").trigger("liszt:updated");
                     $.each(res.exhhibitor_list, function(i, val) {
-                        
+
                         if (val.attendee_id == res.exhibitor_id) {
                             $("#exhibitor_id").html(val.name);
                             var image = '<img style="float:right;" src="' + SITE_URL + 'uploads/attendee/' + val.photo + '" width="10%" height="10%">';
