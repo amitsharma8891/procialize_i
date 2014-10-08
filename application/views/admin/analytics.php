@@ -8,9 +8,17 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="shortcut icon" href="<?php echo base_url() ?>public/admin/images/favicon.png" type="image/png">
-        <title><?php echo getSetting()->app_name; ?> Dashboard</title>
+        <title>Metropolis Dashboard</title>
         <link href="<?php echo base_url(); ?>public/admin/css/style.default.css" rel="stylesheet">
         <link href="<?php echo base_url(); ?>public/admin/css/jquery.datatables.css" rel="stylesheet">
+
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="<?php echo base_url(); ?>public/admin/js/html5shiv.js"></script>
+          <script src="<?php echo base_url(); ?>public/admin/js/respond.min.js"></script>
+          <![endif]-->
+        <?php include_once 'setting.php'; ?>
         <style type="text/css">
             .dataTables_filter {
                 width:100%;
@@ -20,13 +28,35 @@
             .dataTables_filter input {
                 width:92%;
             }
+            .panel a{color:#fff;}
+            .panel-stat i {
+                font-size: inherit;
+                border: none;
+                padding: 0px;
+                border-radius: 0px;
+                opacity: 1;
+                /*padding-right: 5px;*/
+            }
         </style>
-        <?php include_once 'setting.php'; ?>
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-          <script src="<?php echo base_url(); ?>public/admin/js/html5shiv.js"></script>
-          <script src="<?php echo base_url(); ?>public/admin/js/respond.min.js"></script>
-          <![endif]-->
+
+        <?php
+        $get_events = getEvents($this->session->userdata('user_id'), $this->session->userdata('is_superadmin'), $this->session->userdata('type_of_user'));
+        $event_id = $this->uri->segment(4);
+        ?>
+        <script>
+            SITE_URL = '<?php echo SITE_URL ?>';
+            function get_event(id)
+            {
+                if (id)
+                    window.location.href = SITE_URL + 'manage/index/dashboard/' + id
+            }
+            function generate_report(report_type, report_for)
+            {
+                var organizer_id = $("#organizer").val();
+                var event_id = $("#event").val();
+                window.location.href = '<?php echo base_url(); ?>' + 'manage/report/generate_report/' + report_type + '/' + report_for + '/' + '<?php echo $this->session->userdata('user_id') ?>' + '/' + '<?php echo $get_events[0]['event_id'] ?>';
+            }
+        </script>
     </head>
 
     <body>
@@ -48,11 +78,31 @@
                 <!-- headerbar -->
 
                 <div class="pageheader">
-                    <h2><i class="fa fa-align-right fa-rotate-90"></i> Dashboard </h2>
+                    <h2><i class="fa fa-align-right fa-rotate-90"></i> Dashboard</h2>
                 </div>
                 <?php echo ($this->session->flashdata('message')); ?>
 
                 <div class="contentpanel">
+                    <!--<div class="row">
+                        <div class="col-xs-4">
+
+                            <select name="organizer" id="organizer" onchange="get_event(this.value)" class="form-control col-xs-4">
+                                <option value="">Select Event</option>>
+                    <?php
+                    /* if ($get_events) {
+                      foreach ($get_events as $event) {
+                      $selected = '';
+                      if ($event_id == $event['event_id'])
+                      $selected = 'selected';
+                      echo '<option ' . $selected . ' value="' . $event['event_id'] . '">' . $event['name'] . '</option>';
+                      }
+                      } */
+                    ?>
+
+                            </select>
+                        </div>
+                    </div>-->
+                    <br>
                     <div class="row">
                         <div class="col-sm-6 col-md-3">
                             <div class="panel panel-success panel-stat">
@@ -61,7 +111,7 @@
                                         <div class="row">
                                             <div class="col-xs-4"> <img src="<?php echo base_url() ?>public/admin/images/is-user.png" alt="" /> </div>
                                             <div class="col-xs-8"> <small class="stat-label">Total Audience</small>
-                                                <h1><?php echo $total_attendees + $total_exhibitors + $total_speakers; ?></h1>
+                                                <h1><a href="javascript:;" onclick="generate_report('total_audience', 'All')"><?php echo $total_attendees + $total_exhibitors + $total_speakers; ?> <i class="fa fa-file"></i></a></h1>
                                             </div>
                                         </div>
                                         <!-- row -->
@@ -69,13 +119,13 @@
                                         <div class="mb15"></div>
                                         <div class="row">
                                             <div class="col-xs-4"> <small class="stat-label">Attendee</small>
-                                                <h4><?php echo $total_attendees; ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('total_audience', 'attendee')"><?php echo $total_attendees; ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-4"> <small class="stat-label">Exhibitors</small>
-                                                <h4><?php echo $total_exhibitors; ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('total_audience', 'exhibitor')"><?php echo $total_exhibitors; ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-4"> <small class="stat-label">Speakers</small>
-                                                <h4><?php echo $total_speakers; ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('total_audience', 'speaker')"><?php echo $total_speakers; ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                         </div>
                                         <!-- row --> 
@@ -103,10 +153,10 @@
                                         <div class="mb15"></div>
                                         <div class="row">
                                             <div class="col-xs-6"> <small class="stat-label">Exhibitors</small>
-                                                <h4><?php echo $featured_exhibtior; ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('fetured', 'exhibitors')"><?php echo $featured_exhibtior; ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-6"> <small class="stat-label">Sponsors</small>
-                                                <h4><?php echo $total_sponsor; ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('fetured', 'sponsors')"><?php echo $total_sponsor; ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                         </div>
                                     </div>
@@ -134,22 +184,22 @@
                                         <div class="mb15"></div>
                                         <div class="row">
                                             <div class="col-xs-2"> <small class="stat-label">Messages</small>
-                                                <h4><?php echo $messages ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('communication', 'messages')"><?php echo $messages ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-2"> <small class="stat-label">Broadcasts</small>
-                                                <h4><?php echo $broadcasts ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('communication', 'broadcasts')"><?php echo $broadcasts ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-2"> <small class="stat-label">Meetings</small>
-                                                <h4><?php echo $communication_meeting ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('communication', 'meetings')"><?php echo $communication_meeting ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-2"> <small class="stat-label">Alerts</small>
-                                                <h4><?php echo $alert ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('communication', 'alerts')"><?php echo $alert ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-2"> <small class="stat-label">Feedback</small>
-                                                <h4><?php echo $communication_feedback ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('communication', 'feedback')"><?php echo $communication_feedback ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-2"> <small class="stat-label">Notific . .</small>
-                                                <h4><?php echo $communication_notification ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('communication', 'notification')"><?php echo $communication_notification ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                         </div>
                                     </div>
@@ -173,7 +223,7 @@
                                         <div class="row">
                                             <div class="col-xs-4"> <img src="<?php echo base_url() ?>public/admin/images/is-user.png" alt="" /> </div>
                                             <div class="col-xs-8"> <small class="stat-label">Profiles Viewed</small>
-                                                <h1><?php echo $arr_exh_view + $arr_att_view + $arr_spk_view; ?></h1>
+                                                <h1><a href="javascript:;" onclick="generate_report('profile_viewed', 'All')"><?php echo $arr_exh_view + $arr_att_view + $arr_spk_view; ?> <i class="fa fa-file"></i></a></h1>
                                             </div>
                                         </div>
                                         <!-- row -->
@@ -181,13 +231,13 @@
                                         <div class="mb15"></div>
                                         <div class="row">
                                             <div class="col-xs-4"> <small class="stat-label">Attendee</small>
-                                                <h4><?php echo $arr_att_view; ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_viewed', 'attendee')"><?php echo $arr_att_view; ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-4"> <small class="stat-label">Exhibitor</small>
-                                                <h4><?php echo $arr_exh_view; ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_viewed', 'exhibitor')"><?php echo $arr_exh_view; ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-4"> <small class="stat-label">Speaker</small>
-                                                <h4><?php echo $arr_spk_view ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_viewed', 'speaker')"><?php echo $arr_spk_view ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                         </div>
                                         <!-- row --> 
@@ -208,7 +258,7 @@
                                         <div class="row">
                                             <div class="col-xs-4"> <img src="<?php echo base_url() ?>public/admin/images/is-document.png" alt="" /> </div>
                                             <div class="col-xs-8"> <small class="stat-label">Profiles Saved</small>
-                                                <h1><?php echo $saveAttendee + $saveExhibitor + $saveSpeaker; ?></h1>
+                                                <h1><a href="javascript:;" onclick="generate_report('profile_saved', 'All')"><?php echo $saveAttendee + $saveExhibitor + $saveSpeaker; ?> <i class="fa fa-file"></i></a></h1>
                                             </div>
                                         </div>
                                         <!-- row -->
@@ -216,13 +266,13 @@
                                         <div class="mb15"></div>
                                         <div class="row">
                                             <div class="col-xs-4"> <small class="stat-label">Attendee</small>
-                                                <h4><?php echo $saveAttendee ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_saved', 'attendee')"><?php echo $saveAttendee ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-4"> <small class="stat-label">Exhibitors</small>
-                                                <h4><?php echo $saveExhibitor ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_saved', 'exhibitor')"><?php echo $saveExhibitor ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-4"> <small class="stat-label">Speakers</small>
-                                                <h4><?php echo $saveSpeaker ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_saved', 'speaker')"><?php echo $saveSpeaker ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                         </div>
                                     </div>
@@ -242,7 +292,7 @@
                                         <div class="row">
                                             <div class="col-xs-4"> <img src="<?php echo base_url() ?>public/admin/images/is-document.png" alt="" /> </div>
                                             <div class="col-xs-8"> <small class="stat-label">Profiles Shared</small>
-                                                <h1><?php echo $sharedAttendee + $sharedExhibitor + $sharedSpeaker + $sharedEvent; ?></h1>
+                                                <h1><a href="javascript:;" onclick="generate_report('profile_shared', 'All')"><?php echo $sharedAttendee + $sharedExhibitor + $sharedSpeaker + $sharedEvent; ?> <i class="fa fa-file"></i></a></h1>
                                             </div>
                                         </div>
                                         <!-- row -->
@@ -253,13 +303,13 @@
                                                 <h4><?php echo $sharedEvent ?></h4>
                                             </div> -->
                                             <div class="col-xs-3"> <small class="stat-label">Attendee</small>
-                                                <h4><?php echo $sharedAttendee ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_shared', 'attendee')"><?php echo $sharedAttendee ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
-                                            <div class="col-xs-3"> <small class="stat-label">Exhib . .</small>
-                                                <h4><?php echo $sharedExhibitor ?></h4>
+                                            <div class="col-xs-3"> <small class="stat-label">Exhibitor</small>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_shared', 'exhibitor')"><?php echo $sharedExhibitor ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-3"> <small class="stat-label">Speakers</small>
-                                                <h4><?php echo $sharedSpeaker ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_shared', 'speaker')"><?php echo $sharedSpeaker ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                         </div>
                                     </div>
@@ -279,7 +329,7 @@
                                         <div class="row">
                                             <div class="col-xs-4"> <img src="<?php echo base_url() ?>public/admin/images/is-document.png" alt="" /> </div>
                                             <div class="col-xs-8"> <small class="stat-label">Profile Downloads</small>
-                                                <h1><?php echo $download_evt_map + $download_ses_pros + $download_spe_pro + $download_exh_pro ?></h1>
+                                                <h1><a href="javascript:;" onclick="generate_report('profile_download', 'All')"><?php echo $download_evt_map + $download_ses_pros + $download_spe_pro + $download_exh_pro ?> <i class="fa fa-file"></i></a></h1>
                                             </div>
                                         </div>
                                         <!-- row -->
@@ -287,16 +337,16 @@
                                         <div class="mb15"></div>
                                         <div class="row">
                                             <div class="col-xs-3"> <small class="stat-label">E Map</small>
-                                                <h4><?php echo $download_evt_map ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_download', 'download_evt_map')"><?php echo $download_evt_map ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-3"> <small class="stat-label">Session</small>
-                                                <h4><?php echo $download_ses_pros ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_download', 'download_ses_pro')"><?php echo $download_ses_pros ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
-                                            <div class="col-xs-3"> <small class="stat-label">Exhib . .</small>
-                                                <h4><?php echo $download_exh_pro ?></h4>
+                                            <div class="col-xs-3"> <small class="stat-label">Exhib..</small>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_download', 'download_exh_pro')"><?php echo $download_exh_pro ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-3"> <small class="stat-label">Speakers</small>
-                                                <h4><?php echo $download_spe_pro ?></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_download', 'download_exe_pro')"><?php echo $download_spe_pro ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                         </div>
                                         <!-- row --> 
@@ -433,8 +483,8 @@
                                 <div class="tinystat mr20">
                                     <div id="sparkline" class="chart mt5"></div>
                                     <div class="datainfo">
-                                        <span class="text-muted">No. Of Visits</span>
-                                        <h4><?php echo $event_visit; ?></h4>
+                                        <span class="text-muted">No. Of Visits On Event Page (M SITE + APP)</span>
+                                        <h4><a style="color:#000" href="javascript:;" onclick="generate_report('attendee_event_visit', 'visit')"><?php echo $event_visit; ?><i class="fa fa-file"></i></a></h4>
                                     </div>
                                 </div><!-- tinystat -->
 
@@ -450,7 +500,7 @@
                                     <div id="sparkline3" class="chart mt5"></div>
                                     <div class="datainfo">
                                         <span class="text-muted"> NO. OF ATTENDEES WHO USED THE APP</span>
-                                        <h4><?php echo $attendeeApp; ?></h4>
+                                        <h4><a style="color:#000" href="javascript:;" onclick="generate_report('app_used_by_user', 'app')"><?php echo $attendeeApp; ?> <i class="fa fa-file"></i></a></h4>
                                     </div>
                                 </div><!-- tinystat -->
 
@@ -598,11 +648,12 @@
                                                 <div class="row">
                                                     <div class="col-xs-2"> <img src="<?php echo base_url() ?>public/admin/images/is-user.png" alt=""> </div>
                                                     <div class="col-xs-10"> <small class="stat-label">Total Sessions</small>
-                                                        <h1><?php echo count($sessions); ?></h1>
+                                                        <h1><a href="javascript:;" onclick="generate_report('session', 'report')"><?php echo count($sessions); ?> <i class="fa fa-file"></i></a></h1>
                                                     </div>
                                                 </div>
                                                 <!-- row -->
                                                 <?php
+//display($sessions);
                                                 $ses_attend = 0;
                                                 $ses_spk = 0;
                                                 $ses_quest = 0;
@@ -617,17 +668,17 @@
                                                 <div class="mb15"></div>
                                                 <div class="row">
                                                     <div class="col-xs-3"> <small class="stat-label">Attendees</small>
-                                                        <h4><?php echo $ses_attend; ?></h4>
+                                                        <h4><a href="javascript:;" onclick="generate_report('session', 'attendee')"><?php echo $ses_attend; ?> <i class="fa fa-file"></i></a></h4>
                                                     </div>
                                                     <div class="col-xs-3"> <small class="stat-label">Speakers</small>
-                                                        <h4><?php echo $ses_spk; ?></h4>
+                                                        <h4><a href="javascript:;" onclick="generate_report('session', 'speaker')"><?php echo $ses_spk; ?> <i class="fa fa-file"></i></a></h4>
                                                     </div>
                                                     <div class="col-xs-3"> <small class="stat-label">Questions</small>
-                                                        <h4><?php echo $ses_quest; ?></h4>
+                                                        <h4><a href="javascript:;" onclick="generate_report('session', 'question')"><?php echo $ses_quest; ?> <i class="fa fa-file"></i></a></h4>
                                                     </div>
-                                                    <div class="col-xs-3"> <small class="stat-label">Feedback</small>
-                                                        <h4><?php echo $ses_feed; ?></h4>
-                                                    </div>
+<!--                                                    <div class="col-xs-3"> <small class="stat-label">Feedback</small>
+                                                        <h4><a href="javascript:;" onclick="generate_report('session', 'feedback')"><?php echo $ses_feed; ?> <i class="fa fa-file"></i></a></h4>
+                                                    </div>-->
                                                 </div>
                                                 <!-- row --> 
                                             </div>
@@ -786,23 +837,23 @@
             </div>
         <?php } ?>
         <script type="text/javascript">
-            $(document).ready(function() {
-                $('.sub-menu').click(function() {
-                    var event_id = $(this).attr('data');
-                    $.cookie('event_id', event_id, {expires: 7, path: '/'});
-                });
-                $('.sub-menu a').click(function() {
-                    var menu_name = $(this).attr('data');
-                    $.cookie('menu_name', menu_name, {expires: 7, path: '/'});
-                });
+                                                            $(document).ready(function() {
+                                                                $('.sub-menu').click(function() {
+                                                                    var event_id = $(this).attr('data');
+                                                                    $.cookie('event_id', event_id, {expires: 7, path: '/'});
+                                                                });
+                                                                $('.sub-menu a').click(function() {
+                                                                    var menu_name = $(this).attr('data');
+                                                                    $.cookie('menu_name', menu_name, {expires: 7, path: '/'});
+                                                                });
 
 <?php if ($this->session->flashdata('show_popup')) { ?>
-                    $('#tour').modal('show');
+                                                                    $('#tour').modal('show');
 <?php } ?>
-                $('#type_of_user,#type_of_stat').change(function() {
-                    $('#city_country_stat').submit();
-                });
-            });
+                                                                $('#type_of_user,#type_of_stat').change(function() {
+                                                                    $('#city_country_stat').submit();
+                                                                });
+                                                            });
 
         </script>
 
