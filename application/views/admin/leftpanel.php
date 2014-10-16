@@ -40,7 +40,7 @@
         <?php
 //        display($arrEvents);
 //        show_query();
-        $arrSkipArrow = array('exhibitor profile', 'Profile', 'Announcement', 'Survey', 'Dashboard', 'Survey', 'Industry', 'Functionality', 'Tag','Email Template');
+        $arrSkipArrow = array('exhibitor profile', 'Profile', 'Announcement', 'Survey', 'Dashboard', 'Survey', 'Industry', 'Functionality', 'Tag','Email Template','Country Master','City Master');
         if (!$superadmin) {
             $i = 0;
             if (count($arrEvents) > 0) {
@@ -97,7 +97,7 @@
             <?php
             $first = true;
 
-            $arrSkipArrow = array('Exhibitor Profile', 'Announcement', 'Survey', 'Dashboard', 'Survey', 'Industry', 'Functionality', 'Tag','Email Template');
+            $arrSkipArrow = array('Exhibitor Profile', 'Announcement', 'Survey', 'Dashboard', 'Survey', 'Industry', 'Functionality', 'Tag','Email Template','Country Master','City Master');
 
             //  print_r($arrMenus);exit;
             foreach ($arrHeader as $header) {

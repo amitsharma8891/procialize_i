@@ -1,4 +1,5 @@
 <script src="<?php echo SITE_URL ?>public/client/jsvalidation/jquery.validate.js" type="text/javascript"></script>
+<script src="<?php echo SITE_URL ?>public/admin/js/jquery.imagemaps.min.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="<?php echo SITE_URL ?>public/client/jsvalidation/screen.css" type="text/css" media="screen" title="no title" charset="utf-8" />
 <div class="contentpanel"><!-- Content Panel -->
@@ -16,7 +17,7 @@
         ?>
         <div class="row">
             <div class="col-sm-12 col-md-12">
-                <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map">
+                <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map" class="img-responsive" >
                 <?php echo $list->coordinates; ?>
             </div>
         </div>
@@ -128,9 +129,10 @@
     var SITE_URL = '<?php echo SITE_URL; ?>';
     $(document).ready(function() {
         $('area').click(function() {
-            var coords = $(this).attr('coords');
+            var coords = $(this).attr('rel');
             $("#coordinates").val(coords);
             coordinates = coords;
+          
             get_exibitor(coordinates);
         });
     });
@@ -208,3 +210,17 @@
     #Map area{background-color: red !important;}
     area{background-color: red !important;}
 </style>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('img[usemap]').rwdImageMaps();
+        //$('#imagemap6').rwdImageMaps();
+
+
+
+        $('area').on('click', function() {
+            //alert($(this).attr('alt') + ' clicked');
+        });
+        //$('img[usemap]').rwdImageMaps();
+
+    });
+</script>

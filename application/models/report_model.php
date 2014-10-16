@@ -37,14 +37,15 @@ class report_model extends CI_Model {
         } elseif ($type == 'N') {
             $this->db->select("(SELECT COUNT(*) FROM notification_user WHERE notification_user.type='" . $type . "' AND notification_user.object_type='O' AND notification_user.event_id ='" . $event_id . "' and notification_user.content = N_U.content) as notification_total_count");
             $this->db->select("(SELECT COUNT(*) FROM notification_user WHERE notification_user.read=1 AND notification_user.type='" . $type . "' AND notification_user.object_type='O' AND notification_user.event_id ='" . $event_id . "' and notification_user.content = N_U.content) as notification_read_count "); //GROUP BY content
-            $this->db->select("(SELECT COUNT(*) FROM notification_user  WHERE notification_user.read=0 AND notification_user.type='" . $type . "' AND notification_user.object_type='O' AND notification_user.event_id ='" . $event_id . "' and notification_user.content = N_U.content) as notification_unread_count");
+            $this->db->select("(SELECT COUNT(*) FROM notification_user WHERE notification_user.read=0 AND notification_user.type='" . $type . "' AND notification_user.object_type='O' AND notification_user.event_id ='" . $event_id . "' and notification_user.content = N_U.content) as notification_unread_count");
             $this->db->where('N_U.type', $type);
+            $this->db->where('N_U.type !=', 'Passcode');
             $this->db->where('N_U.object_type', 'O');
             $this->db->group_by('N_U.content');
         } elseif ($type == 'A') {
             $this->db->select("(SELECT COUNT(*) FROM notification_user WHERE notification_user.type='" . $type . "' AND notification_user.object_type='O' AND notification_user.event_id ='" . $event_id . "' and notification_user.content = N_U.content) as notification_total_count");
             $this->db->select("(SELECT COUNT(*) FROM notification_user WHERE notification_user.read=1 AND notification_user.type='" . $type . "' AND notification_user.object_type='O' AND notification_user.event_id ='" . $event_id . "' and notification_user.content = N_U.content) as notification_read_count "); //GROUP BY content
-            $this->db->select("(SELECT COUNT(*) FROM notification_user  WHERE notification_user.read=0 AND notification_user.type='" . $type . "' AND notification_user.object_type='O' AND notification_user.event_id ='" . $event_id . "' and notification_user.content = N_U.content) as notification_unread_count");
+            $this->db->select("(SELECT COUNT(*) FROM notification_user WHERE notification_user.read=0 AND notification_user.type='" . $type . "' AND notification_user.object_type='O' AND notification_user.event_id ='" . $event_id . "' and notification_user.content = N_U.content) as notification_unread_count");
             $this->db->where('N_U.type', $type);
             $this->db->where('N_U.object_type', 'O');
             $this->db->group_by('N_U.content');
@@ -97,11 +98,19 @@ class report_model extends CI_Model {
         if (!empty($type) && $type != 'All') {
             $this->db->where('A_T.type', $type);
         }
+        $download_type_keywords = array('download_evt_map', 'download_ses_map', 'download_exh_pro', 'download_exe_pro');
+        if (!empty($type) && $type == 'All') {
+            $this->db->where_in('A_T.type', $download_type_keywords);
+            $this->db->select('SS.name as session_name,');
+        }
+        if ($type == 'download_ses_map') {
+            $this->db->select('SS.name as session_name,');
+        }
         $this->db->where('A_T.type !=', 'view');
         $this->db->where('A_T.type !=', 'Spo_hit');
         $this->db->where('A_T.type !=', 'Spl_hit');
 //        echo $event_id;die;
-        $this->db->group_by('A_T.subject_id');
+//        $this->db->group_by('A_T.subject_id');
 
         $query = $this->db
                 ->select('S_A_T.id as sender_id,S_A_T.attendee_type as sender_type,S_A_T.name as sender_name,S_U_T.company_name as sender_company,S_U_T.designation as sender_designation,
@@ -111,6 +120,7 @@ class report_model extends CI_Model {
                 ->from('analytics as A_T')
                 ->join('attendee as S_A_T', 'S_A_T.id = A_T.object_id ')
                 ->join('user as S_U_T', 'S_U_T.id = S_A_T.user_id')
+                ->join('session as SS', 'SS.id = A_T.subject_id', 'LEFT')
                 ->join('attendee as R_A_T', 'R_A_T.id = A_T.subject_id ', 'left')
                 ->join('user as R_U_T', 'R_U_T.id = R_A_T.user_id', 'left')
                 //-> where('N_U.type',$type)
@@ -127,14 +137,24 @@ class report_model extends CI_Model {
         if ($type == 'user_event_visit') {
             $this->db->where("A_T.id IN ((SELECT DISTINCT `object_id`FROM (`analytics`) WHERE `event_id` =  " . $event_id . " AND `subject_type` =  'Event' AND `type` =  'view'))");
         }
-
-
         $query = $this->db
                         ->select()
                         ->from('event_has_attendee as E_A')
                         ->join('attendee as A_T', 'A_T.id = E_A.attendee_id')
                         ->join('user as U_T', 'U_T.id = A_T.user_id')
                         ->where('E_A.event_id', $event_id)->get();
+        return $query->result_array();
+    }
+
+    function get_user_signed_into_app($type = '', $event_id) {
+        if ($type == 'get_user_signed_into_app') {
+            $this->db->where("(U_T.gcm_reg_id IS NOT NULL AND TRIM(U_T.gcm_reg_id) <> '')");
+        }
+        $query = $this->db
+                ->select()
+                ->from('user as U_T')
+                ->join('attendee as A_T', 'A_T.user_id = U_T.id')
+                ->get();
         return $query->result_array();
     }
 

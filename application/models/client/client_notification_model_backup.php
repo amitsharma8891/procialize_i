@@ -405,10 +405,9 @@ class client_notification_model extends CI_Model {
             } else {
                 $insert_array['type'] = 'Sav';
                 $msg = 'Saved';
-                $this->db->insert('notification_user', $insert_array);
             }
 
-            //$this->db->insert('notification_user',$insert_array);
+            $this->db->insert('notification_user', $insert_array);
         }
 
         return $msg;
@@ -501,8 +500,8 @@ class client_notification_model extends CI_Model {
 
     function insertSocialNotificationCount($attendee_id, $event_id) {
         //$this->db->where('attendee_id',$attendee_id);
-        //$this->db->where('event_id',$event_id);
-        //$this->db->update('event_has_attendee',array('rightside_social_notification'=>0));        
+        $this->db->where('event_id', $event_id);
+        $this->db->update('event_has_attendee', array('rightside_social_notification' => 0));
     }
 
     function getDND($attendee_id) {

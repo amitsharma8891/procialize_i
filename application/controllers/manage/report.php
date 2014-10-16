@@ -56,6 +56,9 @@ class Report extends CI_Controller {
             case 'app_used_by_user':
                 $get_data = $this->app_used_by_user($report_for, $organizer_id, $event_id);
                 break;
+            case 'get_user_signed_into_app':
+                $get_data = $this->get_user_signed_into_app($report_for, $organizer_id, $event_id);
+                break;
             case 'attendee_event_visit':
                 $get_data = $this->attendee_event_visit($report_for, $organizer_id, $event_id);
                 break;
@@ -76,6 +79,7 @@ class Report extends CI_Controller {
             'profile_shared',
             'profile_download',
             'app_used_by_user',
+            'get_user_signed_into_app',
             'attendee_event_visit',
             'session',
         );
@@ -267,8 +271,11 @@ class Report extends CI_Controller {
                 $get_data = $this->model->notification_user('F', $event_id);
                 $excel_column = "Feedback Message\t Feedback Sent Count \t Count of People Responded \t Average Rating \n";
                 if ($get_data) {
+
                     foreach ($get_data as $att) {
-                        $average_rating = $att['star'] / $att['total'];
+                        $average_rating = 0;
+                        if ($att['total'] != 0)
+                            $average_rating = $att['star'] / $att['total'];
                         $excel_column .= $att['content'] . "\t" . $att['star'] . "\t" . $att['total'] . "\t" . $average_rating . "\n";
                     }
                 }
@@ -478,19 +485,96 @@ class Report extends CI_Controller {
 
     function profile_download($report_for, $organizer_id, $event_id) {
 //        $type_array = array('download', 'download_evt_map', 'download_ses_pro', 'download_exe_pro', 'download_exh_pro');
-        $get_data = $this->model->get_download_analytics('All', $event_id);
-        $excel_column = " Type \t From Attendee Type \t From Name \t Designation \t Company Name \t To Attendee Type \t To Name / Session Name \t Designation \t Company Name\t Created \n";
-        if ($get_data) {
-            foreach ($get_data as $att) {
-                $download_type = $this->get_download_type($att['type']);
-                $sender_type = $this->get_user_type($att['sender_type']);
-                $receiver_type = $this->get_user_type($att['receiver_type']);
-                $excel_column .= $download_type . "\t" . $sender_type . "\t" . $att['sender_name'] . "\t" . $att['sender_designation'] . "\t" .
-                        $att['sender_company'] . "\t" . $receiver_type . "\t" . $att['receiver_name'] . "\t" .
-                        $att['receiver_designation'] . "\t" . $att['receiver_company'] . "\t" . $att['created_date'] . "\n";
-            }
+        switch ($report_for) {
+            case 'All':
+                $get_data = $this->model->get_download_analytics('All', $event_id);
+                $excel_column = " Type \t From Attendee Type \t From Name \t Designation \t Company Name \t To Attendee Type \t To Name / Session Name \t Designation \t Company Name\t Created \n";
+                if ($get_data) {
+                    foreach ($get_data as $att) {
+                        $download_type = $this->get_download_type($att['type']);
+                        $sender_type = $this->get_user_type($att['sender_type']);
+                        $receiver_type = $this->get_user_type($att['receiver_type']);
+                        if ($download_type == 'Event Map') {
+                            $excel_column .= $download_type . "\t" . $sender_type . "\t" . $att['sender_name'] . "\t" . $att['sender_designation'] . "\t" .
+                                    $att['sender_company'] . "\t" . '-' . "\t" . '-' . "\t" .
+                                    '-' . "\t" . '-' . "\t" . $att['created_date'] . "\n";
+                        } else {
+                            if ($download_type == 'Session Profile') {
+                                $excel_column .= $download_type . "\t" . $sender_type . "\t" . $att['sender_name'] . "\t" . $att ['sender_designation'] . "\t" .
+                                        $att['sender_company'] . "\t" . 'Session' . "\t" . $att['session_name'] . "\t" .
+                                        '-' . "\t" . '-' . "\t" . $att['created_date'] . "\n";
+                            } else {
+                                $excel_column .= $download_type . "\t" . $sender_type . "\t" . $att['sender_name'] . "\t" . $att['sender_designation'] . "\t" .
+                                        $att['sender_company'] . "\t" . $receiver_type . "\t" . $att['receiver_name'] . "\t" .
+                                        $att['receiver_designation'] . "\t" . $att['receiver_company'] . "\t" . $att['created_date'] . "\n";
+                            }
+                        }
+                    }
+                }
+                $this->download_excel('All_profile_download_report', $excel_column);
+
+                break;
+            case 'download_evt_map':
+                $get_data = $this->model->get_download_analytics('download_evt_map', $event_id);
+                $excel_column = " Type \t From Attendee Type \t From Name \t Designation \t Company Name \t Created \n";
+                if ($get_data) {
+                    foreach ($get_data as $att) {
+                        $download_type = $this->get_download_type($att['type']);
+                        $sender_type = $this->get_user_type($att['sender_type']);
+                        $receiver_type = $this->get_user_type($att['receiver_type']);
+                        $excel_column .= $download_type . "\t" . $sender_type . "\t" . $att['sender_name'] . "\t" . $att ['sender_designation'] . "\t" .
+                                $att ['sender_company'] . "\t" . $att['created_date'] . "\n";
+                    }
+                }
+                $this->download_excel('profile_download_event_map_report', $excel_column);
+                break;
+            case 'download_ses_map':
+                $get_data = $this->model->get_download_analytics('download_ses_map', $event_id);
+                $excel_column = " Type \t From Attendee Type \t From Name \t Designation \t Company Name \t Session Name \t Created \n";
+                if ($get_data) {
+                    foreach ($get_data as $att) {
+                        $download_type = $this->get_download_type($att['type']);
+                        $sender_type = $this->get_user_type($att['sender_type']);
+                        $receiver_type = $this->get_user_type($att['receiver_type']);
+                        $excel_column .= $download_type . "\t" . $sender_type . "\t" . $att['sender_name'] . "\t" . $att ['sender_designation'] . "\t" .
+                                $att['sender_company'] . "\t" . $att['session_name'] . "\t" . $att['created_date'] . "\n";
+                    }
+                }
+                $this->download_excel('profile_download_session_report', $excel_column);
+                break;
+            case 'download_exh_pro':
+                $get_data = $this->model->get_download_analytics('download_exh_pro', $event_id);
+                $excel_column = " Type \t From Attendee Type \t From Name \t Designation \t Company Name \t To Attendee Type \t To Name / Session Name \t Designation \t Company Name\t Created \n";
+                if ($get_data) {
+                    foreach ($get_data as $att) {
+                        $download_type = $this->get_download_type($att['type']);
+                        $sender_type = $this->get_user_type($att['sender_type']);
+                        $receiver_type = $this->get_user_type($att['receiver_type']);
+                        $excel_column .= $download_type . "\t" . $sender_type . "\t" . $att['sender_name'] . "\t" . $att ['sender_designation'] . "\t" .
+                                $att['sender_company'] . "\t" . 'Exhibitor' . "\t" . $att['receiver_name'] . "\t" .
+                                $att ['receiver_designation'] . "\t" . $att['receiver_company'] . "\t" . $att['created_date'] . "\n";
+                    }
+                }
+                $this->download_excel('profile_download_exhibitor_report', $excel_column);
+                break;
+            case 'download_exe_pro':
+                //*************************************************** Speaker *******************************
+                $get_data = $this->model->get_download_analytics('download_exe_pro', $event_id);
+                $excel_column = " Type \t From Attendee Type \t From Name \t Designation \t Company Name \t To Attendee Type \t To Name / Session Name \t Designation \t Company Name\t Created \n";
+                if ($get_data) {
+                    foreach ($get_data as $att) {
+                        $download_type = $this->get_download_type($att['type']);
+                        $sender_type = $this->get_user_type($att['sender_type']);
+                        $receiver_type = $this->get_user_type($att['receiver_type']);
+                        $excel_column .= $download_type . "\t" . $sender_type . "\t" . $att['sender_name'] . "\t" . $att ['sender_designation'] . "\t" .
+                                $att['sender_company'] . "\t" . 'Speaker' . "\t" . $att['receiver_name'] . "\t" .
+                                $att ['receiver_designation'] . "\t" . $att['receiver_company'] . "\t" . $att['created_date'] . "\n";
+                    }
+                }
+                $this->download_excel('profile_download_speaker_report', $excel_column);
+
+                break;
         }
-        $this->download_excel('profile_shared_exhibitor_report', $excel_column);
     }
 
     function session($report_for, $organizer_id, $event_id) {
@@ -525,7 +609,7 @@ class Report extends CI_Controller {
                         if ($att['user_count'] != 0)
                             $ave = number_format($att['rating'] / $att['user_count'], 2);
 
-                        $excel_column .= $att['name'] . "\t" . $user_type . "\t" . $att['attendee_name'] . "\t" . $att['designation'] . "\t" .
+                        $excel_column .= $att ['name'] . "\t" . $user_type . "\t" . $att['attendee_name'] . "\t" . $att['designation'] . "\t" .
                                 $att['company_name'] . "\n";
                     }
                 }
@@ -561,7 +645,7 @@ class Report extends CI_Controller {
                         if ($att['user_count'] != 0)
                             $ave = number_format($att['rating'] / $att['user_count'], 2);
 
-                        $excel_column .= $att['name'] . "\t" . $user_type . "\t" . $att['attendee_name'] . "\t" . $att['designation'] . "\t" .
+                        $excel_column .= $att ['name'] . "\t" . $user_type . "\t" . $att['attendee_name'] . "\t" . $att['designation'] . "\t" .
                                 $att['company_name'] . "\n";
                     }
                 }
@@ -596,9 +680,47 @@ class Report extends CI_Controller {
                 $sender_type = $this->get_user_type($attendee['attendee_type']);
 
                 $accessed_app = 'No';
-                if ($attendee['gcm_reg_id'] == 1)
+                if ($attendee[
+                        'gcm_reg_id'] == 1)
                     $accessed_app = 'Yes';
-                $excel_column .= $sender_type . "\t" . $attendee['name'] . "\t" . $attendee['designation'] . "\t" . $attendee['company_name'] . "\t" . $attendee['email'] . "\t" . $attendee['mobile'] . "\t" . $attendee['phone'] . "\t" . $attendee['mobile_os'] . "\n";
+                $excel_column .= $sender_type . "\t" . $attendee['name'] . "\t" . $attendee['designation'] . "\t" . $attendee ['company_name'] . "\t" . $attendee['email'] . "\t" . $attendee['mobile'] . "\t" . $attendee['phone'] . "\t" . $attendee['mobile_os'] . "\n";
+            }
+        }
+        $this->download_excel('app_used_by_user_report', $excel_column);
+        //display($get_data);
+    }
+
+    function get_user_signed_into_app($report_for, $organizer_id, $event_id) {
+        $get_data = $this->model->get_user_signed_into_app('get_user_signed_into_app', $event_id);
+        $excel_column = "Attendee Name\t Designation\t Company Name\t  Email ID\t Mobile No\t Contact No \tAndroid\ios \n";
+        if ($get_data) {
+            foreach ($get_data as $attendee) {
+                //if($attendee['attendee_type'] == 'A')
+
+                $accessed_app = 'No';
+                if ($attendee[
+                        'gcm_reg_id'] == 1)
+                    $accessed_app = 'Yes';
+                $excel_column .= $attendee['name'] . "\t" . $attendee['designation'] . "\t" . $attendee ['company_name'] . "\t" . $attendee['email'] . "\t" . $attendee['mobile'] . "\t" . $attendee['phone'] . "\t" . $attendee['mobile_os'] . "\n";
+            }
+        }
+        $this->download_excel('user_signed_into_app_report', $excel_column);
+        //display($get_data);
+    }
+
+    function get_user_signed_in_app($report_for, $organizer_id, $event_id) {
+        $get_data = $this->model->get_user_signed_in_app('get_user_signed_in_app', $event_id);
+        $excel_column = "Attendee Type\t Attendee Name\t Designation\t Company Name\t  Email ID\t Mobile No\t Contact No \tAndroid\ios \n";
+        if ($get_data) {
+            foreach ($get_data as $attendee) {
+                //if($attendee['attendee_type'] == 'A')
+                $sender_type = $this->get_user_type($attendee['attendee_type']);
+
+                $accessed_app = 'No';
+                if ($attendee[
+                        'gcm_reg_id'] == 1)
+                    $accessed_app = 'Yes';
+                $excel_column .= $sender_type . "\t" . $attendee['name'] . "\t" . $attendee['designation'] . "\t" . $attendee ['company_name'] . "\t" . $attendee['email'] . "\t" . $attendee['mobile'] . "\t" . $attendee['phone'] . "\t" . $attendee['mobile_os'] . "\n";
             }
         }
         $this->download_excel('app_used_by_user_report', $excel_column);
@@ -617,19 +739,27 @@ class Report extends CI_Controller {
                 $sender_type = $this->get_user_type($attendee['attendee_type']);
 
                 $accessed_app = 'No';
-                if ($attendee['gcm_reg_id'] == 1)
+                if ($attendee[
+                        'gcm_reg_id'] == 1)
                     $accessed_app = 'Yes';
-                $excel_column .= $sender_type . "\t" . $attendee['name'] . "\t" . $attendee['designation'] . "\t" . $attendee['company_name'] . "\t" . $attendee['email'] . "\t" . $attendee['mobile'] . "\t" . $attendee['phone'] . "\t" . $attendee['mobile_os'] . "\n";
+                $excel_column .= $sender_type . "\t" . $attendee['name'] . "\t" . $attendee['designation'] . "\t" . $attendee ['company_name'] . "\t" . $attendee['email'] . "\t" . $attendee['mobile'] . "\t" . $attendee['phone'] . "\t" . $attendee['mobile_os'] . "\n";
             }
         }
-        $this->download_excel('attendee_event_visit', $excel_column);
+        $this->download_excel(
+                'attendee_event_visit', $excel_column);
     }
 
     function download_excel($report_name, $field_name) {
         $this->load->helper('download');
         $event_id = $this->event_id;
         $event_detail = $this->event_model->get($event_id, '1');
-        force_download($event_detail->name . "_" . $report_name . '.xls', $field_name);
+        if ($report_name == 'user_signed_into_app_report') {
+            force_download($report_name .
+                    '.xls', $field_name);
+        } else {
+            force_download($event_detail->name . "_" . $report_name .
+                    '.xls', $field_name);
+        }
     }
 
     function get_event() {
@@ -643,7 +773,9 @@ class Report extends CI_Controller {
             }
         }
 
-        echo json_encode($json_array);
+        echo
+
+        json_encode($json_array);
     }
 
     function get_user_type($user_type = NULL) {
@@ -654,7 +786,9 @@ class Report extends CI_Controller {
         } else if ($user_type == 'S') {
             return 'Speaker';
         } else {
-            return $user_type;
+            return
+
+                    $user_type;
         }
     }
 
@@ -665,12 +799,12 @@ class Report extends CI_Controller {
             return 'Download';
         } else if ($user_type == 'download_evt_map') {
             return 'Event Map';
-        } else if ($user_type == 'download_ses_pro') {
+        } else if ($user_type == 'download_ses_map') {
             return 'Session Profile';
         } else if ($user_type == 'download_exe_pro') {
             return 'Speaker Profile';
         } else if ($user_type == 'download_exh_pro') {
-            return 'Speaker Profile';
+            return 'Exhibitor Profile';
         } else {
             return $user_type;
         }

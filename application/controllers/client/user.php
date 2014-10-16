@@ -14,6 +14,7 @@ class User extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model('client/client_login_model', 'model');
+        $this->load->model('place_model');
         $this->load->model('client/client_notification_model');
     }
 
@@ -25,6 +26,8 @@ class User extends CI_Controller {
         if ($attendee_id)
             $data['user_data'] = $this->model->getUserData($attendee_id);
 
+        $data['city_list'] = $this->place_model->getAll('city');
+        $data['country_list'] = $this->place_model->getAll('country');
         $data['industry_list'] = $this->model->getIndustry(NULL, NULL);
         $data['functionality_list'] = $this->model->getFunctionality(NULL, NULL);
 //        echo "<pre>";print_r($data);

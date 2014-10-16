@@ -554,6 +554,13 @@ jQuery(document).ready(function() {
         sliceColors: ['#F0AD4E','#428BCA','#D9534F','#1CAF9A','#5BC0DE']
     });
     
+    
+    jQuery('#sparkline5').sparkline([4,3,3,1,4,3,2,2,3], {
+		  type: 'pie', 
+		  height:'33px',
+        sliceColors: ['#F0AD4E','#428BCA','#D9534F','#1CAF9A','#5BC0DE']
+    });
+    
     jQuery('#sparkline4').sparkline([4,3,3,5,4,3,2,5,3], {
 		  type: 'line', 
 		  height:'33px',

@@ -169,13 +169,14 @@ class Image_maping extends CI_Controller {
                 $arrInsert['child_map_id'] = 0;
             }
             $map_exhibitor_id = $arrInsert['map_exhibitor_id'];
+            $coordinates = $arrInsert['coordinates'];
             if ($map_exhibitor_id) {
                 $postarray = json_encode($arrInsert);
                 setcookie('postarray', $postarray);
                 $arrInsert['created'] = date("Y-m-d H:i:s");
                 $arrInsert['modified'] = date("Y-m-d H:i:s");
                 unset($arrInsert['image_map_id']);
-                $status = $this->map_exhibitor_model->saveAll($arrInsert, $map_exhibitor_id);
+                $status = $this->map_exhibitor_model->saveAll($arrInsert, $map_exhibitor_id, $coordinates);
             } else {
                 $postarray = json_encode($arrInsert);
                 setcookie('postarray', $postarray);
@@ -195,20 +196,19 @@ class Image_maping extends CI_Controller {
         $search = "";
         $field = "";
         $arrData['list'] = $this->model->getAll($maped_event_image_id, '1', $search, $field, 'image_map.id', 'AND');
-        $event_id = $arrData['list']->event_id;
-        $arrData['exhhibitor_list'] = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
-        $exhibitor_list_data = array();
-        $ii = 0;
-//       display($arrData['exhhibitor_list']);die;
-        foreach ($arrData['exhhibitor_list'] as $ex_value) {
-            if ($ex_value['api_access_token'] !== '') {
-                $exhibitor_list_data[$ii] = $ex_value;
-                $ii++;
+        if (!empty($arrData['list'])) {
+            $event_id = $arrData['list']->event_id;
+            $arrData['exhhibitor_list'] = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
+            $exhibitor_list_data = array();
+            $ii = 0;
+            foreach ($arrData['exhhibitor_list'] as $ex_value) {
+                if ($ex_value['api_access_token'] !== '') {
+                    $exhibitor_list_data[$ii] = $ex_value;
+                    $ii++;
+                }
             }
+            $arrData['exhhibitor_list'] = $exhibitor_list_data;
         }
-//                display($exhibitor_list_data);di e;
-
-        $arrData['exhhibitor_list'] = $exhibitor_list_data;
         $arrData['thisPage'] = 'Default Image Maping';
         $arrData['breadcrumb'] = ' Image Maping';
         $arrData['breadcrumb_tag'] = ' Description for Image Maping goes here';

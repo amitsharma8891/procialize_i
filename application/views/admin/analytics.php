@@ -340,7 +340,7 @@
                                                 <h4><a href="javascript:;" onclick="generate_report('profile_download', 'download_evt_map')"><?php echo $download_evt_map ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-3"> <small class="stat-label">Session</small>
-                                                <h4><a href="javascript:;" onclick="generate_report('profile_download', 'download_ses_pro')"><?php echo $download_ses_pros ?> <i class="fa fa-file"></i></a></h4>
+                                                <h4><a href="javascript:;" onclick="generate_report('profile_download', 'download_ses_map')"><?php echo $download_ses_pros ?> <i class="fa fa-file"></i></a></h4>
                                             </div>
                                             <div class="col-xs-3"> <small class="stat-label">Exhib..</small>
                                                 <h4><a href="javascript:;" onclick="generate_report('profile_download', 'download_exh_pro')"><?php echo $download_exh_pro ?> <i class="fa fa-file"></i></a></h4>
@@ -404,10 +404,10 @@
                                                         <a href="#" class="pull-left">
                                                             <img alt="80x60" src="<?php echo base_url() . UPLOAD_SPONSOR_SPLASH_DISPLAY . $arr_splash_ad[0]['splash_ad']; ?>" class="media-object" data-src="holder.js/80x60/#666:#fff" style="width: 80px; height: 60px;">
                                                         </a>
-                                                        <div class="media-body">
-                                                            <h4 class="media-heading"><a href="#"><?php echo $arr_splash_ad[0]['name']; ?></a></h4>
-                                                            <small class="media-desc font_13">Total Number of Hits : <span class="num_of_hits"><?php echo $arr_splash_ad[0]['cnt']; ?></span></small>
-                                                        </div>
+                                                        <!--                                                        <div class="media-body">
+                                                                                                                    <h4 class="media-heading"><a href="#"><?php //echo $arr_splash_ad[0]['name'];    ?></a></h4>
+                                                                                                                    <small class="media-desc font_13">Total Number of Hits : <span class="num_of_hits"><?php //echo $arr_splash_ad[0]['cnt'];    ?></span></small>
+                                                                                                                </div>-->
                                                     </div><!-- media -->
                                                 </div><!-- item -->
                                             </div><!-- carousel-inner -->
@@ -441,10 +441,10 @@
                                                             <a href="#" class="pull-left">
                                                                 <img alt="80x60" src="<?php echo base_url() . UPLOAD_SPONSOR_NORMAL_DISPLAY . $spo_ad['normal_ad']; ?>" class="media-object" data-src="holder.js/80x60/#666:#fff" style="width: 80px; height: 60px;">
                                                             </a>
-                                                            <div class="media-body">
-                                                                <h4 class="media-heading"><a href="#"><?php echo $spo_ad['name']; ?></a></h4>
-                                                                <small class="media-desc font_13">Total Number of Hits : <span class="num_of_hits"> <?php echo $spo_ad['cnt'] ?></span></small>
-                                                            </div>
+                                                            <!--                                                            <div class="media-body">
+                                                                                                                            <h4 class="media-heading"><a href="#"><?php //echo $spo_ad['name'];    ?></a></h4>
+                                                                                                                            <small class="media-desc font_13">Total Number of Hits : <span class="num_of_hits"> <?php //echo $spo_ad['cnt']    ?></span></small>
+                                                                                                                        </div>-->
                                                         </div><!-- media -->
                                                     </div><!-- item -->
                                                 <?php } ?>
@@ -481,25 +481,37 @@
                             <div class="panel-body">
 
                                 <div class="tinystat mr20">
+                                    <div class="text-muted">NO. OF unique VISITS ON EVENT PAGE <br>(M SITE + APP)</div>
                                     <div id="sparkline" class="chart mt5"></div>
                                     <div class="datainfo">
-                                        <span class="text-muted">No. Of Visits On Event Page (M SITE + APP)</span>
+
                                         <h4><a style="color:#000" href="javascript:;" onclick="generate_report('attendee_event_visit', 'visit')"><?php echo $event_visit; ?><i class="fa fa-file"></i></a></h4>
                                     </div>
                                 </div><!-- tinystat -->
 
                                 <div class="tinystat mr20">
+                                    <div class="text-muted">NO. OF REGISTRATION <br>(Attendees + SPEAKERS)</div>
+
                                     <div id="sparkline2" class="chart mt5"></div>
                                     <div class="datainfo">
-                                        <span class="text-muted">NO. OF REGISTRATION</span>
                                         <h4><?php echo $registerAttendee; ?></h4>
                                     </div>
                                 </div><!-- tinystat -->
 
+
                                 <div class="tinystat mr20">
+                                    <div class="text-muted"> NO. OF ATTENDEES WHO signed into the app </br>(android + iOs)</div>
+                                    <div id="sparkline5" class="chart mt5"></div>
+                                    <div class="datainfo">
+
+                                        <h4><a style="color:#000" href="javascript:;" onclick="generate_report('get_user_signed_into_app', 'app')"><?php echo $android_count . " + " . $ios_count; ?> <i class="fa fa-file"></i></a></h4>
+                                    </div>
+                                </div><!-- tinystat -->
+                                <div class="tinystat mr20">
+                                    <div class="text-muted"> NO. OF ATTENDEES WHO USED <br>THE APP for the Event </div>
                                     <div id="sparkline3" class="chart mt5"></div>
                                     <div class="datainfo">
-                                        <span class="text-muted"> NO. OF ATTENDEES WHO USED THE APP</span>
+
                                         <h4><a style="color:#000" href="javascript:;" onclick="generate_report('app_used_by_user', 'app')"><?php echo $attendeeApp; ?> <i class="fa fa-file"></i></a></h4>
                                     </div>
                                 </div><!-- tinystat -->

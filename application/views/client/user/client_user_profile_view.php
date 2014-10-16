@@ -165,16 +165,61 @@ if (isset($user_data)) {
                                             <label for="mobile" class="error" style="display:none;">This field is required.</label>
                                         </div>
 
+                                        <div class="form-group" >
+                                            <select type="select" name="country" id="country" class="form-control chosen-select"> 
+                                                <option value = "0">Select Country</option>
+                                                <?php
+                                                $seletcted = "";
+                                                foreach ($country_list as $key => $value) {
 
-                                        <div class="form-group">
-                                            <input type="text" name="country" id="country" placeholder="Country" value="<?php echo isset($user_data->country) ? $user_data->country : '' ?>" class="form-control" />
+                                                    if (isset($user_data->country)) {
+                                                        if ($user_data->country == $value['id']) {
+
+                                                            $seletcted = 'selected="selected"';
+                                                        } else {
+                                                            $seletcted = "";
+                                                        }
+                                                    }
+                                                    ?>
+                                                    <option <?php echo $seletcted ?> value = "<?php echo $value['id']; ?>"><?php echo $value['name']; ?></option>
+
+                                                <?php }
+                                                ?>
+                                            </select>
                                             <label for="country" class="error" style="display:none;">This field is required.</label>
                                         </div>
+                                        <div class="form-group" >
+                                            <select type="select" name="city" id="city" class="form-control chosen-select"> 
+                                                <option value = "0">Select city</option>
+                                                <?php
+                                                $seletcted = "";
+                                                foreach ($city_list as $key => $value) {
 
-                                        <div class="form-group">
-                                            <input type="text" name="city" id="city" placeholder="City*" value="<?php echo isset($user_data->city) ? $user_data->city : '' ?>" class="form-control validate[required]" required />
-                                            <label for="city" class="error" id="city_err" style="display:none;">This field is required.</label>
+                                                    if (isset($user_data->country)) {
+                                                        if ($user_data->country == $value['id']) {
+
+                                                            $seletcted = 'selected="selected"';
+                                                        } else {
+                                                            $seletcted = "";
+                                                        }
+                                                    }
+                                                    ?>
+                                                    <option <?php echo $seletcted ?> value = "<?php echo $value['id']; ?>"><?php echo $value['name']; ?></option>
+
+                                                <?php }
+                                                ?>
+                                            </select>
+                                            <label for="city" class="error" style="display:none;">This field is required.</label>
                                         </div>
+                                        <!--                                        <div class="form-group">
+                                                                                    <input type="text" name="country" id="country" placeholder="Country" value="<?php echo isset($user_data->country) ? $user_data->country : '' ?>" class="form-control" />
+                                                                                    <label for="country" class="error" style="display:none;">This field is required.</label>
+                                                                                </div>
+                                        
+                                                                                <div class="form-group">
+                                                                                    <input type="text" name="city" id="city" placeholder="City*" value="<?php echo isset($user_data->city) ? $user_data->city : '' ?>" class="form-control validate[required]" required />
+                                                                                    <label for="city" class="error" id="city_err" style="display:none;">This field is required.</label>
+                                                                                </div>-->
 
 
 

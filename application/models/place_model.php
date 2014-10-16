@@ -1,6 +1,6 @@
 <?php
 
-class map_exhibitor_model extends CI_Model {
+class place_model extends CI_Model {
 
     function __construct() {
         // Initialization of class
@@ -8,21 +8,18 @@ class map_exhibitor_model extends CI_Model {
         //$this->load->database();
     }
 
-    public $status = array("1", "0");
     public $order_by = 'ASC';
-    public $order_name = 'map_exhibitor.id';
+    public $order_name = 'name';
     public $object;
     //public $order_name = 'email_template.created_date';
     public $fields = array(
         "id",
         "name",
-        "map_id",
-        "exhibitor_id",
-        "coordinates",
-        "description",
-        "event_id",
+        "country_id",
+        "created_by",
         "created",
-        "modified"
+        "modified_by",
+        "modified",
     );
 
     /**
@@ -36,7 +33,7 @@ class map_exhibitor_model extends CI_Model {
      * @params  int $id 
      * @return  void
      */
-    function saveAll($data, $id = NULL, $coordinates = NULL) {
+    function saveAll($country_city_type = NULL, $data, $id = NULL) {
         if (isset($data['email_id']) && !empty($data['email_id'])) {
             $id = $data['email_id'];
         }
@@ -45,7 +42,7 @@ class map_exhibitor_model extends CI_Model {
         try {
             $this->db->trans_begin();
 
-            $this->save($data, $id, $coordinates);
+            $this->save($country_city_type, $data, $id);
         } catch (Exception $e) {
             $error = true;
         }
@@ -69,23 +66,23 @@ class map_exhibitor_model extends CI_Model {
      * @params  int $id 
      * @return  void
      */
-    function save($data, $id = NULL, $coordinates = NULL) {
+    function save($country_city_type, $data, $id = NULL) {
         foreach ($data as $key => $value) {
             if (in_array($key, $this->fields))
                 $arrData[$key] = (isset($data[$key])) ? $data[$key] : '';
         }
+//        if (!isset($arrData['status']))
+//            $arrData['status'] = 1;
         if (is_null($id)) {
+            $arrData['created_by'] = getCreatedUserId();
             $arrData['created'] = date("Y-m-d H:i:s");
-            echo "save";
-            $result = $this->db->insert('map_exhibitor', $arrData);
+            $result = $this->db->insert($country_city_type, $arrData);
             $id = $this->db->insert_id();
         } else {
+            $arrData['modified_by'] = getCreatedUserId();
             $arrData['modified'] = date("Y-m-d H:i:s");
             $this->db->where('id', $id);
-            $this->db->where('coordinates', $coordinates);
-            echo "update";
-
-            $result = $this->db->update('map_exhibitor', $arrData);
+            $result = $this->db->update($country_city_type, $arrData);
         }
         if ($result) {
             return $id;
@@ -105,11 +102,13 @@ class map_exhibitor_model extends CI_Model {
      * @params  boolean $row to return single row
      * @return  void
      */
-    function getAll($id = NULL, $row = FALSE, $search = NULL, $fields = array(), $where = 'image_map.id', $type = 'LIKE') {
+    function getAll($country_city_type = NULL, $id = NULL, $row = FALSE, $search = NULL, $fields = array(), $where = NULL, $type = 'LIKE') {
         //  echo $this->order_name; echo $this->order_by;  var_dump($search); die;
+        $where = $country_city_type . '.id';
         if (!is_null($id))
             $this->db->where($where, $id);
-        $this->db->select('map_exhibitor.*');
+
+        $this->db->select($country_city_type . '.*');
         if (!(is_null($search)) && !empty($fields)) {
             foreach ($fields as $field) {
                 if ($type == 'LIKE') {
@@ -125,13 +124,17 @@ class map_exhibitor_model extends CI_Model {
             }
         }
 
+//        $this->db->where_in('email_template.status', $this->status);
         $this->db->order_by("name", "asc");
-        $this->db->group_by('map_exhibitor.id');
+        $this->db->group_by($country_city_type . '.id');
+
+
         if ($row) {
-            $result = $this->db->get('map_exhibitor')->row();
+            $result = $this->db->get($country_city_type)->row();
+
             return $result;
         } else {
-            $result = $this->db->get('map_exhibitor');
+            $result = $this->db->get($country_city_type);
             //echo $this->db->last_query();exit;
             return $result->result_array();
         }
@@ -148,14 +151,15 @@ class map_exhibitor_model extends CI_Model {
      * @params  boolean $row to return single row
      * @return  void
      */
-    function get($id = NULL, $row = FALSE, $where = 'id') {
+    function get($country_city_type = NULL, $id = NULL, $row = FALSE, $where = NULL) {
+        $where = $country_city_type . '.id';
         if (!is_null($id))
             $this->db->where($where, $id);
         if ($id) {
-            $result = $this->db->get('map_exhibitor')->row();
+            $result = $this->db->get($country_city_type)->row();
             return $result;
         } else {
-            $result = $this->db->get('map_exhibitor');
+            $result = $this->db->get($country_city_type);
             return $result->result_array();
         }
     }

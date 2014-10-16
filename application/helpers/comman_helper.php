@@ -177,6 +177,8 @@ if (!function_exists('menuArray')) {
             'manage/functionality' => 'functionality',
 //            'manage/tag' => 'tag',
             'manage/email_template' => 'Email template',
+            'manage/place/index/country' => 'Country Master',
+            'manage/place/index/city' => 'City Master',
         );
 
         return $menuArray;
@@ -700,6 +702,7 @@ function getClientNotification() {
 function getSocialMessages() {
     $CI = & get_instance();
     $event_id = $CI->session->userdata('client_event_id');
+//    $event_id = 1;
     if (!$event_id)
         return false;
 
@@ -707,6 +710,7 @@ function getSocialMessages() {
     $CI->load->model('client/client_notification_model');
     $CI->client_notification_model->activity_flag = '';
     $notification = $CI->client_notification_model->getSocialMessage($attendee_id, $event_id);
+//    display($notification);die;
     return $notification;
 }
 

@@ -25,15 +25,37 @@ class dashboard_model extends CI_Model {
         if (!empty($arrWhere))
             $this->db->where($arrWhere);
         $result = $this->db->get('analytics');
+        //show_query();
         return $result->result_array();
-        ;
+        
+    }
+
+    public function getDistinctEventView($arrWhere) {
+        if (!empty($arrWhere))
+            $this->db->where('AN_T.event_id', $arrWhere);
+
+        $this->db->where('subject_type', 'Event');
+        $this->db->where('type', 'view');
+        $this->db->distinct();
+        $this->db->select('AN_T.object_id');
+        $this->db->join('attendee as A_T', 'A_T.id = AN_T.object_id');
+        $this->db->join('event_has_attendee as E_A', ' E_A.attendee_id = A_T.id');
+        $result = $this->db->get('analytics as AN_T');
+        //show_query();
+        return $result->result_array();
     }
 
     public function getAttendee($event_id = NULL) {
         $this->db->where('event_id', (is_null($event_id) ? $this->event_id : $event_id));
         $result = $this->db->get('event_has_attendee');
         return $result->result_array();
-        ;
+    }
+
+    function getAppAttendee() {
+        $this->db->where("U_T.gcm_reg_id <> ''");
+        $this->db->where('event_id', (is_null($event_id) ? $this->event_id : $event_id));
+        $result = $this->db->get('user');
+        return $result->result_array();
     }
 
     public function getMeeting($event_id = NULL) {
@@ -43,45 +65,40 @@ class dashboard_model extends CI_Model {
         return $result->result_array();
     }
 
-
-	 public function getMeetingExh($event_id = NULL) {
-		 $type = $this->session->userdata('type_of_user');
+    public function getMeetingExh($event_id = NULL) {
+        $type = $this->session->userdata('type_of_user');
         $user_id = $this->session->userdata('user_id');
         $this->db->where('event_id', (is_null($event_id) ? $this->event_id : $event_id));
         $this->db->join('meeting', 'meeting.id = notification_user.meeting_id');
-		$this->db->where('notification_user.object_id',$user_id);
-		$this->db->where('notification_user.object_type',$type);
+        $this->db->where('notification_user.object_id', $user_id);
+        $this->db->where('notification_user.object_type', $type);
 
         $result = $this->db->get('notification_user');
         return $result->result_array();
     }
 
-
-	
-    public function getNotInfo($col = 'object',$not_type = "Msg") {
-		$this->db->select('count(*) as cnt');
-		$type = $this->session->userdata('type_of_user');
+    public function getNotInfo($col = 'object', $not_type = "Msg") {
+        $this->db->select('count(*) as cnt');
+        $type = $this->session->userdata('type_of_user');
         $user_id = $this->session->userdata('user_id');
 
-        if($this->event_id != '')
-	        $this->db->where('event_id', $this->event_id);
+        if ($this->event_id != '')
+            $this->db->where('event_id', $this->event_id);
 
-		if($not_type = 'Mtg')
-			$this->db->join('meeting', 'meeting.id = notification_user.meeting_id');
-	
-		$this->db->where('notification_user.'.$col.'_id',$user_id);
-		$this->db->where('notification_user.'.$col.'_type',$type);
-		$this->db->where('notification_user.'.'type',$not_type);
+        if ($not_type = 'Mtg')
+            $this->db->join('meeting', 'meeting.id = notification_user.meeting_id');
+
+        $this->db->where('notification_user.' . $col . '_id', $user_id);
+        $this->db->where('notification_user.' . $col . '_type', $type);
+        $this->db->where('notification_user.' . 'type', $not_type);
 
         $result = $this->db->get('notification_user')->row();
         return $result;
     }
 
-
-
     public function getSession($event_id = NULL) {
         $this->db->select('session.name , session.star , session.total');
-        $this->db->select('(select count(*) from session_has_attendee where session_id = session.id) as session_attendees');
+        $this->db->select('(select count(*) from session_has_attendee join attendee ON attendee.id = session_has_attendee.attendee_id where session_has_attendee.session_id = session.id and (attendee.attendee_type = "A" OR attendee.attendee_type = "E")) as session_attendees');
         $this->db->select('(select count(*) from session_has_speaker where session_id = session.id) as session_speaker');
         $this->db->select('(select count(*) from session_question where session_id = session.id) as session_question');
         $this->db->where('event_id', (is_null($event_id) ? $this->event_id : $event_id));
@@ -153,15 +170,13 @@ GROUP BY $column ";
         return $result->result_array();
     }
 
-
-	public function getCount($table,$where = NULL){
-		$this->db->select('count(*) cnt');
-		if(!is_null($where))
-			$this->db->where($where);
-		$result = $this->db->get($table);
+    public function getCount($table, $where = NULL) {
+        $this->db->select('count(*) cnt');
+        if (!is_null($where))
+            $this->db->where($where);
+        $result = $this->db->get($table);
         return $result->result_array();
-	}
-
+    }
 
 }
 

@@ -105,6 +105,12 @@ jQuery(document).ready(function() {
         tooltipFormat: {},
         sliceColors: ['#F0AD4E', '#428BCA', '#D9534F', '#1CAF9A', '#5BC0DE']
     });
+    jQuery('#sparkline5').sparkline([4, 3, 3, 1, 4, 3, 2, 2, 3], {
+        type: 'pie',
+        height: '33px',
+        tooltipFormat: {},
+        sliceColors: ['#F0AD4E', '#428BCA', '#D9534F', '#1CAF9A', '#5BC0DE']
+    });
 
 
     jQuery('#table1').dataTable({
@@ -114,9 +120,9 @@ jQuery(document).ready(function() {
 
     // Chosen Select
     jQuery("select").chosen({
-       'width': '100%',
-   //     'white-space': 'nowrap',
-     //   disable_search_threshold: 10
+        'width': '100%',
+        //     'white-space': 'nowrap',
+        //   disable_search_threshold: 10
     });
 
 });

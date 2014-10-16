@@ -1,8 +1,9 @@
-  
+
 <?php $this->load->view(CLIENT_HEADER) ?>
 
 <!----event top navigation---->
 <?php $this->load->view(EVENT_TOP_NAVIGATION) ?>
+<script src="<?php echo SITE_URL ?>public/admin/js/jquery.imagemaps.min.js" type="text/javascript"></script>  
 <!----event top navigation---->
 </div>
 
@@ -19,7 +20,7 @@ if (!empty($list)) {
                             <h4 class="tits_1"><?php //echo $event['event_name']                                                                      ?></h4>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map" > <!--class='img-responsive'-->
+                                    <img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" usemap="#Map" class="img-responsive" > <!--class='img-responsive'-->
                                     <!--<img src="<?php //echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name;                         ?>" height="50px" width="50px">-->
                                     <?php echo $list->coordinates; ?>
                                     <input type="hidden" id="image_map_id" name="image_map_id" data-value='<?php echo $list->id ?>' value="<?php echo $list->id ?>">
@@ -184,7 +185,7 @@ if (!empty($list)) {
     var SITE_URL = '<?php echo SITE_URL; ?>';
     $(document).ready(function() {
         $('area').click(function() {
-            var coords = $(this).attr('coords');
+            var coords = $(this).attr('rel');
             $("#coordinates").val(coords);
             coordinates = coords;
             get_exibitor(coordinates);
@@ -247,4 +248,18 @@ if (!empty($list)) {
         });
     }
 
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('img[usemap]').rwdImageMaps();
+        //$('#imagemap6').rwdImageMaps();
+
+
+
+        $('area').on('click', function() {
+            //alert($(this).attr('alt') + ' clicked');
+        });
+        //$('img[usemap]').rwdImageMaps();
+
+    });
 </script>
