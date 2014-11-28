@@ -27,14 +27,22 @@
                 echo 'Social messages will be shown here.<br><br>Messages:<ul class="chatuserlist">';
                 $i = 0;
                 foreach ($social_message as $social) {
+//                    display($social);
+//                    if ($social['notification_type'] == 'Sh') {
+//                        display($social);
+//                        continue;
+//                    } else {
+//                        continue;
+//                    } //shared user
 //                if (!isset($social['receiver_data']['target_id'])) {
 //                    continue;
 //                }
 //                if ($social['receiver_data']['type_of_user'] == 'O') {
 //                    continue;
 //                }
-
-                    $profile_info = bracket_attendee_attribute($social['receiver_data']['designation'], $social['receiver_data']['company_name'], '-');
+                    if (isset($social['receiver_data']['designation']) && isset($social['receiver_data']['company_name'])) {
+                        $profile_info = bracket_attendee_attribute($social['receiver_data']['designation'], $social['receiver_data']['company_name'], '-');
+                    }
                     $href_subject_type = 'attendee';
                     if ($social['subject_type'] == 'A') {
                         $subject_user_type = 'Attendee';
@@ -89,8 +97,18 @@
                                     </small>
                                     <span>' . date('d M Y', strtotime($social['notification_date'])) . ', ' . $social['event_name'] . '</span></div></div></li>';
                     } elseif ($social['notification_type'] == 'Sh') { //shared user
+                        if (!isset($social['receiver_data']['target_id'])) {
+                            $social_target_id = $social['subject_id'];
+                        } else {
+                            $social_target_id = $social['receiver_data']['target_id'];
+                        }
+                        if (!isset($social['receiver_data']['name']) && !empty($social['receiver_data']['name'])) {
+                            $social_reciver_name = $social['receiver_data']['name'];
+                        } else {
+                            $social_reciver_name = '';
+                        }
                         echo '<li  class="social_noti" id=' . $i . '><div class="media"><div class="media-body"><small>' . $object_user_type . ' - <a href="' . SITE_URL . 'events/' . $href_subject_type . '-detail/' . $social['object_id'] . '">' . $social['name'] . ' ' . bracket_attendee_attribute($social['designation'], $social['company_name'], '-') . '</a> Shared profile of
-                                    ' . $subject_user_type . ' - <a href="' . SITE_URL . 'events/' . $href_subject_type . '-detail/' . $social['receiver_data']['target_id'] . '">' . $social['receiver_data']['name'] . ' ' . $profile_info . ' </a>
+                                    ' . $subject_user_type . ' - <a href="' . SITE_URL . 'events/' . $href_subject_type . '-detail/' . $social_target_id . '">' . $social_reciver_name . ' ' . $profile_info . ' </a>
                                     </small>
                                     <span>' . date('d M Y', strtotime($social['notification_date'])) . ', ' . $social['event_name'] . '</span></div></div></li>';
                     }
@@ -173,7 +191,7 @@
                 ?>
                 <button style="width: 100%" id="load_more"> LOAD MORE
                 </button>
-            <?php
+                <?php
             } else {
                 echo 'Social messages will be shown here.<br><br>Sample Messages:<ul class="chatuserlist">
                             <li><div class="media"><div class="media-body"><small>Attendee - <a href="#">Chintan Lad (C.D.O., Infini Systems)</a>  saved profile of
@@ -195,27 +213,16 @@
 
 
         </ul>
-        
+
     </div>
     <div class="tab-pane" id="rp-favorites">
 
         <?php
-        if (getTwitterHashTag())
-            $twiter_hashtag = getTwitterHashTag();
-        else
-            $twiter_hashtag = DEFAULT_TWITTER_HASHTAG;
-//echo $twiter_hashtag;
-
-        include_once APPPATH . 'libraries/tweeter_oauth/twitteroauth.php';
-
-        $oauth_access_token = "2517362072-9fZgBTq25VOqQolVK2yGwwmZH4gy40kDyWIOrJj";
-        $oauth_access_token_secret = "oLZD0UYuK1FJ3QNFwZZ6mqiSIPmgFLqLdVadQQrQjOT5e";
-        $consumer_key = "CGdeB0gRrKhD3THZkZf7gNbad";
-        $consumer_secret = "RX6LcQfmyoYyzQjX23IAs7LZ2lXoYegJNcnRh5waBpHcvmcPIm";
-
-        $twitter = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_access_token, $oauth_access_token_secret);
-        $tweets = $twitter->get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' . $twiter_hashtag . '&count=10'); //make it a library 
-//display($tweets)
+        $tweets = '';
+        $db_tweets = get_db_tweets($this->session->userdata('client_event_id'));
+        if (isset($db_tweets->tweets) && $db_tweets->tweets) {
+            $tweets = json_decode($db_tweets->tweets);
+        }
         ?>
         <ul class="chatuserlist">
             <?php
@@ -250,7 +257,7 @@
                         <div >
                             <div class="media"><div class="media-body">
                                     <small><a href="javascript:;"><?php echo $tweet->user->name ?></a> - 
-        <?php echo $tweet->text; ?> </small>
+                                        <?php echo $tweet->text; ?> </small>
                                     <span><?php echo date('d M Y', strtotime($tweet->created_at)); ?></span>
                                 </div></div>
                         </div>

@@ -161,20 +161,22 @@ class common_user_model extends CI_Model {
         $query = $this->db
                 ->select
                         (
-                        '(select group_concat(attendee_has_industry.industry_id) from attendee_has_industry where attendee_id = ' . $attendee_id . ') as industry_id,   
-                        (select group_concat(attendee_has_functionality.functionality_id) from attendee_has_functionality where attendee_id = ' . $attendee_id . ') as functionality_id,    
+//                        '(select group_concat(attendee_has_industry.industry_id) from attendee_has_industry where attendee_id = ' . $attendee_id . ') as industry_id,   
+//                        (select group_concat(attendee_has_functionality.functionality_id) from attendee_has_functionality where attendee_id = ' . $attendee_id . ') as functionality_id,    
+                        'A_T.industry as industry_id,
+                        A_T.functionality as functionality_id,
                         U_T.first_name,
                         U_T.last_name,
                         U_T.email,
                         U_T.password,
-                        U_T.gcm_reg_id,
-                        U_T.mobile_os,
+                        A_T.gcm_reg_id,
+                        A_T.mobile_os,
                         U_T.type_of_user,
                         U_T.status,
-                        U_T.company_name,
-                        U_T.designation,
-                        U_T.phone,
-                        U_T.mobile,
+                        A_T.company_name,
+                        A_T.designation,
+                        A_T.phone,
+                        A_T.mobile,
                         A_T.name,
                         A_T.description,
                         A_T.location,
@@ -458,21 +460,20 @@ class common_user_model extends CI_Model {
         $this->db->insert('event_has_attendee', $table_array);
         return $passcode;
     }
-    
-    function get_paascode_detail($event_id,$passcode)
-    {
+
+    function get_paascode_detail($event_id, $passcode) {
         $query = $this->db
-                 -> select('E_A.*,A_T.id as attendee_id,U_T.id as user_id,U_T.email')
-                 -> from('event_has_attendee E_A')
-                 -> join('attendee as A_T','A_T.id = E_A.attendee_id')   
-                 -> join('user as U_T','U_T.id = A_T.user_id')
-                 -> where('E_A.event_id',$event_id)
-                 //-> where('E_A.passcode',$passcode)
-                 -> where('LOWER(E_A.passcode) = LOWER("'.$passcode.'")')
-                 //-> where('E_A.status',0)
-                 -> get();
-         return $query->row();
-    } 
+                ->select('E_A.*,A_T.id as attendee_id,U_T.id as user_id,U_T.email')
+                ->from('event_has_attendee E_A')
+                ->join('attendee as A_T', 'A_T.id = E_A.attendee_id')
+                ->join('user as U_T', 'U_T.id = A_T.user_id')
+                ->where('E_A.event_id', $event_id)
+                //-> where('E_A.passcode',$passcode)
+                ->where('LOWER(E_A.passcode) = LOWER("' . $passcode . '")')
+                //-> where('E_A.status',0)
+                ->get();
+        return $query->row();
+    }
 
 }
 

@@ -17,6 +17,7 @@ class Attendee extends CI_Controller {
         parent::__construct();
         $this->load->model('attendee_model', 'model');
         $this->load->model('exhibitor_model');
+        $this->load->model('place_model');
         $this->load->model('industry_model');
         $this->load->model('functionality_model');
         $this->load->model('event_model');
@@ -135,22 +136,27 @@ class Attendee extends CI_Controller {
 
         if ($this->input->post()) {
             if ($this->input->post('send_passcode') && $this->input->post('search') == '') {
-//                echo '<pre>';
-//                print_r($this->input->post('delete'));
-//                exit;
-
                 $status = $this->model->sendPasscode($this->input->post('delete'));
                 if ($status) {
                     $this->session->set_flashdata('message', 'Mail sent successfully');
                     redirect('manage/attendee');
                 } else {
-                    $this->session->set_flashdata('message', "Main not sent to one or more people due to invalid email address. Please select 'Sort by' as 'Mail not Sent' and find out the result. ");
+                    $this->session->set_flashdata('message', "Mail not sent to one or more people due to invalid email address. Please select 'Sort by' as 'Mail not Sent' and find out the result. ");
+                    redirect('manage/attendee');
+                }
+            }
+            if ($this->input->post('by_pass_passcode') && $this->input->post('search') == '') {
+                $status = $this->model->by_pass_passcode($this->input->post('delete'));
+                if ($status) {
+                    $this->session->set_flashdata('message', 'User Activated successfully');
+                    redirect('manage/attendee');
+                } else {
+                    $this->session->set_flashdata('message', "User Not Activated Successfully");
                     redirect('manage/attendee');
                 }
             }
 
             if ($this->input->post('delete') && !($this->input->post('send_passcode')) && $this->input->post('event_drpdown') == 0) {
-
                 $status = $this->model->delete($this->input->post('delete'));
                 if ($status) {
                     $this->session->set_flashdata('message', 'Attendee Deleted Successfully');
@@ -176,7 +182,6 @@ class Attendee extends CI_Controller {
                 $field = array("event_has_attendee.event_id");
                 $this->model->status = array("0", "1");
                 $arrData['list'] = $this->model->getAll(NULL, FALSE, $search, $field, 'AND', '', $drop_down_search);
-//                echo $this->db->last_query();exit;
             }
         } else {
 
@@ -190,13 +195,9 @@ class Attendee extends CI_Controller {
         }
 //        echo $selected_event;
 //        die;
-//        display($this->input->post());
-//        echo $this->input->post('event_drpdown');
-//        echo $selected_event;
-//        die;
 //        show_query();
         $arrData['selected_event'] = $selected_event;
-        $arrData['event_dropdown'] = $this->event_model->getDropdownValues(NULL );
+        $arrData['event_dropdown'] = $this->event_model->getDropdownValues(NULL);
 //        echo '<pre>'; print_r($arrData['event_dropdown']);exit;
         $arrData['breadcrumb'] = 'Attendee';
         $arrData['breadcrumb_tag'] = ' Description for attendee goes here';
@@ -224,7 +225,6 @@ class Attendee extends CI_Controller {
             formVaidation($arrData['fields'], $this);
             if ($this->form_validation->run() === TRUE) {
                 $arrInsert = $this->input->post();
-                //echo '<pre>'; print_r($arrInsert); exit;
                 $postarray = json_encode($arrInsert);
                 setcookie('postarray', $postarray);
                 unset($arrInsert['btnSave']);
@@ -263,6 +263,26 @@ class Attendee extends CI_Controller {
                     redirect('manage/attendee/add');
                 }
             }
+        }
+        $event_model_drop_dwn = $this->event_model->getDropdownValues();
+        if (!empty($event_model_drop_dwn)) {
+            $arrData['event_model_drop_dwn'] = $event_model_drop_dwn;
+        }
+        $industry_model_drop_dwn = $this->industry_model->getDropdownValues();
+        if (!empty($industry_model_drop_dwn)) {
+            $arrData['industry_model_drop_dwn'] = $industry_model_drop_dwn;
+        }
+        $functionality_model_drop_dwn = $this->functionality_model->getDropdownValues();
+        if (!empty($functionality_model_drop_dwn)) {
+            $arrData['functionality_model_drop_dwn'] = $functionality_model_drop_dwn;
+        }
+        $place_model_drop_dwn = $this->place_model->getDropdownValues('country');
+        if (!empty($place_model_drop_dwn)) {
+            $arrData['place_model_drop_dwn'] = $place_model_drop_dwn;
+        }
+        $city_model_drop_dwn = $this->place_model->getDropdownValues('city', (isset($place_model_drop_dwn->country) ? $place_model_drop_dwn->country : ''), array('city.country_id'));
+        if (!empty($city_model_drop_dwn)) {
+            $arrData['city_model_drop_dwn'] = $city_model_drop_dwn;
         }
         $arrData['thisPage'] = 'Default Attendee';
         $arrData['breadcrumb'] = 'Add Attendee';
@@ -338,6 +358,11 @@ class Attendee extends CI_Controller {
                 }
             }
         }
+        $arrData['arrResult'] = '';
+        if ($id) {
+            $arrData['id'] = $id;
+            $arrData['arrResult'] = $this->model->getAll($id, TRUE);
+        }
         $arrData['thisPage'] = 'Default Exhibitor';
         $arrData['breadcrumb'] = 'Edit Attendee';
         $arrData['breadcrumb_tag'] = ' All elements to Edit an Attendee..';
@@ -366,6 +391,7 @@ class Attendee extends CI_Controller {
     }
 
     function import() {
+//        echo "dsfsdf";die;
         if (isset($_FILES['file'])) {
             $csv_file = $_FILES['file']['tmp_name'];
             if (!is_file($csv_file)) {
@@ -374,7 +400,7 @@ class Attendee extends CI_Controller {
                 redirect('manage/attendee');
             }
 
-            $mimes = array('application/vnd.ms-excel', 'text/plain', 'text/csv', 'text/tsv');
+            $mimes = array('application/vnd.ms-excel', 'text/plain', 'text/csv', 'text/tsv', 'text/comma-separated-values');
             if (!in_array($_FILES['file']['type'], $mimes)) {
                 // do something
                 $this->session->set_flashdata('message', 'Only .csv file type are allowed.');
@@ -410,7 +436,7 @@ class Attendee extends CI_Controller {
             $insertValues = 0;
             if (($handle = fopen($csv_file, "r")) !== FALSE) {
                 $l = 0;
-                $lineNo = 1;
+                $lineNo = 2;
 
                 while (($line = fgetcsv($handle)) !== FALSE) {
 
@@ -419,14 +445,15 @@ class Attendee extends CI_Controller {
                         continue;
                     }
                     $skip = false;
-
+//                    display($line);die;
                     foreach ($line as $key => $val) {
                         $csvLIneNo = $lineNo + 1;
                         $validate_data = $this->validateRowCSV($line[$key], $key, $arrError[$csvLIneNo]);
-
-                        if ($validate_data)
+                        if ($validate_data) {
                             $skip = true;
-                        else
+                        } else {
+                            
+                        }
 
 
                         if (@$arrLabel[$key] == 'industry') {
@@ -443,6 +470,7 @@ class Attendee extends CI_Controller {
                         }
                         @$arrInsert[$i][$arrLabel[$key]] = trim($line[$key]);
                     }
+
                     if ($skip) {
                         $arrSkip[$lineNo] = $arrInsert[$i];
                         unset($arrInsert[$i]);
@@ -450,6 +478,9 @@ class Attendee extends CI_Controller {
                         unset($arrError[$lineNo]);
 //                        echo '<pre>';print_r($arrInsert[$i]);exit;
                         $this->SaveAttendee($arrInsert[$i]);
+//                        display($arrInsert);
+//                        display($skip . "kjhgjhgkjhgljhgljhg");
+//                        die;
                         $insertValues++;
                     }
                     $i++;
@@ -495,7 +526,10 @@ class Attendee extends CI_Controller {
         }
         $insert['attendee_type'] = 'A';
         $id = $this->model->check_attendee($arrCheck);
-//        echo '<pre>';print_r($insert);exit;
+//        echo '<pre>';
+//        print_r($insert);
+//        exit;
+
         if (!$id)
             $id = NULL;
         $this->model->saveAllOverwrite($insert, $id);
@@ -556,19 +590,19 @@ class Attendee extends CI_Controller {
     }
 
     function downloadSample() {
-        /*echo $file = IMAGE_BASEPATH . '/uploads/csv_sample/Attendee_Upload_Sample.csv';
-        header('Content-Type: text/csv');
-        header("Content-Disposition:attachment;filename=Attendee_Upload_Template.csv");
-        header('Pragma: no-cache');
-        header("Content-Length: " . filesize($file));
-        header("Content-Transfer-Encoding: binary");
-        ob_clean();
-        flush();
+        /* echo $file = IMAGE_BASEPATH . '/uploads/csv_sample/Attendee_Upload_Sample.csv';
+          header('Content-Type: text/csv');
+          header("Content-Disposition:attachment;filename=Attendee_Upload_Template.csv");
+          header('Pragma: no-cache');
+          header("Content-Length: " . filesize($file));
+          header("Content-Transfer-Encoding: binary");
+          ob_clean();
+          flush();
 
-        echo readfile($file);
-        exit;*/
+          echo readfile($file);
+          exit; */
         $this->load->helper('download');
-        $data = file_get_contents(UPLOADS."csv_sample/Attendee_Upload_Sample.csv"); // Read the file's contents
+        $data = file_get_contents(UPLOADS . "csv_sample/Attendee_Upload_Sample.csv"); // Read the file's contents
         $name = 'Attendee_Upload_Sample.csv';
         force_download($name, $data);
     }

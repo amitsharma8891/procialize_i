@@ -71,9 +71,9 @@ class client_notification_model extends CI_Model {
                                                                                          U_T.first_name,
                                                                                          U_T.last_name,
                                                                                          U_T.type_of_user,
-                                                                                         U_T.company_name,
-                                                                                         U_T.designation,
-                                                                                         U_T.phone,
+                                                                                         A_T.company_name,
+                                                                                         A_T.designation,
+                                                                                         A_T.phone,
                                                                                          M_T.approve,
                                                                                          M_T.start_time,
                                                                                          M_T.end_time,
@@ -156,18 +156,20 @@ class client_notification_model extends CI_Model {
         foreach ($result as $key => $val) {
             $query2 = $this->db
                     ->select('U_T.id as user_id,
-                                                                                         U_T.first_name,
+                                                                                         U_T.first_name ,
                                                                                          U_T.last_name,
                                                                                          U_T.type_of_user,
-                                                                                         U_T.company_name,
-                                                                                         U_T.designation,
-                                                                                         U_T.phone,')
+                                                                                         ')
                     ->from('user as U_T');
             if ($val['subject_type'] == 'A') {
+                $this->db->select('A_T.company_name,A_T.designation,A_T.phone');
                 $this->db->select('A_T.id as attendee_id,A_T.attendee_type');
                 $this->db->join('attendee as A_T', 'A_T.user_id = U_T.id');
                 $this->db->where('A_T.id', $val['subject_id']);
             } elseif ($val['subject_type'] == 'E') {
+//                $this->db->select('E_T.company_name,E_T.designation,E_T.phone');
+                $this->db->select('A_T.company_name,A_T.designation,A_T.phone');
+                $this->db->join('attendee as A_T', 'A_T.user_id = U_T.id');
                 $this->db->join('exhibitor as E_T', 'E_T.contact_id = U_T.id');
                 $this->db->where('E_T.id', $val['subject_id']);
             } elseif ($val['subject_type'] == 'O') {
@@ -226,9 +228,9 @@ class client_notification_model extends CI_Model {
                                                                                          U_T.first_name,
                                                                                          U_T.last_name,
                                                                                          U_T.type_of_user,
-                                                                                         U_T.company_name,
-                                                                                         U_T.designation,
-                                                                                         U_T.phone,
+                                                                                         A_T.company_name,
+                                                                                         A_T.designation,
+                                                                                         A_T.phone,
                                                                                          A_T.name,
                                                                                          E_T.name as event_name,
                                                                                          '
@@ -263,9 +265,9 @@ class client_notification_model extends CI_Model {
                                                                                          U_T.first_name,
                                                                                          U_T.last_name,
                                                                                          U_T.type_of_user,
-                                                                                         U_T.company_name,
-                                                                                         U_T.designation,
-                                                                                         U_T.phone,
+                                                                                         A_T.company_name,
+                                                                                         A_T.designation,
+                                                                                         A_T.phone,
                                                                                          A_T.name,
                                                                                          SS.name as session_name,
                                                                                          E_T.name as event_name,
@@ -299,22 +301,24 @@ class client_notification_model extends CI_Model {
                                                                                              U_T.email as exhibitor_email,
                                                                                              U_T.first_name,
                                                                                              U_T.last_name,
-                                                                                             U_T.type_of_user,
-                                                                                             U_T.company_name,
-                                                                                             U_T.designation,
-                                                                                             U_T.phone,')
+                                                                                             U_T.type_of_user
+                                                                                             ')
                         ->from('user as U_T');
+//                $this->db->select('A_T.company_name,A_T.designation');
+//                $this->db->join('attendee as A_T', 'A_T.user_id = U_T.id');
 //                if ($val['subject_type'] == 'Session' || $val['subject_type'] == 'session') {
 //                $this->db->select('(select name from session where session.id = ' . $val['subject_id'] . '  ) as session_name');
 //                }
 
                 if ($val['subject_type'] == 'A' || $val['subject_type'] == 'S' || $val['subject_type'] == 'E' || $val['subject_type'] == 'Session' || $val['subject_type'] == 'Event') {
                     $this->db->select('
-                                    A_T.id as target_id,A_T.attendee_type,A_T.name,A_T.photo as attendee_image,A_T.location as attendee_location,A_T.city as attendee_city,A_T.country as attendee_country,
+                                    A_T.id as target_id,A_T.attendee_type,A_T.name,A_T.photo as attendee_image,A_T.location as attendee_location,A_T.city as attendee_city,A_T.country as attendee_country,A_T.company_name,A_T.designation,A_T.phone,
                                     A_T.id as attendee_id,
-                                    (select group_concat(industry.name) from attendee_has_industry INNER JOIN industry ON industry.id = attendee_has_industry.industry_id  where attendee_id = A_T.id  ) as attendee_industry,
-                                    (select group_concat(functionality.name) from attendee_has_functionality INNER JOIN functionality ON functionality.id = attendee_has_functionality.functionality_id  where attendee_id = A_T.id ) as attendee_functionality,
-                                     ');
+                                    A_T.industry as attendee_industry,
+                                    A_T.functionality as attendee_functionality'
+//                                    (select group_concat(industry.name) from attendee_has_industry INNER JOIN industry ON industry.id = attendee_has_industry.industry_id  where attendee_id = A_T.id  ) as attendee_industry,
+//                                    (select group_concat(functionality.name) from attendee_has_functionality INNER JOIN functionality ON functionality.id = attendee_has_functionality.functionality_id  where attendee_id = A_T.id ) as attendee_functionality,
+                    );
 
                     $this->db->join('attendee as A_T', 'A_T.user_id = U_T.id');
                     $this->db->where('A_T.id', $val['subject_id']);
@@ -332,17 +336,21 @@ class client_notification_model extends CI_Model {
                                         EX_T.is_featured as exhibitor_featured,
                                         EX_T.stall_number,
                                         EX_P.logo as exhibitor_logo,
-                                        (select group_concat(industry.name) from exhibitor_has_industry INNER JOIN industry ON industry.id = exhibitor_has_industry.industry_id  where exhibitor_id = EX_T.id  ) as exhibitor_industry,
-                                        (select group_concat(functionality.name) from exhibitor_has_functionality INNER JOIN functionality ON functionality.id = exhibitor_has_functionality.functionality_id  where exhibitor_id = EX_T.id ) as exhibitor_functionality
-                            ');
-                    //$this->db->select('E_T.id as target_id,E_T.name');
+                                        A_T.company_name,
+                                        A_T.designation,
+                                        A_T.industry as exhibitor_industry,
+                                        A_T.functionality as exhibitor_functionality'
+//                    (select group_concat(industry.name) from exhibitor_has_industry INNER JOIN industry ON industry.id = exhibitor_has_industry.industry_id where exhibitor_id = EX_T.id ) as exhibitor_industry,
+//                    (select group_concat(functionality.name) from exhibitor_has_functionality INNER JOIN functionality ON functionality.id = exhibitor_has_functionality.functionality_id where exhibitor_id = EX_T.id ) as exhibitor_functionality
+                    );
+                    //$this->db->select('E_T.id as target_id, E_T.name');
                     $this->db->join('attendee as A_T', 'A_T.user_id = U_T.id');
                     $this->db->join('exhibitor as EX_T', 'EX_T.contact_id = A_T.user_id');
                     $this->db->join('exhibitor_profile as EX_P', 'EX_P.exhibitor_id = EX_T.id');
                     $this->db->where('A_T.id', $val['subject_id']);
                 } elseif ($val['subject_type'] == 'Event') {
                     //echo 'safd';
-                    $this->db->select('E_T.id as target_id,E_T.name');
+                    $this->db->select('E_T.id as target_id, E_T.name, A_T.company_name,A_T.designation');
                     $this->db->join('attendee as A_T', 'A_T.user_id = U_T.id');
                     $this->db->join('event_has_attendee as E_A', 'E_A.attendee_id = A_T.id');
 
@@ -356,12 +364,14 @@ class client_notification_model extends CI_Model {
 
                 $query_result2 = $this->db->get();
                 $value = $query_result2->result_array();
+//                display($value);
                 //show_query();
                 $result[$key]['receiver_data'] = @$value[0];
             }
         }
-
-        array_multisort($date_sort_array, SORT_DESC, $result);
+        if (!empty($result)) {
+            array_multisort($date_sort_array, SORT_DESC, $result);
+        }
         return $result;
     }
 
@@ -452,7 +462,7 @@ class client_notification_model extends CI_Model {
             $this->db->where('id', $id);
 
         $query = $this->db
-                ->select('star,total')
+                ->select('star, total')
                 ->from($table)
                 ->get();
         return $query->row();
@@ -460,7 +470,7 @@ class client_notification_model extends CI_Model {
 
     function getNormalAd($event_id) {
         $query = $this->db
-                ->select('id,name,normal_ad,splash_ad,link,status,user_id,event_id')
+                ->select('id, name, normal_ad, splash_ad, link, status, user_id, event_id')
                 ->from('sponser')
                 ->where('event_id', $event_id)
 

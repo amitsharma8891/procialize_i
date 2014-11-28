@@ -114,19 +114,7 @@
             
         });
     });
-    /*$(window).scroll(function () {
-    if ($(window).scrollTop() +1 >= $(document).height() - $(window).height()) {
-        //$('body').css('background','red');
-        if(total_count >  (per_page*count))
-              {
-                  serach_user('attendee',count,scroll);
-              }
-               
-               count++;
-    }else{
-        //$('body').css('background','none');
-    }
-});*/
+
 
 </script>
 

@@ -7,7 +7,7 @@ $(document).ready(function()
 {
     $("#email_template_form").submit(function()
     {
-        CKupdate();
+        CKupdate(); 
         var form_data = $("#email_template_form").serialize();
         $.ajax(
                 {

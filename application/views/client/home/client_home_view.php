@@ -70,18 +70,7 @@ line-height: normal;">
 					<hr>
 					<h4 style="color:#58595b; margin-bottom:10px;">Advance Search </h4>
 					<div class="form-group mt15">
-<!--						<div class="col-xs-6">
-							<div class="input-group">
-								<input type="text" class="form-control" placeholder="mm/dd/yyyy" name="from" id="from">
-								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-							</div>
-						</div>-->
-<!--						<div class="col-xs-6">
-							<div class="input-group">
-								<input type="text" class="form-control" placeholder="mm/dd/yyyy" name="to" id="to">
-								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-							</div>
-						</div>-->
+
 					</div>
 					
 					<div class="form-group mt15">
@@ -161,17 +150,9 @@ line-height: normal;">
                                         minLength                               :3,
                                         width                                   : 320,
                                         max                                     : 10,
-                                        /*select: function(event,ui ) {
-                                            //alert(ui.item.label);
-                                                window.location.href            = SITE_URL+'events?search='+ui.item.value;
-                                            }*/
-                               });/*.keydown(function(e)
-                                   {
-                                       if (e.keyCode === 13)
-                                       {
-                                           search_();
-                                       }
-                                   });*/
+                                      
+                               });
+                               
      $("#search_form").submit(function(){
                             var keyword                                         = $("#search_").val();
                             var from                                            = $("#from").val();

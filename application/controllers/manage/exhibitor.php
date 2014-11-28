@@ -19,7 +19,10 @@ class Exhibitor extends CI_Controller {
 
         $this->load->model('exhibitor_model', 'model');
         $this->load->model('industry_model');
+        $this->load->model('place_model');
+        $this->load->model('product_category_model');
         $this->load->model('functionality_model');
+        $this->load->model('product_category_model');
         $this->load->model('event_model');
         $this->load->model('tag_relation_model');
         $this->load->model('tag_model');
@@ -59,6 +62,18 @@ class Exhibitor extends CI_Controller {
                 $selected_event = $this->session->userdata('selected_event');
             }
         }
+
+        if ($this->input->post('by_pass_passcode') && $this->input->post('search') == '') {
+
+            $status = $this->model->by_pass_passcode($this->input->post('delete'));
+            if ($status) {
+                $this->session->set_flashdata('message', 'User Activated successfully');
+                redirect('manage/exhibitor');
+            } else {
+                $this->session->set_flashdata('message', "User Not Activated Successfully");
+                redirect('manage/exhibitor');
+            }
+        }
         if ($this->input->post('event_drpdown') == 0 && $order == "") {
             if (!empty($arrData['event_dropdown']) && isset($arrData['event_dropdown'])) {
                 $i = 0;
@@ -73,6 +88,8 @@ class Exhibitor extends CI_Controller {
                 }
             }
 //            echo $selected_event;
+
+
 
             if ($this->input->post('event_drpdown') == 0 && $this->input->post('send_passcode') == '' && $this->input->post('search') == '') {
                 if ($selected_event) {
@@ -112,8 +129,8 @@ class Exhibitor extends CI_Controller {
             $arrData['list'] = $this->model->getAll(NULL, FALSE, $search, $field, 'exhibitor.id', 'AND', $drop_down_search);
         } elseif ($order == 4) {
             $search = '1';
-             $drop_down_search = $selected_event;
-            
+            $drop_down_search = $selected_event;
+
             $field = array("exhibitor.mail_sent");
             $arrData['list'] = $this->model->getAll(NULL, FALSE, $search, $field, 'exhibitor.id', 'AND', $drop_down_search);
         } else {
@@ -155,6 +172,7 @@ class Exhibitor extends CI_Controller {
             }
 
             if ($this->input->post('event_drpdown') != '' && $this->input->post('send_mail') == '' && $this->input->post('search') == '') {
+//                echo "gdfg";
                 $search = $selected_event;
                 $drop_down_search = $selected_event;
                 $field = array("exhibitor.event_id");
@@ -240,7 +258,8 @@ class Exhibitor extends CI_Controller {
         $arrData['breadcrumb'] = 'Add Exhibitor';
         $arrData['breadcrumb_tag'] = ' All elements to add an Exhibitor..';
         $arrData['breadcrumb_class'] = 'fa-flask';
-        $arrData['middle'] = 'admin/middle_template';
+//        $arrData['middle'] = 'admin/middle_template';
+        $arrData['middle'] = 'admin/exhibitor/add';
         $this->load->view('admin/default', $arrData);
     }
 
@@ -359,7 +378,7 @@ class Exhibitor extends CI_Controller {
 
                 redirect('manage/exhibitor');
             }
-            $mimes = array('application/vnd.ms-excel', 'text/plain', 'text/csv', 'text/tsv');
+            $mimes = array('application/vnd.ms-excel', 'text/plain', 'text/csv', 'text/tsv', 'text/comma-separated-values');
             if (!in_array($_FILES['file']['type'], $mimes)) {
                 // do something
                 $this->session->set_flashdata('message', 'Only .csv file type is allowed.');
@@ -374,20 +393,21 @@ class Exhibitor extends CI_Controller {
                 1 => 'description',
                 2 => 'industry_id',
                 3 => 'functionality_id',
-                4 => 'city',
-                5 => 'country',
-                6 => 'is_featured',
-                7 => 'status',
-                8 => 'tag',
-                9 => 'contact_first_name',
-                10 => 'contact_last_name',
-                11 => 'contact_phone',
-                12 => 'contact_email',
-                13 => 'contact_mobile',
-                14 => 'stall_number',
-                15 => 'website_link',
-                16 => 'username',
-                17 => 'password',
+                4 => 'product_category_id',
+                5 => 'city',
+                6 => 'country',
+                7 => 'is_featured',
+                8 => 'status',
+                9 => 'tag',
+                10 => 'contact_first_name',
+                11 => 'contact_last_name',
+                12 => 'contact_phone',
+                13 => 'contact_email',
+                14 => 'contact_mobile',
+                15 => 'stall_number',
+                16 => 'website_link',
+                17 => 'username',
+                18 => 'password',
             );
             $arrInsert = array();
             $arrSkip = array();
@@ -396,7 +416,7 @@ class Exhibitor extends CI_Controller {
             $insertValues = 0;
             if (($handle = fopen($csv_file, "r")) !== FALSE) {
                 $l = 0;
-                $lineNo = 1;
+                $lineNo = 2;
 
                 while (($line = fgetcsv($handle)) !== FALSE) {
 
@@ -407,7 +427,7 @@ class Exhibitor extends CI_Controller {
                     $skip = false;
 
                     foreach ($line as $key => $val) {
-                        $csvLIneNo = $lineNo + 1;
+                        $csvLIneNo = $lineNo;
                         $validate_data = $this->validateRowCSV($line[$key], $key, $arrError[$csvLIneNo]);
                         if ($validate_data)
                             $skip = true;
@@ -423,6 +443,12 @@ class Exhibitor extends CI_Controller {
                         if ($arrLabel[$key] == 'functionality_id') {
                             if (trim($line[$key]) != '') {
                                 $arrInsert[$i][$arrLabel[$key]] = $this->functionality_model->checkSave(explode(',', trim($line[$key])));
+                                continue;
+                            }
+                        }
+                        if ($arrLabel[$key] == 'product_category_id') {
+                            if (trim($line[$key]) != '') {
+                                $arrInsert[$i][$arrLabel[$key]] = $this->product_category_model->checkSave(explode(',', trim($line[$key])));
                                 continue;
                             }
                         }
@@ -459,11 +485,13 @@ class Exhibitor extends CI_Controller {
         $insert['top_level_id'] = getTopLevelId();
         $insert['event_id'] = $this->event_id;
         $arrCheck['city'] = $insert['city'];
+        $arrCheck['email'] = $insert['contact_email'];
         $arrCheck['country'] = $insert['country'];
         $arrCheck['event_id'] = $this->event_id;
         $arrCheck['name'] = $insert['name'];
         $insert['industry_id'] = $insert['industry_id'];
         $insert['functionality_id'] = $insert['functionality_id'];
+        $insert['product_category_id'] = $insert['product_category_id'];
         $insert['tag_name'] = $insert['tag'];
         $insert['username'] = $insert['username'] . '_' . $this->event_id;
         if (isset($insert['status'])) {
@@ -515,9 +543,9 @@ class Exhibitor extends CI_Controller {
         $error = false;
         $arrCompuslary = array(
             0,
-            4,
             5,
-            12,
+            6,
+            13,
             17,
             18,
         );
@@ -526,30 +554,31 @@ class Exhibitor extends CI_Controller {
             1 => 'description',
             2 => 'industry_id',
             3 => 'functionality_id',
-            4 => 'city',
-            5 => 'country',
-            6 => 'is_featured',
-            7 => 'status',
-            8 => 'tag',
-            9 => 'contact_first_name',
-            10 => 'contact_last_name',
-            11 => 'contact_phone',
-            12 => 'contact_email',
-            13 => 'contact_mobile',
-            14 => 'stall_number',
-            15 => 'website_link',
-            16 => 'username',
-            17 => 'password',
+            4 => 'product_category_id',
+            5 => 'city',
+            6 => 'country',
+            7 => 'is_featured',
+            8 => 'status',
+            9 => 'tag',
+            10 => 'contact_first_name',
+            11 => 'contact_last_name',
+            12 => 'contact_phone',
+            13 => 'contact_email',
+            14 => 'contact_mobile',
+            15 => 'stall_number',
+            16 => 'website_link',
+            17 => 'username',
+            18 => 'password',
         );
 
-        if ($key == 13) {
+        if ($key == 14) {
             $error = $this->csvFieldValueRegex('mobile', $value, $key); //for mobile no validation 
         }
-        if ($key == 11) {
+        if ($key == 12) {
             $error = $this->csvFieldValueRegex('phone', $value, $key); //for mobile no validation 
         }
 
-        if ($key == 12) {
+        if ($key == 13) {
             $error = $this->csvFieldValueRegex('email', strtolower($value), $key); //for email validation
         }
 
@@ -570,18 +599,18 @@ class Exhibitor extends CI_Controller {
 
     function downloadSample() {
 
-        /*$file = IMAGE_BASEPATH . '/uploads/csv_sample/Exhibitor Upload_Sample.csv';
-        header('Content-Type: text/csv');
-        header("Content-Disposition:attachment;filename=Exhibitor_Upload_Template.csv");
-        header('Pragma: no-cache');
-        header("Content-Length: " . filesize($file));
-        header("Content-Transfer-Encoding: binary");
-        ob_clean();
-        flush();
-        echo readfile($file);
-        exit;*/
+        /* $file = IMAGE_BASEPATH . '/uploads/csv_sample/Exhibitor Upload_Sample.csv';
+          header('Content-Type: text/csv');
+          header("Content-Disposition:attachment;filename=Exhibitor_Upload_Template.csv");
+          header('Pragma: no-cache');
+          header("Content-Length: " . filesize($file));
+          header("Content-Transfer-Encoding: binary");
+          ob_clean();
+          flush();
+          echo readfile($file);
+          exit; */
         $this->load->helper('download');
-        $data = file_get_contents(UPLOADS."csv_sample/Exhibitor_Upload_Sample.csv"); // Read the file's contents
+        $data = file_get_contents(UPLOADS . "csv_sample/Exhibitor_Upload_Sample.csv"); // Read the file's contents
         $name = 'Exhibitor_Upload_Sample.csv';
         force_download($name, $data);
     }

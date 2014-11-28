@@ -58,8 +58,8 @@ class report_model extends CI_Model {
         }
 
         $query = $this->db
-                ->select('S_A_T.id as sender_id,S_A_T.attendee_type as sender_type,S_A_T.name as sender_name,S_U_T.company_name as sender_company,S_U_T.designation as sender_designation,
-                          R_A_T.id as receiver_id,R_A_T.attendee_type as receiver_type,R_A_T.name as receiver_name,R_U_T.company_name as receiver_company,R_U_T.designation as receiver_designation,
+                ->select('S_A_T.id as sender_id,S_A_T.attendee_type as sender_type,S_A_T.name as sender_name,S_A_T.company_name as sender_company,S_A_T.designation as sender_designation,
+                          R_A_T.id as receiver_id,R_A_T.attendee_type as receiver_type,R_A_T.name as receiver_name,R_A_T.company_name as receiver_company,R_A_T.designation as receiver_designation,
                           N_U.content,N_U.created_date
                          ')
                 ->from('notification_user as N_U')
@@ -79,8 +79,8 @@ class report_model extends CI_Model {
         $this->db->group_by('A_T.subject_id');
 
         $query = $this->db
-                ->select('S_A_T.id as sender_id,S_A_T.attendee_type as sender_type,S_A_T.name as sender_name,S_U_T.company_name as sender_company,S_U_T.designation as sender_designation,
-                          R_A_T.id as receiver_id,R_A_T.attendee_type as receiver_type,R_A_T.name as receiver_name,R_U_T.company_name as receiver_company,R_U_T.designation as receiver_designation,
+                ->select('S_A_T.id as sender_id,S_A_T.attendee_type as sender_type,S_A_T.name as sender_name,S_A_T.company_name as sender_company,S_A_T.designation as sender_designation,
+                          R_A_T.id as receiver_id,R_A_T.attendee_type as receiver_type,R_A_T.name as receiver_name,R_A_T.company_name as receiver_company,R_A_T.designation as receiver_designation,
                           A_T.created_date
                          ')
                 ->from('analytics as A_T')
@@ -113,8 +113,8 @@ class report_model extends CI_Model {
 //        $this->db->group_by('A_T.subject_id');
 
         $query = $this->db
-                ->select('S_A_T.id as sender_id,S_A_T.attendee_type as sender_type,S_A_T.name as sender_name,S_U_T.company_name as sender_company,S_U_T.designation as sender_designation,
-                          R_A_T.id as receiver_id,R_A_T.attendee_type as receiver_type,R_A_T.name as receiver_name,R_U_T.company_name as receiver_company,R_U_T.designation as receiver_designation,
+                ->select('S_A_T.id as sender_id,S_A_T.attendee_type as sender_type,S_A_T.name as sender_name,S_A_T.company_name as sender_company,S_A_T.designation as sender_designation,
+                          R_A_T.id as receiver_id,R_A_T.attendee_type as receiver_type,R_A_T.name as receiver_name,R_A_T.company_name as receiver_company,R_A_T.designation as receiver_designation,
                           A_T.created_date, A_T.type
                          ')
                 ->from('analytics as A_T')
@@ -131,7 +131,7 @@ class report_model extends CI_Model {
 
     function get_user($type = '', $event_id) {
         if ($type == 'app_used_by_user') {
-            $this->db->where("(U_T.gcm_reg_id IS NOT NULL AND TRIM(U_T.gcm_reg_id) <> '')");
+            $this->db->where("(A_T.gcm_reg_id IS NOT NULL AND TRIM(A_T.gcm_reg_id) <> '')");
         }
 
         if ($type == 'user_event_visit') {
@@ -141,19 +141,19 @@ class report_model extends CI_Model {
                         ->select()
                         ->from('event_has_attendee as E_A')
                         ->join('attendee as A_T', 'A_T.id = E_A.attendee_id')
-                        ->join('user as U_T', 'U_T.id = A_T.user_id')
+//                        ->join('user as U_T', 'U_T.id = A_T.user_id')
                         ->where('E_A.event_id', $event_id)->get();
         return $query->result_array();
     }
 
     function get_user_signed_into_app($type = '', $event_id) {
         if ($type == 'get_user_signed_into_app') {
-            $this->db->where("(U_T.gcm_reg_id IS NOT NULL AND TRIM(U_T.gcm_reg_id) <> '')");
+            $this->db->where("(A_T.gcm_reg_id IS NOT NULL AND TRIM(A_T.gcm_reg_id) <> '')");
         }
         $query = $this->db
                 ->select()
                 ->from('user as U_T')
-                ->join('attendee as A_T', 'A_T.user_id = U_T.id')
+//                ->join('attendee as A_T', 'A_T.user_id = U_T.id')
                 ->get();
         return $query->result_array();
     }
@@ -170,7 +170,7 @@ class report_model extends CI_Model {
         }
 
         $query = $this->db
-                ->select('S_T.id as session_id,S_T.name,S_T.star as rating,S_T.total as user_count,A_T.name as attendee_name,A_T.attendee_type,USR.company_name,USR.designation,
+                ->select('S_T.id as session_id,S_T.name,S_T.star as rating,S_T.total as user_count,A_T.name as attendee_name,A_T.attendee_type,A_T.company_name,A_T.designation,
                            (SELECT COUNT(*) FROM session_has_attendee  join attendee ON attendee.id = session_has_attendee.attendee_id where session_has_attendee.session_id = S_T.id and (attendee.attendee_type = "A" OR attendee.attendee_type = "E")) AS attendee_count, 
                            (SELECT COUNT(*) FROM session_has_speaker  WHERE session_has_speaker.session_id = S_T.id) AS speaker_count ,
                            (SELECT COUNT(*) FROM session_question  WHERE session_question.session_id = S_T.id) AS question_count 

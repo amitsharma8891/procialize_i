@@ -133,4 +133,13 @@ class Place extends CI_Controller {
         echo json_encode($json_array);
     }
 
+    public function get_city($country_city_type = NULL) {
+        $search_country = $this->input->post('country_id');
+        $country = $this->model->get_place('country', $search_country, '1', array('country.name'));
+        
+        $search = $country->id;
+        $json_array['city_list'] = $this->model->getAll('city', NULL, NULL, $search, array('city.country_id'));
+        echo json_encode($json_array);
+    }
+
 }

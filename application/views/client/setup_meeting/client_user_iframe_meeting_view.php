@@ -172,7 +172,6 @@
                  start_date = start_date.toString().replace('GMT+0530 (India Standard Time)','');
                  end_date   = end_date.toString().replace('GMT+0530 (India Standard Time)','');
                  
-                 
                   set_meeting((start_date),(end_date),calEvent.title,$("#target_id").val(),$("#target_type").val());
                },
                Cancel : function() {

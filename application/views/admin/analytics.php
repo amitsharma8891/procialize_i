@@ -8,7 +8,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="shortcut icon" href="<?php echo base_url() ?>public/admin/images/favicon.png" type="image/png">
-        <title>Metropolis Dashboard</title>
+        <title>Procialize Dashboard</title>
         <link href="<?php echo base_url(); ?>public/admin/css/style.default.css" rel="stylesheet">
         <link href="<?php echo base_url(); ?>public/admin/css/jquery.datatables.css" rel="stylesheet">
 
@@ -83,25 +83,7 @@
                 <?php echo ($this->session->flashdata('message')); ?>
 
                 <div class="contentpanel">
-                    <!--<div class="row">
-                        <div class="col-xs-4">
-
-                            <select name="organizer" id="organizer" onchange="get_event(this.value)" class="form-control col-xs-4">
-                                <option value="">Select Event</option>>
-                    <?php
-                    /* if ($get_events) {
-                      foreach ($get_events as $event) {
-                      $selected = '';
-                      if ($event_id == $event['event_id'])
-                      $selected = 'selected';
-                      echo '<option ' . $selected . ' value="' . $event['event_id'] . '">' . $event['name'] . '</option>';
-                      }
-                      } */
-                    ?>
-
-                            </select>
-                        </div>
-                    </div>-->
+                 
                     <br>
                     <div class="row">
                         <div class="col-sm-6 col-md-3">
@@ -404,10 +386,7 @@
                                                         <a href="#" class="pull-left">
                                                             <img alt="80x60" src="<?php echo base_url() . UPLOAD_SPONSOR_SPLASH_DISPLAY . $arr_splash_ad[0]['splash_ad']; ?>" class="media-object" data-src="holder.js/80x60/#666:#fff" style="width: 80px; height: 60px;">
                                                         </a>
-                                                        <!--                                                        <div class="media-body">
-                                                                                                                    <h4 class="media-heading"><a href="#"><?php //echo $arr_splash_ad[0]['name'];    ?></a></h4>
-                                                                                                                    <small class="media-desc font_13">Total Number of Hits : <span class="num_of_hits"><?php //echo $arr_splash_ad[0]['cnt'];    ?></span></small>
-                                                                                                                </div>-->
+                                                       
                                                     </div><!-- media -->
                                                 </div><!-- item -->
                                             </div><!-- carousel-inner -->
@@ -441,10 +420,7 @@
                                                             <a href="#" class="pull-left">
                                                                 <img alt="80x60" src="<?php echo base_url() . UPLOAD_SPONSOR_NORMAL_DISPLAY . $spo_ad['normal_ad']; ?>" class="media-object" data-src="holder.js/80x60/#666:#fff" style="width: 80px; height: 60px;">
                                                             </a>
-                                                            <!--                                                            <div class="media-body">
-                                                                                                                            <h4 class="media-heading"><a href="#"><?php //echo $spo_ad['name'];    ?></a></h4>
-                                                                                                                            <small class="media-desc font_13">Total Number of Hits : <span class="num_of_hits"> <?php //echo $spo_ad['cnt']    ?></span></small>
-                                                                                                                        </div>-->
+                                                           
                                                         </div><!-- media -->
                                                     </div><!-- item -->
                                                 <?php } ?>

@@ -329,11 +329,6 @@ class survey_model extends CI_Model {
         } catch (Exception $e) {
             $error = true;
         }
-//        if ($error) {
-//            $this->db->trans_rollback();
-//        } else {
-//            $this->db->trans_commit();
-//        }
 
         return !$error;
     }
@@ -652,7 +647,6 @@ class survey_model extends CI_Model {
         }
         $result_set = $this->db->get('survey');
         $result = $result_set->result_array();
-        //echo $this->db->last_query();
         //echo '<pre>'; print_r($result); exit;
         if($id) {
          if($result[0]['count'] == 1) {

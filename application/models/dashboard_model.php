@@ -27,7 +27,6 @@ class dashboard_model extends CI_Model {
         $result = $this->db->get('analytics');
         //show_query();
         return $result->result_array();
-        
     }
 
     public function getDistinctEventView($arrWhere) {
@@ -52,9 +51,9 @@ class dashboard_model extends CI_Model {
     }
 
     function getAppAttendee() {
-        $this->db->where("U_T.gcm_reg_id <> ''");
+        $this->db->where("attendee.gcm_reg_id <> ''");
         $this->db->where('event_id', (is_null($event_id) ? $this->event_id : $event_id));
-        $result = $this->db->get('user');
+        $result = $this->db->get('attendee');
         return $result->result_array();
     }
 

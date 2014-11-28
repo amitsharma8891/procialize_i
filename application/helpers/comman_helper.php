@@ -175,6 +175,7 @@ if (!function_exists('menuArray')) {
             'manage/survey' => 'survey',
             'manage/industry' => 'industry',
             'manage/functionality' => 'functionality',
+            'manage/product_category/' => 'Product Category',
 //            'manage/tag' => 'tag',
             'manage/email_template' => 'Email template',
             'manage/place/index/country' => 'Country Master',
@@ -227,6 +228,12 @@ function generateMenu($type, $isAdmin = false) {
     if ($is_pvt_app) {
         $allow_email_temp_menu = array('manage/email_template' => 'email_template', '#' => 'Announcement');
     }
+    $image_map_result = get_event_map_image_id();
+    $image_map_id = "";
+    if (!empty($image_map_result)) {
+        $image_map_id = $image_map_result['id'];
+    }
+
     if ($type == '')
         return $menuArray;
     switch ($type) {
@@ -234,6 +241,8 @@ function generateMenu($type, $isAdmin = false) {
             $menuArray = array(
                 'manage/index' => 'Dashboard',
                 'manage/event/edit/' => 'Event Profile',
+                'manage/product_category/' => 'Product Category',
+                'manage/image_maping/add/' . $image_map_id => 'Event Map',
                 'manage/agenda' => 'agenda',
                 'manage/exhibitor' => 'exhibitor',
                 'manage/attendee' => 'attendee',
@@ -760,6 +769,30 @@ function industry_functionality($industry, $functionality, $separator = ',') {
     }
 }
 
+function product_category($product_category, $separator = ',') {
+    if ($product_category) {
+        $temp_func = explode(',', $product_category);
+        //display($temp_industry);
+//        /display($temp_func);
+        $product_category = '';
+        if (@$temp_industry[0] && @$temp_industry[0] != '-') {
+            $separator = ',';
+        } else
+            $separator = '';
+        if (@$temp_func[0] && @$temp_func[0] != '-') {
+            $separator = ',';
+            $product_category = $temp_func[0];
+        } else
+            $separator = '';
+
+
+
+        $string = $product_category;
+
+        return $string;
+    }
+}
+
 function city_country($city, $country, $separator = ',') {
     if ($city || $country) {
         if (!$city)
@@ -1016,5 +1049,45 @@ function get_email_template($email_template_name) {
     $result = $CI->db->get('email_template')->row();
     $result = (array) $result;
     $result['setting'] = $setting_data;
+    return $result;
+}
+
+function get_event_map_image_id() {
+    $CI = & get_instance();
+    $event_id = $CI->session->userdata('event_id');
+    $CI->load->model('image_map_model');
+    $CI->db->select('image_map.id');
+    $CI->db->where('image_map.parent_id', 0);
+    $CI->db->where('image_map.event_id', $event_id);
+    $result = $CI->db->get('image_map')->row();
+    $result = (array) $result;
+    return $result;
+}
+
+function get_tweetes($twiter_hashtag = '') {
+    if (!$twiter_hashtag)
+        $twiter_hashtag = DEFAULT_TWITTER_HASHTAG;
+
+    include_once 'tweeter_oauth/twitteroauth.php';
+    $oauth_access_token = "2517362072-9fZgBTq25VOqQolVK2yGwwmZH4gy40kDyWIOrJj";
+    $oauth_access_token_secret = "oLZD0UYuK1FJ3QNFwZZ6mqiSIPmgFLqLdVadQQrQjOT5e";
+    $consumer_key = "CGdeB0gRrKhD3THZkZf7gNbad";
+    $consumer_secret = "RX6LcQfmyoYyzQjX23IAs7LZ2lXoYegJNcnRh5waBpHcvmcPIm";
+
+    $twitter = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_access_token, $oauth_access_token_secret);
+    $tweets = $twitter->get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' . $twiter_hashtag . '&count=10');
+    return $tweets;
+}
+
+function get_db_tweets($event_id) {
+    if (!$event_id) {
+        $tweets = getSetting()->app_twitter_hash_tag;
+        return $tweets;
+    }
+    $CI = & get_instance();
+    $CI->db->select('tweets');
+    $CI->db->where('id', $event_id);
+    $result = $CI->db->get('event')->row();
+
     return $result;
 }

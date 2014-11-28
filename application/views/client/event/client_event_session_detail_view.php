@@ -100,7 +100,6 @@
 					<div class="panel-body">
 					<div class="tab-content">
 					  <div class="tab-pane active" id="info">
-<!--						<p class="text-justify">Information technology (IT) is the application of computers and telecommunications equipment to store, retrieve, transmit and manipulate data, often in the context of a business or other enterprise. The term is commonly used as a synonym for computers and computer networks, but it also encompasses other information distribution technologies such as television and telephones. Several industries are associated with information technology, including computer hardware, software, electronics, semiconductors, internet, telecom equipment, e-commerce and computer services.</p>-->
 						<p class="text-justify"><?php echo $session_detail['session_description']?></p>
 						<hr class="mt9">
                                                 <div id="feedback_div">

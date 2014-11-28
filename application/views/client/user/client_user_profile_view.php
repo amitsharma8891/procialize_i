@@ -119,12 +119,12 @@ if (isset($user_data)) {
                                                         if (isset($user_data->industry_id)) {
                                                             $temp_func = explode(',', $user_data->industry_id);
                                                             foreach ($temp_func as $key1 => $db_industry) {
-                                                                if ($db_industry == $industry['id']) {
+                                                                if ($db_industry == $industry['name']) {
                                                                     $selected = 'selected';
                                                                 }
                                                             }
                                                         }
-                                                        echo '<option ' . $selected . ' value="' . $industry['id'] . '">' . $industry['name'] . '</option>';
+                                                        echo '<option ' . $selected . ' value="' . $industry['name'] . '">' . $industry['name'] . '</option>';
                                                     }
                                                 }
                                                 ?>                   
@@ -134,7 +134,7 @@ if (isset($user_data)) {
 
 
                                         <div class="form-group">
-                                            <select name="functionality_id[]" id="functionality_id"  multiple   class="form-control chosen-select validate[required]" placeholder="Add Functionality*" data-placeholder="Add Functionality*" required>
+                                            <select name="functionality_id[]" id="functionality_id"  class="form-control chosen-select validate[required]" placeholder="Add Functionality*" data-placeholder="Add Functionality*" required>
 
                                                 <?php
                                                 if ($functionality_list) {
@@ -144,12 +144,12 @@ if (isset($user_data)) {
                                                         if (isset($user_data->functionality_id)) {
                                                             $temp_func = explode(',', $user_data->functionality_id);
                                                             foreach ($temp_func as $key => $db_funct) {
-                                                                if ($db_funct == $func['id']) {
+                                                                if ($db_funct == $func['name']) {
                                                                     $selected = 'selected';
                                                                 }
                                                             }
                                                         }
-                                                        echo '<option ' . $selected . ' value="' . $func['id'] . '">' . $func['name'] . '</option>';
+                                                        echo '<option ' . $selected . ' value="' . $func['name'] . '">' . $func['name'] . '</option>';
                                                     }
                                                 }
                                                 ?>  
@@ -195,8 +195,8 @@ if (isset($user_data)) {
                                                 $seletcted = "";
                                                 foreach ($city_list as $key => $value) {
 
-                                                    if (isset($user_data->country)) {
-                                                        if ($user_data->country == $value['id']) {
+                                                    if (isset($user_data->city)) {
+                                                        if ($user_data->city == $value['id']) {
 
                                                             $seletcted = 'selected="selected"';
                                                         } else {
@@ -380,6 +380,30 @@ $usr_id = $this->session->userdata('client_user_id');
             form.submit();
             }
 
+    });
+            $('#country').change(function() {
+    var SITE_URL = '<?php echo SITE_URL; ?>';
+            var html_val = new Array();
+            var country_id = $(this).val();
+            $.ajax({
+            type                                                            : "POST",
+                    url                                                             : SITE_URL + "manage/place/get_city",
+                    dataType                                                        : "json",
+                    data                                                            : {
+                    'country_id':country_id,
+                    },
+                    success : function(res)
+                    {
+                    $.each(res.city_list, function(index, value) {
+                    var temp = '<option value = "' + value.name + '" >' + value.name + '</option>';
+                            html_val.push(temp);
+                    });
+                            $('#city').find('option').remove().end();
+                            $('#city').append(html_val);
+                            $("#city").trigger("chosen:updated");
+                            console.clear();
+                    }
+            });
     });
     });
 </script>

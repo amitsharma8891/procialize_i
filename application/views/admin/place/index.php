@@ -21,7 +21,7 @@
                     <div class="table-responsive">
                         <table class="table mb30">
                             <thead>
-                                <tr>
+                                <tr> 
                                     <th><?php echo ucfirst($country_city_type) . " Name" ?> </th>
                                     <!--<th> Subject</th>-->
                                     <!--<th>Status (E/D)</th>-->

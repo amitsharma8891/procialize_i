@@ -45,6 +45,14 @@ class attendee_model extends CI_Model {
         "pvt_org_id",
         "attendee_type",
         "event_id",
+        "gcm_reg_id",
+        "mobile_os",
+        "company_name",
+        "designation",
+        "phone",
+        "mobile",
+        "industry",
+        "functionality",
     );
 
     /**
@@ -71,8 +79,6 @@ class attendee_model extends CI_Model {
      */
     function generate_fields($id = NULL) {
         $superadmin = $this->session->userdata('is_superadmin');
-
-
         $arrResult = array();
         if (!is_null($id)) {
             $arrResult = $this->getAll($id, TRUE);
@@ -84,6 +90,7 @@ class attendee_model extends CI_Model {
                 }
             }
         }
+
         //echo '<pre>'; print_r($_COOKIE); exit;  
         if (array_key_exists('postarray', $_COOKIE)) {
             if (!empty($_COOKIE['postarray'])) {
@@ -289,7 +296,7 @@ class attendee_model extends CI_Model {
                 "id" => "photo",
                 "class" => "form-control",
                 "placeholder" => "photo",
-                "validate" => "required",
+                "validate" => "",
                 "upload_config" => array(
                     "upload_path" => UPLOAD_ATTENDEE_PHOTO,
                     "allowed_types" => 'jpg|png|jpeg',
@@ -498,7 +505,7 @@ class attendee_model extends CI_Model {
                 "decorators" => array(
                     array(
                         "tag" => "div",
-                        "close" => "true",
+                        "close" => "false",
                         "class" => "col-sm-6"
                     ),
                     array("tag" => "div",
@@ -510,67 +517,6 @@ class attendee_model extends CI_Model {
                         "class" => "col-sm-1 control-label form-label-placeholder",
                         "content" => '<div>Attendee Linkedin Link</div>',
                         "position" => "prependElement",
-                    ),
-                ),
-            ),
-            'country' => array("name" => "country",
-                "type" => "text",
-                "id" => "country",
-                "class" => "form-control",
-                "placeholder" => "Attendee Country",
-                "validate" => '',
-                "error" => 'Country*',
-                "value" => set_value('country', (isset($arrResult->country) && ($arrResult->country != '') ? $arrResult->country : (isset($postarray['country']) ? $postarray['country'] : ''))),
-                "decorators" => array(
-                    array(
-                        "tag" => "div",
-                        "close" => "false",
-                        "class" => "form-group"
-                    ),
-                    array(
-                        "tag" => "div",
-                        "close" => "true",
-                        "class" => "col-sm-6"
-                    ),
-                    array(
-                        "tag" => "lable",
-                        "close" => "false",
-                        "class" => "col-sm-1 control-label form-label-placeholder",
-                        "content" => '<div>Attendee Country</div>',
-                        "position" => "prependElement",
-                    ),
-                ),
-            ),
-            'city' => array("name" => "city",
-                "type" => "text",
-                "id" => "city",
-                "class" => "form-control ",
-                "placeholder" => "Attendee City",
-                "validate" => '',
-                "error" => 'City',
-                "value" => set_value('city', (isset($arrResult->city) && ($arrResult->city != '') ? $arrResult->city : (isset($postarray['city']) ? $postarray['city'] : ''))),
-                "decorators" => array(
-                    array(
-                        "tag" => "div",
-                        "close" => "true",
-                        "class" => "col-sm-6"
-                    ),
-                    array("tag" => "div",
-                        "close" => "close",
-                    ),
-                    array(
-                        "tag" => "lable",
-                        "close" => "false",
-                        "class" => "col-sm-1 control-label form-label-placeholder",
-                        "content" => '<div>Attendee City</div>',
-                        "position" => "prependElement",
-                    ),
-                    array(
-                        "tag" => "div",
-                        "close" => "true",
-                        "class" => "form-group",
-                        "content" => '<h3 class="col-sm-12">Contact Details</h3>',
-                        "position" => "appendOuter",
                     ),
                 ),
             ),
@@ -590,7 +536,7 @@ class attendee_model extends CI_Model {
                     ),
                     array(
                         "tag" => "div",
-                        "close" => "true",
+                        "close" => "false",
                         "class" => "col-sm-6"
                     ),
                     array(
@@ -598,6 +544,66 @@ class attendee_model extends CI_Model {
                         "close" => "false",
                         "class" => "col-sm-1 control-label form-label-placeholder",
                         "content" => '<div>Contact Email ID<span class="field_required">*</span></div>',
+                        "position" => "prependElement",
+                    ),
+                ),
+            ),
+            'country' => array("name" => "country",
+                "type" => "dropdown",
+                "id" => "country",
+                "attributes" => 'id="country" data-placeholder="Select country"',
+                "class" => "form-control chosen-select",
+                "placeholder" => "country",
+                "validate" => '',
+                "error" => 'country',
+                "options" => $this->place_model->getDropdownValues('country'),
+                "value" => set_value('country', (isset($arrResult->country) ? explode(',', $arrResult->country) : (isset($postarray['country']) ? $postarray['country'] : ''))),
+                "decorators" => array(
+                    array(
+                        "tag" => "div",
+                        "close" => "false",
+                        "class" => "form-group"
+                    ),
+                    array(
+                        "tag" => "div",
+                        "close" => "true",
+                        "class" => "col-sm-6"
+                    ),
+                    array(
+                        "tag" => "lable",
+                        "close" => "false",
+                        "class" => "col-sm-1 control-label form-label-placeholder",
+                        "content" => '<div>Attendee country</div>',
+                        "position" => "prependElement",
+                    ),
+                ),
+            ),
+            'city' => array("name" => "city",
+                "type" => "dropdown",
+                "id" => "city",
+                "attributes" => 'id="city" data-placeholder="Select city"',
+                "class" => "form-control chosen-select",
+                "placeholder" => "city",
+                "validate" => '',
+                "error" => 'city',
+                "options" => $this->place_model->getDropdownValues('city', (isset($arrResult->country) ? $arrResult->country : ''), array('city.country_id')),
+                "value" => set_value('city', (isset($arrResult->city) ? explode(',', $arrResult->city) : (isset($postarray['city']) ? $postarray['city'] : ''))),
+                "decorators" => array(
+                    array(
+                        "tag" => "div",
+                        "close" => "false",
+                        "class" => "form-group"
+                    ),
+                    array(
+                        "tag" => "div",
+                        "close" => "true",
+                        "class" => "col-sm-6"
+                    ),
+                    array(
+                        "tag" => "lable",
+                        "close" => "false",
+                        "class" => "col-sm-1 control-label form-label-placeholder",
+                        "content" => '<div>Attendee City</div>',
                         "position" => "prependElement",
                     ),
                 ),
@@ -1048,6 +1054,8 @@ class attendee_model extends CI_Model {
 
 //echo '<pre>'; print_r($data);
 //exit;
+            $data['industry'] = $data['industry_id'];
+            $data['functionality'] = $data['functionality_id'];
             $attendee_id = $this->id = $this->save($data, $id);
             //echo $attendee_id; exit;
             if (isset($data['tag_name'])) {
@@ -1069,39 +1077,38 @@ class attendee_model extends CI_Model {
             }
 
 //echo '<pre>'; print_r($data); exit;
-
-            if (isset($data['industry_id'])) {
-                $arrTags = array();
-                foreach ($data['industry_id'] as $industry) {
-                    $arrTags[$i]['attendee_id'] = $attendee_id;
-                    $arrTags[$i]['industry_id'] = $industry;
-                    $i++;
-                }
-                $this->has_model->tableName = 'attendee_has_industry';
-                if (!is_null($id)) {
-                    $arrHasDelete = array("attendee_id" => $id);
-
-                    if (!$this->has_model->delete($arrHasDelete))
-                        $error = TRUE;
-                }
-                $this->has_model->save($arrTags);
-            }
-            if (isset($data['functionality_id'])) {
-                $arrTags = array();
-                foreach ($data['functionality_id'] as $industry) {
-                    $arrTags[$i]['attendee_id'] = $attendee_id;
-                    $arrTags[$i]['functionality_id'] = $industry;
-                    $i++;
-                }
-                $this->has_model->tableName = 'attendee_has_functionality';
-                if (!is_null($id)) {
-                    $arrHasDelete = array("attendee_id" => $id);
-
-                    if (!$this->has_model->delete($arrHasDelete))
-                        $error = TRUE;
-                }
-                $this->has_model->save($arrTags);
-            }
+//            if (isset($data['industry_id'])) {
+//                $arrTags = array();
+//                foreach ($data['industry_id'] as $industry) {
+//                    $arrTags[$i]['attendee_id'] = $attendee_id;
+//                    $arrTags[$i]['industry_id'] = $industry;
+//                    $i++;
+//                }
+//                $this->has_model->tableName = 'attendee_has_industry';
+//                if (!is_null($id)) {
+//                    $arrHasDelete = array("attendee_id" => $id);
+//
+//                    if (!$this->has_model->delete($arrHasDelete))
+//                        $error = TRUE;
+//                }
+//                $this->has_model->save($arrTags);
+//            }
+//            if (isset($data['functionality_id'])) {
+//                $arrTags = array();
+//                foreach ($data['functionality_id'] as $industry) {
+//                    $arrTags[$i]['attendee_id'] = $attendee_id;
+//                    $arrTags[$i]['functionality_id'] = $industry;
+//                    $i++;
+//                }
+//                $this->has_model->tableName = 'attendee_has_functionality';
+//                if (!is_null($id)) {
+//                    $arrHasDelete = array("attendee_id" => $id);
+//
+//                    if (!$this->has_model->delete($arrHasDelete))
+//                        $error = TRUE;
+//                }
+//                $this->has_model->save($arrTags);
+//            }
 
             if (is_null($id)) {
                 $arrHasCode = array();
@@ -1241,9 +1248,12 @@ class attendee_model extends CI_Model {
             $this->db->order_by($this->order_name, $this->order_by);
         }
         if (!is_null($id) && $where == 'attendee.id')
-            $this->db->select('(select group_concat(attendee_has_industry.industry_id) from attendee_has_industry where attendee_id = ' . $id . ') as industry_id   
-        ,(select group_concat(attendee_has_functionality.functionality_id) from attendee_has_functionality where attendee_id = ' . $id . ') as functionality_id,   
-        ', false);
+            $this->db->select('A_T.industry as industry_id,
+                               A_T.functionality as functionality_id'
+//                    '(select group_concat(attendee_has_industry.industry_id) from attendee_has_industry where attendee_id = ' . $id . ') as industry_id   
+//        ,(select group_concat(attendee_has_functionality.functionality_id) from attendee_has_functionality where attendee_id = ' . $id . ') as functionality_id,   
+//        '
+                    , false);
         $this->db->select('attendee.id as attendee_id,user.id as user_id,attendee.*,user.*');
         $this->db->select('event.name as event_name,event.paid_event as event_paid_status,organizer.id as organizer_id,organizer.name as organizer_name,event.id as event_id,event_has_attendee.passcode,event_has_attendee.status as attendee_status,event_has_attendee.approve_by_org as attendee_approve_status,event_has_attendee.mail_sent as event_mail_sent');
         $this->db->select('event.event_start ,event.event_end ,event_profile.location as event_location,event_profile.city as event_city, event_profile.country as event_country');
@@ -1263,7 +1273,9 @@ class attendee_model extends CI_Model {
                 } else if ($type == 'AND') {
 
                     $this->db->where($field, $search);
-                    $this->db->where("event_has_attendee.event_id", $drop_down_search);
+                    if (!empty($drop_down_search)) {
+                        $this->db->where("event_has_attendee.event_id", $drop_down_search);
+                    }
                 } else if ($type = 'or') {
                     $this->db->or_where($field, $search);
                 }
@@ -1384,11 +1396,26 @@ class attendee_model extends CI_Model {
      */
     function check_attendee($where = array()) {
 //        $this->db->select('id');
+//        display($where);
+
         $this->db->select('attendee.id as attendee_id,attendee.*,user.*');
-        $this->db->where($where);
+        if (isset($where['first_name']) && isset($where['last_name']) && isset($where['email'])) {
+            $first_name = $where['first_name'];
+            $last_name = $where['last_name'];
+            $email = $where['email'];
+            $this->db->where('first_name', $first_name);
+            $this->db->where('last_name', $last_name);
+            $this->db->or_where('email', $email);
+        } else {
+            $this->db->where($where);
+        }
+//        $this->db->where($where);
+
         $this->db->join('user', 'user.id = attendee.user_id');
 
         $result = $this->db->get('attendee')->row();
+//        show_query();
+//        display($result);
 //        $this->db->where($field . ' IS NOT NULL');
 
         if ($result) {
@@ -1433,8 +1460,20 @@ class attendee_model extends CI_Model {
             $data['user_id'] = $user_id;
 //            echo '<pre>';print_r($data);exit;
             $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
-            ;
 
+           
+            if (isset($data['industry_id'])) {
+                $arrTags = array();
+                foreach ($data['industry_id'] as $industry) {
+                    $data['industry'] = $industry;
+                }
+            }
+            if (isset($data['functionality_id'])) {
+                $arrTags = array();
+                foreach ($data['functionality_id'] as $industry) {
+                    $data['functionality'] = $industry;
+                }
+            }
             $attendee_id = $this->save($data, $id);
 
 
@@ -1457,41 +1496,39 @@ class attendee_model extends CI_Model {
 
                 $this->tag_relation_model->save_batch($arrTags);
             }
-            $this->has_model->tableName = 'attendee_has_industry';
-            if (!is_null($id)) {
-                $arrHasDelete = array("attendee_id" => $id);
-
-                if (!$this->has_model->delete($arrHasDelete))
-                    $error = TRUE;
-            }
-            if (isset($data['industry_id'])) {
-                $arrTags = array();
-                foreach ($data['industry_id'] as $industry) {
-                    $arrTags[$i]['attendee_id'] = $attendee_id;
-                    $arrTags[$i]['industry_id'] = $industry;
-                    $i++;
-                }
-
-                $this->has_model->save($arrTags);
-            }
-            $this->has_model->tableName = 'attendee_has_functionality';
-            if (!is_null($id)) {
-                $arrHasDelete = array("attendee_id" => $id);
-
-                if (!$this->has_model->delete($arrHasDelete))
-                    $error = TRUE;
-            }
+//            $this->has_model->tableName = 'attendee_has_industry';
+//            if (!is_null($id)) {
+//                $arrHasDelete = array("attendee_id" => $id);
+//
+//                if (!$this->has_model->delete($arrHasDelete))
+//                    $error = TRUE;
+//            }
+//            if (isset($data['industry_id'])) {
+//                $arrTags = array();
+//                foreach ($data['industry_id'] as $industry) {
+//                    $arrTags[$i]['attendee_id'] = $attendee_id;
+//                    $arrTags[$i]['industry_id'] = $industry;
+//                    $i++;
+//                }
+//
+//                $this->has_model->save($arrTags);
+//            }
+//            $this->has_model->tableName = 'attendee_has_functionality';
+//            if (!is_null($id)) {
+//                $arrHasDelete = array("attendee_id" => $id);
+//
+//                if (!$this->has_model->delete($arrHasDelete))
+//                    $error = TRUE;
+//            }
             if (isset($data['functionality_id'])) {
-                $arrTags = array();
-                foreach ($data['functionality_id'] as $industry) {
-                    $arrTags[$i]['attendee_id'] = $attendee_id;
-                    $arrTags[$i]['functionality_id'] = $industry;
-                    $i++;
-                }
-
-                $this->has_model->save($arrTags);
-
-
+//                $arrTags = array();
+//                foreach ($data['functionality_id'] as $industry) {
+//                    $arrTags[$i]['attendee_id'] = $attendee_id;
+//                    $arrTags[$i]['functionality_id'] = $industry;
+//                    $i++;
+//                }
+//
+//                $this->has_model->save($arrTags);
                 $this->has_model->tableName = 'event_has_attendee';
                 $arrHasDelete = array("attendee_id" => $attendee_id, "event_id" => $this->event_id);
 
@@ -1603,9 +1640,46 @@ class attendee_model extends CI_Model {
 //        die('adf');
     }
 
-    function getEmailAndPassCode($id = NULL) {
-        if (is_null($id))
+    function by_pass_passcode($data = array()) {
+        //echo '1541';exit;
+//        $this->load->model('event_has_attendee');
+        $this->load->model('attendee_model');
+        if (empty($data))
             return false;
+        $status = true;
+        $count = 0;
+        foreach ($data as $id) {
+
+            $objAttend = $this->getAll($id, true);
+//            show_query();
+//            display($id);
+            $selected_event = $objAttend->event_id;
+            if ($this->session->userdata('selected_event')) {
+                $selected_event = $this->session->userdata('selected_event');
+            }
+            //if($objAttend->subscribe_email == 1) {
+            if (isset($objAttend->subscribe_email)) {
+                $count++;
+                $this->db->where('event_id', $selected_event);
+                $this->db->where('attendee_id', $objAttend->attendee_id);
+                $arrData = array('approve_by_org' => 1, 'mail_sent' => 1, 'status' => 1);
+                $this->db->update('event_has_attendee', $arrData);
+                $arrData['mail_sent'] = 1;
+                $this->save($arrData, $id);
+            }
+        }
+        //echo '<br>'.$count; 
+        //exit;
+        return $status;
+//        die('adf');
+    }
+
+    function
+
+    getEmailAndPassCode($id = NULL) {
+        if (is_null($id))
+            return
+                    false;
 
 
         $this->db->select('user.email,event_has_attendee.passcode,attendee.name as attendee_name,event.name as event_name');
@@ -1632,7 +1706,9 @@ class attendee_model extends CI_Model {
      * @params  boolean $row to return single row
      * @return  void
      */
-    function getDropdownValues($id = NULL, $first = false) {
+    function
+
+    getDropdownValues($id = NULL, $first = false) {
         $dropDownValues = $this->getAll();
 //       echo '<pre>'; print_r($dropDownValues);exit;
         $arrDropdown = array();
@@ -1641,7 +1717,8 @@ class attendee_model extends CI_Model {
 
 
         foreach ($dropDownValues as $value) {
-            $arrDropdown[$value['attendee_id']] = $value['first_name'] . ' ' . $value['last_name'];
+
+            $arrDropdown[$value['attendee_id']] = $value['first_name'] . ' ' . $value ['last_name'];
         }
         return $arrDropdown;
     }

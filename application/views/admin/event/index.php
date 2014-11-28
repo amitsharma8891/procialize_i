@@ -72,6 +72,7 @@
                                 <th class="text-center">Event City</th>
                                 <th class="text-center">Contact Name</th>
                                 <th class="text-center">Contact Phone #</th>
+                                <th class="text-center">Update Tweets</th>
                                 <th class="text-center">Status (E/D)</th>
                                 <th>&nbsp;</th>
                             </tr>
@@ -98,16 +99,20 @@
                                             ?>" width="30px" height="30px" title="Event Logo" alt="">
                                              <?php } else { ?>
                                             <img src=" <?php echo base_url('uploads/events/logo/event-logo.png');
-                                     ?>" width="30px" height="30px" title="Event Logo" alt="">
-        <?php } ?>
+                                                 ?>" width="30px" height="30px" title="Event Logo" alt="">
+                                             <?php } ?>
 
 
-        <!-- <img width="35px" height="35px" src='<?php echo base_url() ?>/<?php echo UPLOAD_EVENT_LOGO_DISPLAY ?><?php echo ($event['logo'] == '') ? 'logo.png' : $event['logo']; ?> ' />--> </td>  
+                                                                                                                <!-- <img width="35px" height="35px" src='<?php echo base_url() ?>/<?php echo UPLOAD_EVENT_LOGO_DISPLAY ?><?php echo ($event['logo'] == '') ? 'logo.png' : $event['logo']; ?> ' />--> </td>  
                                     <td class="tdalign"><?php echo $event['organizer_name']; ?></td>
                                     <td class="tdalign"><?php echo $event['name'] ?></td>
                                     <td class="tdalign"><?php echo $event['city'] ?></td>
                                     <td class="tdalign"><?php echo $event['contact_name']; ?></td>
                                     <td class="tdalign"><?php echo $event['contact_mobile']; ?></td>
+                                    <td class="tdalign">   
+                                        <a title="Update Tweets"  data="<?php echo $event['event_id']; ?>" onclick="update_tweets('<?php echo $event['event_id']; ?>')"  class="update_tweets" href="javascript:void(0)"><i class="fa fa-refresh"></i></a>
+                                    </td>
+
                                     <td class="tdalign"><?php echo ($event['status'] == 1) ? 'E' : 'D'; ?></td>
                                     <td class="table-action tdalign tdwdth130">
 
@@ -115,7 +120,7 @@
                                         <a title="Delete" href="#" data="<?php echo $event['event_id']; ?>" class="delete-row"><i class="fa fa-trash-o"></i></a>
                                     </td>
                                 </tr>
-    <?php endforeach; ?>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div><!-- table-responsive -->
@@ -178,4 +183,5 @@
 <?php echo form_close(); ?>
 <script>
     delete_url = '<?php echo base_url('manage/event/delete/json'); ?>';
+   
 </script>

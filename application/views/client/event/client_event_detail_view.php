@@ -8,7 +8,7 @@
 <?php $this->load->view(EVENT_TOP_NAVIGATION) ?>
 <!----event top navigation---->
 </div>
-<?php // / display($event)?>
+<?php //  display($event)?>
 <div class="contentpanel">
     <div class="panel panel-default panel-stat">
         <div class="">
@@ -29,7 +29,7 @@
                                     <small class="stat-label">
                                         <div class="thumb">
                                             <img src="<?php echo SITE_URL . 'uploads/organizer/logo/' . $event['organiser_photo'] ?>" class="img-responsive userlogor" alt="Organizer"/>
-                                        <!--<img src="<?php //echo CLIENT_IMAGES ?>epc.png" class="img-responsive userlogor" />-->
+                                        <!--<img src="<?php //echo CLIENT_IMAGES  ?>epc.png" class="img-responsive userlogor" />-->
                                         </div>
                                     </small>
 
@@ -46,18 +46,7 @@
                                 <small class="stat-label mr10"><?php echo $event['event_city'] . ' , ' . $event['event_country'] ?></small>
                                 <small class="stat-label mr10"><?php echo $event['event_industry'] . ',' . $event['event_functionality'] ?></small>
                             </div>
-                            <!--<div class="col-xs-3">
-                                  <small class="stat-label">
-                                          <div class="thumb">
-                                              <img src="<?php //echo SITE_URL.'uploads/organizer/logo/'.$event['organiser_photo'] ?>" class="img-responsive userlogor" alt="Organizer"/>
-                                          <!--<img src="<?php //echo CLIENT_IMAGES ?>epc.png" class="img-responsive userlogor" />-->
-
-<!--					<small class="stat-label">
-<div class="thumb">
-<img src="<?php // echo CLIENT_IMAGES ?>tradeindia.png" class="img-responsive userlogor" />
-</div>
-</small>
-</div>-->
+                         
                         </div><!-- row -->
 
 
@@ -96,39 +85,39 @@
                                                 </ul>
                                                 <h5><?php echo count($common_industry) ?> Industry</h5>
                                             </div>
-    <?php } ?>
+                                        <?php } ?>
                                         <div class="brbr"></div>
                                         <?php if ($common_location) { ?>
                                             <div class="col-xs-6 temp text-left">
                                                 <ul class="social-list">
-                                            <?php
-                                            if ($common_location) {
-                                                foreach ($common_location as $location) {
-                                                    echo '<li><a href="' . SITE_URL . 'events/attendee-detail/' . $location['attendee_id'] . '"><img class="img-responsive" src="' . SITE_URL . 'uploads/' . front_image('attendee', $location['attendee_image']) . '" title="' . $location['attendee_name'] . '" alt="' . $location['attendee_name'] . '"></a></li>';
-                                                }
-                                            }
-                                            ?>
+                                                    <?php
+                                                    if ($common_location) {
+                                                        foreach ($common_location as $location) {
+                                                            echo '<li><a href="' . SITE_URL . 'events/attendee-detail/' . $location['attendee_id'] . '"><img class="img-responsive" src="' . SITE_URL . 'uploads/' . front_image('attendee', $location['attendee_image']) . '" title="' . $location['attendee_name'] . '" alt="' . $location['attendee_name'] . '"></a></li>';
+                                                        }
+                                                    }
+                                                    ?>
                                                 </ul>
                                                 <h5><?php echo count($common_location) ?> Location</h5>
                                             </div>
-                                                <?php } ?>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
-                                    <?php } ?>
+                        <?php } ?>
 
                         <address>
-                            <strong>Exhibitor Map:</strong> <a href="<?php echo SITE_URL . 'client/event/get_image_map_exhibitor/parent/' . $this->session->userdata('client_event_id'); ?>">Show Exhibitor Map</a><br>
+                            <strong>Event Map:</strong> <a href="<?php echo SITE_URL . 'client/event/get_image_map_exhibitor/parent/' . $this->session->userdata('client_event_id'); ?>">Show Event Map</a><br>
                             <strong>Venue:</strong> <?php echo $event['event_location'] ?><br>
                             <strong>Email:</strong> <?php echo $event['contact_email'] ?><br>
-<?php if ($event['website']) { ?>
+                            <?php if ($event['website']) { ?>
                                 <strong>Website:</strong> <a href="<?php echo 'http://' . $event['website'] ?>" target="_blank"><?php echo $event['website'] ?></a><br>
-<?php } ?>
+                            <?php } ?>
                         </address>
-                            <?php
-                            if ($event['floor_plan']) {
-                                if (file_exists(UPLOADS . 'events/floorplan/' . $event['floor_plan'])) {
-                                    ?>
+                        <?php
+                        if ($event['floor_plan']) {
+                            if (file_exists(UPLOADS . 'events/floorplan/' . $event['floor_plan'])) {
+                                ?>
 
                                 <a class="btn btn-success input-sm btn-block mb9" href="<?php echo SITE_URL . 'client/event/download/EVENT/' . $target_user_id . '/' . $event['floor_plan'] ?>" >Download Event Map</a>
                                 <?php
@@ -136,20 +125,20 @@
                         }
                         ?>
                         <ul class="list-inline mb5">
-                        <?php
-                        if ($event['image1']) {
-                            if (file_exists(UPLOADS . 'events/images/' . $event['image1']))
-                                echo '<li class="open_gallery"><a href="javascript:;" ><img class="img-responsive" src="' . SITE_URL . 'uploads/events/images/' . $event['image1'] . '"></a></li>';
-                        }
-                        if ($event['image2']) {
-                            if (file_exists(UPLOADS . 'events/images/' . $event['image2']))
-                                echo '<li class="open_gallery"><a href="javascript:;" ><img class="img-responsive" src="' . SITE_URL . 'uploads/events/images/' . $event['image2'] . '"></a></li>';
-                        }
-                        if ($event['image3']) {
-                            if (file_exists(UPLOADS . 'events/images/' . $event['image3']))
-                                echo '<li class="open_gallery"><a href="javascript:;" ><img class="img-responsive" src="' . SITE_URL . 'uploads/events/images/' . $event['image3'] . '"></a></li>';
-                        }
-                        ?>
+                            <?php
+                            if ($event['image1']) {
+                                if (file_exists(UPLOADS . 'events/images/' . $event['image1']))
+                                    echo '<li class="open_gallery"><a href="javascript:;" ><img class="img-responsive" src="' . SITE_URL . 'uploads/events/images/' . $event['image1'] . '"></a></li>';
+                            }
+                            if ($event['image2']) {
+                                if (file_exists(UPLOADS . 'events/images/' . $event['image2']))
+                                    echo '<li class="open_gallery"><a href="javascript:;" ><img class="img-responsive" src="' . SITE_URL . 'uploads/events/images/' . $event['image2'] . '"></a></li>';
+                            }
+                            if ($event['image3']) {
+                                if (file_exists(UPLOADS . 'events/images/' . $event['image3']))
+                                    echo '<li class="open_gallery"><a href="javascript:;" ><img class="img-responsive" src="' . SITE_URL . 'uploads/events/images/' . $event['image3'] . '"></a></li>';
+                            }
+                            ?>
                         </ul>
                         <p class="text-justify"><?php echo $event['event_description'] ?></p>
                         <br>
@@ -184,15 +173,15 @@
 
                         <!---google map integrations ends---->
                         <div class="mb5" style="border:1px solid rgba(0,0,0,0.4); border-radius: 4px; height: 225px" id="map-canvas"></div>
-                                      <!--<img src="http://maps.googleapis.com/maps/api/staticmap?center=<?php //echo $event['event_latitude'] ?>,<?php //echo $event['event_longitude'] ?>&zoom=14&size=400x400&sensor=false" class="img-responsive thumb mapimg mb9">-->
+                                      <!--<img src="http://maps.googleapis.com/maps/api/staticmap?center=<?php //echo $event['event_latitude']  ?>,<?php //echo $event['event_longitude']  ?>&zoom=14&size=400x400&sensor=false" class="img-responsive thumb mapimg mb9">-->
 
 
 
-<?php
-if (!passcode_validatation()) {
-    ?>
+                        <?php
+                        if (!passcode_validatation()) {
+                            ?>
                             <a href="javascript:;" data-toggle="modal" data-target="#SignUp" class="btn btn-success input-sm btn-block mb9">Event Registration</a>
-<?php } ?>
+                        <?php } ?>
 
                     </div><!-- stat -->
                 </div><!-- col-sm-6 -->
@@ -207,7 +196,7 @@ if (!passcode_validatation()) {
 <div class="rightpanel">
 
     <!--Right panel view--->
-<?php $this->load->view(CLIENT_RIGHT_PANEL) ?>
+    <?php $this->load->view(CLIENT_RIGHT_PANEL) ?>
     <!--Right panel view--->
 
 </div><!-- rightpanel -->

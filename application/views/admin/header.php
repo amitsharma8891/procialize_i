@@ -213,7 +213,7 @@
     <!---google map integrations ends---->
     <div class="mb5" style="border:1px solid rgba(0,0,0,0.4); border-radius: 4px; height: 180px" id="map-canvas"></div>
     </div>
-    <!-- stat --> 
+    <!-- stat -->  
     </div>
     <!-- col-sm-6 --> 
 

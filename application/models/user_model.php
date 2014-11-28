@@ -568,14 +568,16 @@ class user_model extends CI_Model {
         $this->db->where('user.id', $id);
         if ($row) {
 
-            $this->db->join('user_has_industry', 'user_has_industry.user_id = user.id');
-            $this->db->join('user_has_functionality', 'user_has_functionality.user_id = user.id');
+//            $this->db->join('user_has_industry', 'user_has_industry.user_id = user.id');
+//            $this->db->join('user_has_functionality', 'user_has_functionality.user_id = user.id');
+            $this->db->join('attendee', 'attendee.user_id = user.id');
             $result = $this->db->get('user')->row();
             //echo '<pre>'; print_r($result->result()); exit;
             return $result;
         } else {
-            $this->db->join('user_has_industry', 'user_has_industry.user_id = user.id');
-            $this->db->join('user_has_functionality', 'user_has_functionality.user_id = user.id');
+//            $this->db->join('user_has_industry', 'user_has_industry.user_id = user.id');
+//            $this->db->join('user_has_functionality', 'user_has_functionality.user_id = user.id');
+            $this->db->join('attendee', 'attendee.user_id = user.id');
             $result = $this->db->get('user');
             //echo '<pre>'; print_r($result->result()); exit;
             return $result->result_array();
@@ -701,18 +703,9 @@ class user_model extends CI_Model {
         if ($result[0]['email'] != '') {
 
             $password = generatePassword();
-//            $subject = 'Password Changed';
-//            $message = "Hello,<br/>";
-//            $message .= "We have received a request to reset the password for this e-mail address. <br/>";
-//            $message .= "Find below your credentials to login to the Admin panel and manage your event:<br/>";
-//            $message .= "Event Name: <br/>";
-//            $message .= "Username:" . $data['username'] . "<br/>";
-//            $message .= 'Password:' . $password . "<br/>";
-//            $message .= 'If you did not request to reset your password for this ID, kindly ignore this email.<br/>';
-//            $message .= 'Team Procialize';
             //MAIL TEMLATE START
             $email_template = get_email_template('forgot_password_admin');
-            $keywords = array('{app_name}', '{username}', '{password}', '{app_contact_email}','{site_url}', '{IMAGE_PATH}', '{logo_image}','{apple_app_store}','{google_play_store}');
+            $keywords = array('{app_name}', '{username}', '{password}', '{app_contact_email}', '{site_url}', '{IMAGE_PATH}', '{logo_image}', '{apple_app_store}', '{google_play_store}');
             $replace_with = array(
                 $email_template['setting']['app_name'],
                 $data['username'],
@@ -720,7 +713,7 @@ class user_model extends CI_Model {
                 $email_template['setting']['app_contact_email'],
                 SITE_URL,
                 CLIENT_IMAGES,
-                '<img src="' . SITE_URL . 'uploads/app_logo/' . $email_template['setting']['app_logo_big'] . '">',                             '<a href=' . $email_template['setting']['apple_app_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . APPLE_APP_STORE_IMAGE . '"></a>',                             '<a href=' . $email_template['setting']['google_play_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . GOOGLE_PLAY_STORE_IMAGE . '"></a>'
+                '<img src="' . SITE_URL . 'uploads/app_logo/' . $email_template['setting']['app_logo_big'] . '">', '<a href=' . $email_template['setting']['apple_app_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . APPLE_APP_STORE_IMAGE . '"></a>', '<a href=' . $email_template['setting']['google_play_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . GOOGLE_PLAY_STORE_IMAGE . '"></a>'
             );
             $subject = str_replace($keywords, $replace_with, $email_template['subject']);
             $html = str_replace($keywords, $replace_with, $email_template['body']);

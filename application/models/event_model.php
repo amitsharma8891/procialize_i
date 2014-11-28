@@ -697,7 +697,7 @@ class event_model extends CI_Model {
                 "id" => "logo",
                 "class" => "form-control",
                 "placeholder" => "Logo",
-                "validate" => 'required',
+                "validate" => '',
                 "upload_config" => array(
                     "upload_path" => UPLOAD_EVENT_LOGO_DISPLAY,
                     "allowed_types" => 'jpg|png|jpeg',
@@ -1123,6 +1123,16 @@ class event_model extends CI_Model {
     function saveAll($data, $id = NULL) {
         $error = FALSE;
         try {
+            if (isset($data['industry_id'])) {
+                foreach ($data['industry_id'] as $industry) {
+                    $data['industry'] = $industry;
+                }
+            }
+            if (isset($data['functionality_id'])) {
+                foreach ($data['functionality_id'] as $industry) {
+                    $data['functionality'] = $industry;
+                }
+            }
             $this->db->trans_begin();
             $event_id = $this->save($data, $id);
             $data['event_id'] = $event_id;
@@ -1145,37 +1155,37 @@ class event_model extends CI_Model {
                 }
                 $this->tag_relation_model->save_batch($arrTags);
             }
-            if (isset($data['industry_id'])) {
-                $arrTags = array();
-                foreach ($data['industry_id'] as $industry) {
-                    $arrTags[$i]['event_id'] = $event_id;
-                    $arrTags[$i]['industry_id'] = $industry;
-                    $i++;
-                }
-                $this->has_model->tableName = 'event_has_industry';
-                if (!is_null($id)) {
-                    $arrHasDelete = array("event_id" => $id);
-                    if (!$this->has_model->delete($arrHasDelete))
-                        $error = TRUE;
-                }
-                $this->has_model->save($arrTags);
-            }
-            if (isset($data['functionality_id'])) {
-                $arrTags = array();
-                foreach ($data['functionality_id'] as $industry) {
-                    $arrTags[$i]['event_id'] = $event_id;
-                    $arrTags[$i]['functionality_id'] = $industry;
-                    $i++;
-                }
-                $this->has_model->tableName = 'event_has_functionality';
-                if (!is_null($id)) {
-                    $arrHasDelete = array("event_id" => $id);
-
-                    if (!$this->has_model->delete($arrHasDelete))
-                        $error = TRUE;
-                }
-                $this->has_model->save($arrTags);
-            }
+//            if (isset($data['industry_id'])) {
+//                $arrTags = array();
+//                foreach ($data['industry_id'] as $industry) {
+//                    $arrTags[$i]['event_id'] = $event_id;
+//                    $arrTags[$i]['industry_id'] = $industry;
+//                    $i++;
+//                }
+//                $this->has_model->tableName = 'event_has_industry';
+//                if (!is_null($id)) {
+//                    $arrHasDelete = array("event_id" => $id);
+//                    if (!$this->has_model->delete($arrHasDelete))
+//                        $error = TRUE;
+//                }
+//                $this->has_model->save($arrTags);
+//            }
+//            if (isset($data['functionality_id'])) {
+//                $arrTags = array();
+//                foreach ($data['functionality_id'] as $industry) {
+//                    $arrTags[$i]['event_id'] = $event_id;
+//                    $arrTags[$i]['functionality_id'] = $industry;
+//                    $i++;
+//                }
+//                $this->has_model->tableName = 'event_has_functionality';
+//                if (!is_null($id)) {
+//                    $arrHasDelete = array("event_id" => $id);
+//
+//                    if (!$this->has_model->delete($arrHasDelete))
+//                        $error = TRUE;
+//                }
+//                $this->has_model->save($arrTags);
+//            }
         } catch (Exception $e) {
             $error = true;
         }
@@ -1286,9 +1296,11 @@ class event_model extends CI_Model {
         if (!is_null($id))
             $this->db->where('event.id', $id);
         if (!is_null($id)) {
-            $this->db->select('(select group_concat(event_has_industry.industry_id) from event_has_industry where event_id = ' . $id . ') as industry_id   
-        ,(select group_concat(event_has_functionality.functionality_id) from event_has_functionality where event_id = ' . $id . ') as functionality_id,   
-        ', false);
+            $this->db->select('event.industry as industry_id,
+                              event.functionality as functionality_id'
+//                    (select group_concat(event_has_industry.industry_id) from event_has_industry where event_id = ' . $id . ') as industry_id   
+//        ,(select group_concat(event_has_functionality.functionality_id) from event_has_functionality where event_id = ' . $id . ') as functionality_id,   
+                    , false);
         }
 
         $this->db->select('event.*,event.id as event_id,event_profile.*, organizer.name as organizer_name');

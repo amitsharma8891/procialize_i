@@ -38,7 +38,8 @@ class Event_api_call extends CI_Controller {
         }
         $this->model->access_token = $accsee_token; //$attendee_id;
         $data = $this->model->getAll(NULL, NULL, $search);
-        json_output($data);
+        return $data;
+//        json_output($data);
     }
 
     function get_data($event_id, $single_row, $search) {
@@ -130,6 +131,15 @@ class Event_api_call extends CI_Controller {
         $update_data = $this->notification_model->update_notification_status($attendee_id);
         $data = $this->notification_model->getNotification();
         json_output($data);
+    }
+
+    function wall_notification_list() {
+//        $api_access_token = $this->uri->segment('4');
+//        $user_data = check_access_token($api_access_token, $check_null = TRUE);
+//        $attendee_id = $this->notification_model->subject_id = $user_data->attendee_id;
+//        $update_data = $this->notification_model->get_notification_list($attendee_id);
+        $data = $this->notification_model->getwallNotification();
+        echo json_encode($data);
     }
 
     function update_notification_count() {
@@ -578,6 +588,10 @@ class Event_api_call extends CI_Controller {
                         $this->db->update('attendee', array('api_access_token' => $api_access_token, 'modified_date' => date('Y-m-d H:i:s')));
                         $json_array['api_access_token'] = $api_access_token;
                     }
+                    $event_list = $this->event_list();
+                    $json_array = $event_list;
+                    $wall_notification_list = $this->notification_model->getwallNotification();
+                    $json_array['wall_notification'] = $wall_notification_list;
                     $json_array['user_data'] = $user_data;
                     $json_array['user_event_list'] = $this->model->get_user_event_list($user_data->attendee_id);
                     $json_array['user_saved_attendee'] = $this->model->get_saved_profile_id($user_data->attendee_id, 'A');
@@ -1003,25 +1017,33 @@ class Event_api_call extends CI_Controller {
         //$data['description']                                                    = '';  
         $data['type_of_attendee'] = 'A';
         if (!$data['email']) {
-            $data['email'] = $data['fb_id'] . '@facebook.com';
+            if (!$data['fb_id']) {
+                $data['email'] = $data['fb_id'] . '@facebook.com';
+            }
         }
+        $json_array['error'] = 'error';
+        $json_array['msg'] = 'Something Went Wrong';
         $user_data = $this->login_model->check_user(NULL, $data['email'], $row = TRUE); //check for user
         if (!$user_data) {
-            if ($data['profile_pic']) {
-                $url = $data['profile_pic'];
-                $image_data = @file_get_contents($url);
-                $fileName = $data['fb_id'] . 'facebook.jpg';
-                $save_path = UPLOADS . 'attendee/';
-                file_put_contents($save_path . $fileName, $image_data);
-                $profile_pic = $data['profile_pic'] = $fileName;
-            }
-            $save_user = $this->login_model->save_user(NULL, $data);
-            //update to get the access token
+            if ($data['fb_id']) {
+                if ($data['profile_pic']) {
+                    $url = $data['profile_pic'];
+                    $image_data = @file_get_contents($url);
+                    $fileName = $data['fb_id'] . 'facebook.jpg';
+                    $save_path = UPLOADS . 'attendee/';
+                    file_put_contents($save_path . $fileName, $image_data);
+                    $profile_pic = $data['profile_pic'] = $fileName;
+                }
+                $save_user = $this->login_model->save_user(NULL, $data);
+                //update to get the access token
 
-            $this->db->where('id', $save_user['attendee_id']);
-            $this->db->update('attendee', array('api_access_token' => md5($save_user['attendee_id'])));
-            $user_data = check_access_token(md5($save_user['attendee_id']), $check_null = TRUE);
-            $json_array['user_data'] = $user_data;
+                $this->db->where('id', $save_user['attendee_id']);
+                $this->db->update('attendee', array('api_access_token' => md5($save_user['attendee_id'])));
+                $user_data = check_access_token(md5($save_user['attendee_id']), $check_null = TRUE);
+                $json_array['user_data'] = $user_data;
+                $json_array['error'] = 'success';
+                $json_array['msg'] = 'Success';
+            }
         } else {
             if ($data['profile_pic']) {
                 $url = $data['profile_pic'];
@@ -1037,15 +1059,20 @@ class Event_api_call extends CI_Controller {
                 $save_user = $this->login_model->save_user($user_data->id, $data);
             }
             $user_data = check_access_token($user_data->api_access_token, $check_null = TRUE);
+            $event_list = $this->event_list();
+            $json_array = $event_list;
+            $wall_notification_list = $this->notification_model->getwallNotification();
+            $json_array['wall_notification'] = $wall_notification_list;
             $json_array['user_data'] = $user_data;
             $json_array['user_event_list'] = $this->model->get_user_event_list(@$user_data->attendee_id);
             $json_array['user_saved_attendee'] = $this->model->get_saved_profile_id(@$user_data->attendee_id, 'A');
             $json_array['user_saved_exhibitor'] = $this->model->get_saved_profile_id(@$user_data->attendee_id, 'E');
             $json_array['user_saved_speaker'] = $this->model->get_saved_profile_id(@$user_data->attendee_id, 'S');
+            $json_array['error'] = 'success';
+            $json_array['msg'] = 'Success';
         }
 
-        $json_array['error'] = 'success';
-        $json_array['msg'] = 'Success';
+
         json_output($json_array);
     }
 
@@ -1115,6 +1142,10 @@ class Event_api_call extends CI_Controller {
                     $this->db->update('attendee', array('api_access_token' => md5($user_data->attendee_id)));
                 }
                 $user_data = check_access_token($user_data->api_access_token, $check_null = TRUE);
+                $event_list = $this->event_list();
+                $json_array = $event_list;
+                $wall_notification_list = $this->notification_model->getwallNotification();
+                $json_array['wall_notification'] = $wall_notification_list;
                 $json_array['user_data'] = $user_data;
             }
 

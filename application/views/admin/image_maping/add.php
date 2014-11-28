@@ -31,17 +31,8 @@
 <div class="contentpanel"><!-- Content Panel -->
     <div class="col-sm-13"><!-- Add Exhibitor Row -->
         <form id="image_maping_form" enctype="multipart/form-data" method="POST">
-
             <div class="form-group">
-                <label class="col-sm-2 control-label">Maping Name</label>
-                <div class="col-sm-6">
-                    <input type="text" name="name"  id ="name" class ="form-control " placeholder="Please Enter Maping Image Name" value="<?php echo $list->name ?>">
-                    <input type="hidden" name="image_map_id" value="<?php echo $list->id ?>">
-                    <span id="name_err" style="color: red"><?php echo $error->name; ?></span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Maping event</label>
+                <label class="col-sm-2 control-label">Event Name</label>
                 <div class="col-sm-6">
                     <?php
 //                    echo "<pre>";
@@ -67,6 +58,15 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Event Map Name</label>
+                <div class="col-sm-6">
+                    <input type="text" name="name"  id ="name" class ="form-control " placeholder="Please Enter Maping Image Name" value="<?php echo $list->name ?>">
+                    <input type="hidden" name="image_map_id" value="<?php echo $list->id ?>">
+                    <span id="name_err" style="color: red"><?php echo $error->name; ?></span>
+                </div>
+            </div>
+
             <div class="form-group" style="display: none">
                 <label class="col-sm-2 control-label">Parent Map</label>
                 <div class="col-sm-6">
@@ -105,7 +105,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label"> Mapping Image</label>
+                <label class="col-sm-2 control-label"> Event Map</label>
                 <div class="col-sm-6">
                     <input type="file" name="image_name">
                     <span id="image_name_err" style="color: red"></span>
@@ -115,22 +115,51 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Image coordinates</label>
+                <label class="col-sm-2 control-label">Co-ordinates for one or more Maps</label>
                 <div class="col-sm-7">
-                    <textarea name="coordinates" id="coordinates" class ="form-control" placeholder="Please Enter Image coordinates">
+                    <textarea rows="15" cols="50" name="coordinates" id="coordinates" class ="form-control" placeholder="Please Enter Image coordinates">
                         <?php echo $list->coordinates ?>
                     </textarea>
                     <span id="coordinates_err" style="color: red"></span>
                 </div>
             </div>
-<!--            <div class="iframe"><iframe></iframe></div>-->
-            <div class = "form-group">
-                <div class = "col-sm-4">
-                    <a title="Back" class = "btn btn-danger btn-block" href="<?php echo base_url('manage/image_maping/'); ?>">Back</a>
-
-                    <!--<input type = "button" class = "btn btn-danger btn-block" value = "Cancel"/>-->
+            <div  class="form-group">
+                <div class="col-sm-12">
+                    <b> Sample:</b> 
+<!--                    <div class="highlight">
+                        <pre>
+                        <code class="html">
+                            <span class="cp">-->
+            <xmp>
+            <map name='Map' id='Map'>
+                <area shape='circle' coords='733,233,89' rel='733,233,89' data-toggle='modal' data-target='#map_exhibitor'  href='javascript:void(0);' />
+                <area shape='circle' coords='276,856,88' rel='276,856,88' data-toggle='modal' data-target='#map_exhibitor'  href='javascript:void(0);' />
+            </map> 
+            </xmp>
+<!--                            </span>
+                        </code>
+                        </pre>
+                    </div>-->
+                    <b>  Guidelines:</b> 
+            <xmp>
+            1) Keep the <map name = "Map" id = "Map"> & </map> lines as it is.
+            2) To highlight the area of the uploaded 'Event Map' image where other Maps or the Stalls can be associated, create one or more occurrences of 
+                <area shape = "circle" coords = "733,233,89" rel = "733,233,89" data-toggle="modal" data-target="#map_exhibitor" href = "javascript:void(0);"/>
+                Each of these defined area of co-ordinates can lead to another Map (Image) or can directly depict
+                an Exhibitor Stall/Location.
+            3) A Specialized UI/Technical person needs to work on this to arrive at these co-ordinates.
+                Contact <?php echo getSetting()->contact_email; ?> if you need any assistance for the same.
+            </xmp>
                 </div>
-                <div class = "col-sm-4">
+            </div>
+            <!--<div class = "iframe"><iframe></iframe></div> -->
+            <div class = "form-group" >
+<!--                <div class = "col-sm-4">
+                    <a title = "Back" class = "btn btn-danger btn-block" href = "<?php echo base_url('manage/image_maping/'); ?>">Back</a>
+
+                <input type = "button" class = "btn btn-danger btn-block" value = "Cancel"/> 
+                </div>-->
+                <div class = "col-sm-4 col-sm-offset-4">
                     <input type = "submit" class = "btn btn-success btn-block" value = "Save"/>
                 </div>
             </div>
@@ -144,7 +173,8 @@
             $("#image_maping_form").validate({
     rules: {
     name: "required",
-<?php if (!$list->id) { ?>
+<?php if (!$list->id) {
+    ?>
         image_name: "required",
 <?php } ?>
     coordinates: "required",

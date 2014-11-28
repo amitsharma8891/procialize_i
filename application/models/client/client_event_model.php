@@ -20,7 +20,7 @@ class client_event_model extends CI_Model {
     public $search = NULL;
     public $from = NULL;
     public $to = NULL;
-    public $indsutry = NULL;
+    public $industry = NULL;
     public $functionality = NULL;
     public $location = NULL;
     public $previous_event_id = NULL;
@@ -78,24 +78,25 @@ class client_event_model extends CI_Model {
                                                                                         E_P.floor_plan,
                                                                                         E_T.organizer_id,
                                                                                         O_T.name as event_organizer,
-                                                                                        O_T.organiser_photo ,
-                                                                                        group_concat(DISTINCT I_T.name) as event_industry,
-                                                                                        group_concat(DISTINCT F_T.name) as event_functionality,
-                                                                                        '
+                                                                                        O_T.organiser_photo,
+                                                                                        E_T.industry as event_industry,
+                                                                                        E_T.functionality as event_functionality'
+//                                                                                        group_concat(DISTINCT I_T.name) as event_industry,
+//                                                                                        group_concat(DISTINCT F_T.name) as event_functionality,
                 )
                 ->from('event as E_T')
                 ->join('event_profile as E_P', 'E_P.event_id = E_T.id')
-                ->join('event_has_industry as E_I', 'E_I.event_id = E_T.id', 'LEFT')
+//                ->join('event_has_industry as E_I', 'E_I.event_id = E_T.id', 'LEFT')
                 ->join('organizer as O_T', 'O_T.id = E_T.organizer_id', 'LEFT')
-                ->join('industry as I_T', 'I_T.id = E_I.industry_id')
-                ->join('event_has_functionality as E_F', 'E_F.event_id = E_T.id', 'LEFT')
-                ->join('functionality as F_T', 'F_T.id = E_F.functionality_id')
-                ->group_by('E_I.event_id')
-                ->group_by('E_F.event_id')
+//                ->join('industry as I_T', 'I_T.id = E_I.industry_id')
+//                ->join('event_has_functionality as E_F', 'E_F.event_id = E_T.id', 'LEFT')
+//                ->join('functionality as F_T', 'F_T.id = E_F.functionality_id')
+//                ->group_by('E_I.event_id')
+//                ->group_by('E_F.event_id')
                 ->where('E_T.status', 1)
                 ->order_by('E_T.is_featured', 'DESC')
                 ->limit(10);
-        if ($this->search || $this->from || $this->to || $this->indsutry || $this->functionality || $this->location) {
+        if ($this->search || $this->from || $this->to || $this->industry || $this->functionality || $this->location) {
             $search = $this->search;
             $this->db->join('tag_relation as T_R', 'T_R.object_id = E_T.id', 'LEFT');
             $this->db->join('tag as T_T', 'T_T.id = T_R.tag_id', 'LEFT');
@@ -109,11 +110,11 @@ class client_event_model extends CI_Model {
 
 
 
-            if ($this->indsutry)
-                $this->db->where("I_T.name ", $this->indsutry);
+            if ($this->industry)
+                $this->db->where("E_T.industry", $this->industry);
 
             if ($this->functionality)
-                $this->db->where("F_T.name", $this->functionality);
+                $this->db->where("E_T.functionality", $this->functionality);
 
             if ($this->location)
                 $this->db->where("(E_P.city LIKE '$this->location%' || E_P.country LIKE '$this->location%')");
@@ -122,7 +123,7 @@ class client_event_model extends CI_Model {
             foreach ($temp as $k => $v) {
                 $search = $v;
                 if ($search)
-                    $this->db->where("(E_T.name LIKE '$search%'|| E_T.description LIKE '%$search%' || E_P.city LIKE '$search%' || E_P.country LIKE '$search%' || I_T.name LIKE '$search%' || F_T.name LIKE '$search%' || T_T.tag_name LIKE '$search%' || O_T.name LIKE '$search%')");
+                    $this->db->where("(E_T.name LIKE '$search%'|| E_T.description LIKE '%$search%' || E_P.city LIKE '$search%' || E_P.country LIKE '$search%' || E_T.industry LIKE '$search%' || E_T.functionality LIKE '$search%' || T_T.tag_name LIKE '$search%' || O_T.name LIKE '$search%')");
             }
         }
 
@@ -164,10 +165,12 @@ class client_event_model extends CI_Model {
         //$this->db->where('A_T.mail_sent',1);
         $attendee_query = $this->db
                 ->select(
-                        '
-                                                                                         E_A.attendee_id as attendee_id,
-                                                                                         (select group_concat(industry.name) from attendee_has_industry INNER JOIN industry ON industry.id = attendee_has_industry.industry_id  where attendee_id = E_A.attendee_id  ) as attendee_industry,
-                                                                                         (select group_concat(functionality.name) from attendee_has_functionality INNER JOIN functionality ON functionality.id = attendee_has_functionality.functionality_id  where attendee_id = E_A.attendee_id ) as attendee_functionality,
+//                                                                                         (select group_concat(industry.name) from attendee_has_industry INNER JOIN industry ON industry.id = attendee_has_industry.industry_id  where attendee_id = E_A.attendee_id  ) as attendee_industry,
+//                                                                                         (select group_concat(functionality.name) from attendee_has_functionality INNER JOIN functionality ON functionality.id = attendee_has_functionality.functionality_id  where attendee_id = E_A.attendee_id ) as attendee_functionality,
+                        '(select group_concat(product_category.name) from exhibitor_has_product_category INNER JOIN product_category ON product_category.id = exhibitor_has_product_category.product_category_id  where exhibitor_id = A_T.spk_ex_id ) as exhibitor_product_category,
+                                                                                                                                                                                                                                                            E_A.attendee_id as attendee_id,
+                                                                                         A_T.industry as attendee_industry,
+                                                                                         A_T.functionality as attendee_functionality,
                                                                                          E_A.passcode as passcode,
                                                                                          A_T.name as attendee_name,
                                                                                          A_T.photo as attendee_image,
@@ -184,9 +187,9 @@ class client_event_model extends CI_Model {
                                                                                          U_T.first_name,
                                                                                          U_T.last_name,
                                                                                          U_T.email as attendee_email,
-                                                                                         U_T.company_name as attendee_company,
-                                                                                         U_T.designation as attendee_designation,
-                                                                                         U_T.phone as attendee_phone,
+                                                                                         A_T.company_name as attendee_company,
+                                                                                         A_T.designation as attendee_designation,
+                                                                                         A_T.phone as attendee_phone,
                                                                                           '
                 )
                 ->from('event_has_attendee as E_A')
@@ -203,7 +206,7 @@ class client_event_model extends CI_Model {
             //$this->db->where('A_T.mail_sent',1);
             $this->db->where('E_A.approve_by_org', 1);
         } else {
-            $this->db->where('(A_T.attendee_type = "A" OR A_T.attendee_type = "E")'); 
+            $this->db->where('(A_T.attendee_type = "A" OR A_T.attendee_type = "E")');
             //$this->db->where('A_T.mail_sent',1);
             $this->db->where('E_A.approve_by_org', 1);
         }
@@ -220,18 +223,18 @@ class client_event_model extends CI_Model {
         }
 
         if ($this->search) {
-            $this->db->join('attendee_has_industry as A_I', 'A_I.attendee_id = E_A.attendee_id', 'LEFT');
-            $this->db->join('industry as I_T', 'I_T.id = A_I.industry_id', 'LEFT');
-            $this->db->join('attendee_has_functionality as A_F', 'A_F.attendee_id = E_A.attendee_id', 'LEFT');
-            $this->db->join('functionality as F_T', 'F_T.id = A_F.functionality_id', 'LEFT');
-            $this->db->group_by('A_I.attendee_id');
-            $this->db->group_by('A_F.attendee_id');
+//            $this->db->join('attendee_has_industry as A_I', 'A_I.attendee_id = E_A.attendee_id', 'LEFT');
+//            $this->db->join('industry as I_T', 'I_T.id = A_I.industry_id', 'LEFT');
+//            $this->db->join('attendee_has_functionality as A_F', 'A_F.attendee_id = E_A.attendee_id', 'LEFT');
+//            $this->db->join('functionality as F_T', 'F_T.id = A_F.functionality_id', 'LEFT');
+//            $this->db->group_by('A_I.attendee_id');
+//            $this->db->group_by('A_F.attendee_id');
 
             $temp = explode(',', $this->search);
             foreach ($temp as $k => $v) {
                 $search = $v;
                 //if($search)
-                $this->db->where("(A_T.name LIKE '$search%'|| U_T.first_name LIKE '%$search%' || U_T.last_name LIKE '%$search%' || U_T.designation LIKE '%$search%' || A_T.city LIKE '$search%' || A_T.country LIKE '$search%' || I_T.name LIKE '$search%' || F_T.name LIKE '$search%')");
+                $this->db->where("(A_T.name LIKE '$search%'|| U_T.first_name LIKE '%$search%' || U_T.last_name LIKE '%$search%' || A_T.designation LIKE '%$search%' || A_T.city LIKE '$search%' || A_T.country LIKE '$search%' || A_T.industry LIKE '$search%' || A_T.functionality LIKE '$search%')");
             }
         }
         if (!is_null($this->limit))
@@ -262,7 +265,6 @@ class client_event_model extends CI_Model {
     }
 
     function getExhibitor($exhibitor_id = NULL, $event_id = NULL) {
-        //echo '245';
         $exhibitor_query = $this->db
                 ->select(
                         'EX_T.id as exhibitor_id,
@@ -286,18 +288,21 @@ class client_event_model extends CI_Model {
                                                                                              U_T.first_name ,
                                                                                              U_T.last_name,
                                                                                              U_T.email as exhibitor_email,
-                                                                                             U_T.phone,
-                                                                                             U_T.mobile,
+                                                                                             A_T.phone,
+                                                                                             A_T.mobile,
                                                                                              A_T.id as attendee_id,
                                                                                              A_T.attendee_type,
                                                                                              A_T.name as attendee_name,
-                                                                                             (select group_concat(industry.name) from exhibitor_has_industry INNER JOIN industry ON industry.id = exhibitor_has_industry.industry_id  where exhibitor_id = EX_T.id  ) as exhibitor_industry,
-                                                                                             (select group_concat(functionality.name) from exhibitor_has_functionality INNER JOIN functionality ON functionality.id = exhibitor_has_functionality.functionality_id  where exhibitor_id = EX_T.id ) as exhibitor_functionality,
-                                                                                             
-                                                                                            '
+                                                                                             A_T.industry as exhibitor_industry,
+                                                                                             A_T.functionality as exhibitor_functionality,
+                                                                                             (select group_concat(product_category.name) from exhibitor_has_product_category INNER JOIN product_category ON product_category.id = exhibitor_has_product_category.product_category_id  where exhibitor_id = EX_T.id ) as exhibitor_product_category'
+//                        (select group_concat(industry.name) from exhibitor_has_industry INNER JOIN industry ON industry.id = exhibitor_has_industry.industry_id  where exhibitor_id = EX_T.id  ) as exhibitor_industry,
+//                                                                                             (select group_concat(functionality.name) from exhibitor_has_functionality INNER JOIN functionality ON functionality.id = exhibitor_has_functionality.functionality_id  where exhibitor_id = EX_T.id ) as exhibitor_functionality,
                 )
                 ->from('exhibitor as EX_T')
                 ->join('exhibitor_profile as EX_P', 'EX_P.exhibitor_id = EX_T.id')
+                ->join('exhibitor_has_product_category as EX_P_C', 'EX_P_C.exhibitor_id = EX_T.id', 'LEFT')
+                ->join('product_category as P_C', 'P_C.id = EX_P_C.product_category_id', 'LEFT')
                 ->join('user as U_T', 'U_T.id = EX_T.contact_id')
                 ->join('attendee as A_T', 'A_T.user_id = U_T.id')
                 //-> join('event_has_attendee as E_A','E_A.attendee_id = A_T.id')
@@ -313,8 +318,11 @@ class client_event_model extends CI_Model {
             $this->db->where('A_T.id', $exhibitor_id);
         if ($this->search) {
             $search = $this->search;
-
-            $this->db->where("(EX_T.name LIKE '%$search%'|| U_T.first_name LIKE '%$search%' || U_T.last_name LIKE '%$search%' || U_T.designation LIKE '%$search%' || EX_P.city LIKE '%$search%' || EX_P.country LIKE '%$search%' )");
+            if (is_array($search)) {
+                $this->db->where_in('P_C.id', $search);
+            } else {
+                $this->db->where("(EX_T.name LIKE '%$search%'|| U_T.first_name LIKE '%$search%' || U_T.last_name LIKE '%$search%' || A_T.designation LIKE '%$search%' || EX_P.city LIKE '%$search%' || EX_P.country LIKE '%$search%'  || P_C.name LIKE '%$search%'  )");
+            }
         }
         if (!is_null($this->limit))
         //$this->db->limit($this->limit);
@@ -322,7 +330,6 @@ class client_event_model extends CI_Model {
 
 
         $query_result = $this->db->get();
-        //show_query();
         return $query_result->result_array();
     }
 
@@ -339,16 +346,16 @@ class client_event_model extends CI_Model {
                                                                                          U_T.first_name,
                                                                                          U_T.last_name,
                                                                                          U_T.email as speaker_email,
-                                                                                         U_T.company_name as speaker_company,
-                                                                                         U_T.designation as speaker_designation,
-                                                                                         U_T.phone as speaker_phone,
-                                                                                         
-                                                                                         
-                                                                                         (select group_concat(industry.name) from speaker_has_industry INNER JOIN industry ON industry.id = speaker_has_industry.industry_id  where speaker_id = SPK_T.id  ) as speaker_industry,
-                                                                                         (select group_concat(functionality.name) from speaker_has_functionality INNER JOIN functionality ON functionality.id = speaker_has_functionality.functionality_id  where speaker_id = SPK_T.id ) as speaker_functionality,
-                                                                                         '
+                                                                                         A_T.company_name as speaker_company,
+                                                                                         A_T.designation as speaker_designation,
+                                                                                         A_T.phone as speaker_phone,
+                                                                                         A_T.industry as speaker_industry,
+                                                                                         A_T.functionality as speaker_functionality'
+//                                                                                                (select group_concat(industry.name) from speaker_has_industry INNER JOIN industry ON industry.id = speaker_has_industry.industry_id  where speaker_id = SPK_T.id  ) as speaker_industry,
+//                                                                                         (select group_concat(functionality.name) from speaker_has_functionality INNER JOIN functionality ON functionality.id = speaker_has_functionality.functionality_id  where speaker_id = SPK_T.id ) as speaker_functionality,
                 )
                 ->from('speaker as SPK_T')
+                ->join('attendee as A_T', 'A_T.user_id = U_T.id')
                 ->join('user as U_T', 'U_T.id = SPK_T.user_id')
                 ->limit(10);
         if ($event_id)
@@ -645,7 +652,7 @@ class client_event_model extends CI_Model {
 
     function getSessionQuestion($session_id, $event_id) {
         $query = $this->db
-                ->select('S_Q.question,S_Q.created_date,A_T.name,U_T.designation,U_T.company_name')
+                ->select('S_Q.question,S_Q.created_date,A_T.name,A_T.designation,A_T.company_name')
                 ->from('session_question as S_Q')
                 ->join('attendee as A_T', 'A_T.id = S_Q.attendee_id')
                 ->join('user as U_T', 'U_T.id = A_T.user_id')
@@ -657,23 +664,24 @@ class client_event_model extends CI_Model {
     }
 
     function common_connection($event_id, $city, $industry) {
-        //echo '--->'.$event_id;
+//        echo '--->'.$event_id;
         if ($city)
             $this->db->where("(A_T.city LIKE '%$city%' )");
         if ($industry)
-            $this->db->where("(I_T.name LIKE '%$industry%' )");
+            $industry = $industry[0];
+            $this->db->where("(A_T.industry LIKE '%$industry%' )");
 
         $query = $this->db
                 ->select('A_T.id as attendee_id,A_T.name as attendee_name,A_T.photo as attendee_image')
                 ->from('event_has_attendee as E_A')
                 ->join('attendee as A_T', 'A_T.id = E_A.attendee_id')
-                ->join('attendee_has_industry as A_I', 'A_I.attendee_id = A_T.id', 'LEFT')
-                ->join('industry as I_T', 'I_T.id = A_I.industry_id')
+//                ->join('attendee_has_industry as A_I', 'A_I.attendee_id = A_T.id', 'LEFT')
+//                ->join('industry as I_T', 'I_T.id = A_I.industry_id')
                 ->where('E_A.approve_by_org', 1)
                 ->where('A_T.attendee_type', "A")
                 ->where('E_A.event_id', $event_id)
                 ->where_not_in('A_T.id', $this->session->userdata('client_attendee_id'))
-                ->group_by('A_I.attendee_id')
+//                ->group_by('A_I.attendee_id')
                 ->get();
         //show_query();
 
@@ -785,21 +793,20 @@ class client_event_model extends CI_Model {
 
         return $query->result_array();
     }
-    
-    function get_paascode_detail($event_id,$passcode)
-    {
+
+    function get_paascode_detail($event_id, $passcode) {
         $query = $this->db
-                 -> select('E_A.*,A_T.id as attendee_id,U_T.id as user_id,U_T.email')
-                 -> from('event_has_attendee E_A')
-                 -> join('attendee as A_T','A_T.id = E_A.attendee_id')   
-                 -> join('user as U_T','U_T.id = A_T.user_id')
-                 -> where('E_A.event_id',$event_id)
-                 //-> where('E_A.passcode',$passcode)
-                 -> where('LOWER(E_A.passcode) = LOWER("'.$passcode.'")')
-                 //-> where('E_A.status',0)
-                 -> get();
-         return $query->row();
-    } 
+                ->select('E_A.*,A_T.id as attendee_id,U_T.id as user_id,U_T.email')
+                ->from('event_has_attendee E_A')
+                ->join('attendee as A_T', 'A_T.id = E_A.attendee_id')
+                ->join('user as U_T', 'U_T.id = A_T.user_id')
+                ->where('E_A.event_id', $event_id)
+                //-> where('E_A.passcode',$passcode)
+                ->where('LOWER(E_A.passcode) = LOWER("' . $passcode . '")')
+                //-> where('E_A.status',0)
+                ->get();
+        return $query->row();
+    }
 
     function do_rsvp($session_id, $attendee_id) {
         $table_array = array(

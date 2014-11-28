@@ -12,6 +12,7 @@
     }(document, 'script', 'facebook-jssdk'));
 
 </script>
+
 <script type="text/javascript" src="<?php echo CLIENT_SCRIPTS ?>modules/event_module.js"></script>
 <div class="pageheader">
     <?php
@@ -31,22 +32,24 @@
         $exhibitor_highlight = 'class="active"';
     elseif ($this->uri->segment(2) == 'event-detail')
         $info_highlight = 'class="active"';
+    elseif ($this->uri->segment(3) == 'get_image_map_exhibitor')
+        $info_highlight = 'class="active"';
     elseif ($this->uri->segment(2) == 'attendee-detail')
         $active = 'class="active"';
 
 
-    $top_naviagtion_array    = array(
-                                                     'Agenda',   
-                                                     'Speaker',   
-                                                     'Attendee',   
-                                                     'Exhibitor',   
-                                                     );   
-                    if(!$agenda_list)
-                        unset($top_naviagtion_array[0]);
-                    if($total_speaker == 0)
-                        unset($top_naviagtion_array[1]);
-                    if($total_exhibitor == 0)
-                        unset($top_naviagtion_array[3]);
+    $top_naviagtion_array = array(
+        'Agenda',
+        'Speaker',
+        'Attendee',
+        'Exhibitor',
+    );
+    if (!$agenda_list)
+        unset($top_naviagtion_array[0]);
+    if ($total_speaker == 0)
+        unset($top_naviagtion_array[1]);
+    if ($total_exhibitor == 0)
+        unset($top_naviagtion_array[3]);
     ?>
     <div class="navtop">
         <ul class="photo-meta">

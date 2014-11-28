@@ -69,11 +69,45 @@
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="info">
                                         <?php
-                                        echo '<a href="javascript:void(0)"><p><strong> View on Map </strong></p></a>';
+                                        $coordinates = "";
+                                        if (isset($image_map_type) && !empty($image_map_type)) {
+                                            if ($image_map_type == 'parent') {
+                                                echo '<a href="' . SITE_URL . 'client/event/get_image_map_exhibitor/parent/' . $event_id . '"><p><strong> View on Event Map </strong></p></a>';
+                                            } else {
+                                                if (!empty($map_exhibitor_result[0]['map_id'])) {
+                                                    echo '<a href="' . SITE_URL . 'client/event/get_image_map_exhibitor/child/' . $map_exhibitor_result[0]['map_id'] . '"><p><strong> View on Event Map </strong></p></a>';
+                                                }
+                                            }
+
+                                            foreach ($map_exhibitor_result as $value) {
+                                                if (!empty($image_map_has_child)) {
+                                                    foreach ($image_map_has_child as $map_has_child) {
+                                                        if ($map_has_child['child_coords'] != $value['coordinates']) {
+                                                            $replaced_str = str_replace(',', '', $value['coordinates']);
+                                                            if (empty($coordinates)) {
+                                                                $coordinates = $replaced_str;
+                                                            } else {
+                                                                $coordinates = $coordinates . ',' . $replaced_str;
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    $replaced_str = str_replace(',', '', $value['coordinates']);
+                                                    if (empty($coordinates)) {
+                                                        $coordinates = $replaced_str;
+                                                    } else {
+                                                        $coordinates = $coordinates . ',' . $replaced_str;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        $this->session->set_userdata(array('mapped_exhibitor_coordinates'=> $coordinates));
                                         if ($exhibitor_detail['exhibitor_industry'])
-                                            echo '<p><strong>Industry:</strong>' . $exhibitor_detail['exhibitor_industry'] . '</p>';
+                                            echo '<p><strong>Industry : </strong>' . $exhibitor_detail['exhibitor_industry'] . '</p>';
                                         if ($exhibitor_detail['exhibitor_functionality'])
-                                            echo '<p><strong>Functionality:</strong>' . $exhibitor_detail['exhibitor_functionality'] . '</p>';
+                                            echo '<p><strong>Functionality : </strong>' . $exhibitor_detail['exhibitor_functionality'] . '</p>';
+                                        if ($exhibitor_detail['exhibitor_product_category'])
+                                            echo '<p><strong>Product Category : </strong>' . $exhibitor_detail['exhibitor_product_category'] . '</p>';
                                         if ($exhibitor_detail['first_name'] || $exhibitor_detail['last_name'])
                                             echo '<p><strong>Contact:</strong> ' . $exhibitor_detail['first_name'] . ' ' . $exhibitor_detail['last_name'] . '</p>';
                                         ?>
@@ -246,6 +280,7 @@
             $("#gallery_image_pop").modal('show');
             $(".place_gallery_image").html('<img class="img-responsive" src="' + $(this).attr("src") + '">');
         });
+        $.cookie('map_cord', '<?php echo $coordinates?>',{ expires: 7 });
     });
 </script>
 <?php $this->load->view(CLIENT_FOOTER) ?>

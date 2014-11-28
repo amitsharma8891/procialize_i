@@ -71,31 +71,6 @@
                                               ?>
 						
                                                 
-<!--						<div class="row mt5 mb5">
-                                                    <div class="col-xs-4">
-                                                        <a class="btn omb_btn-linkedin btn-block btn-sm btn-primary" href="https://www.linkedin.com" target="_blank">
-                                                            <i class="fa fa-linkedin visible-xs fa_new"></i>
-                                                            <span class="hidden-xs">Linkedin</span>
-                                                        </a>	
-                                                    </div>
-
-                                                    <div class="col-xs-4">
-                                                        <a class="btn att_btn-facebook btn-block btn-sm" href="https://www.facebook.com/" target="_blank">
-                                                            <i class="fa fa-facebook visible-xs fa_new"></i>
-                                                            <span class="hidden-xs">Facebook</span>
-                                                        </a>	
-                                                    </div>
-
-                                                    <div class="col-xs-4">
-                                                        <a class="btn att_btn-twitter btn-block btn-sm" href="https://www.twitter.com/" target="_blank">
-                                                            <i class="fa fa-twitter visible-xs fa_new"></i>
-                                                            <span class="hidden-xs">Twitter</span>
-                                                        </a>	
-                                                    </div>
-						</div>-->
-
-<!--						<p><strong>Email:</strong> <?php //echo $attendee['attendee_email']?></p>
-						<p><strong>Mobile:</strong> <?php //echo $attendee['attendee_phone']?></p><br>-->
                                                 <?php if($attendee['profile'])
                                                     {
                                                         if(file_exists(UPLOADS.'speaker/'.$attendee['profile']))
@@ -235,24 +210,10 @@
                                                                                 <img src="<?php echo SITE_URL.'uploads/organizer/logo/'.$event1['organiser_photo']?>" class="img-responsive userlogor" alt="Organizer"/>
                                                                                 </div>
                                                                         </small>
-<!--                                                                        <small class="stat-label">
-                                                                                <div class="thumb">
-                                                                                <img src="images/tradeindia.png" class="img-responsive userlogor" />
-                                                                                </div>
-                                                                        </small>-->
                                                                   </div>
                                                                 </div><!-- row -->
-
-                                                                    
-<!--                                                                    <ul class="list-inline mb5 mt5">
-                                                                            <li><a href="#"><img class="img-responsive" src="images/gallery1.png"></a></li>
-                                                                            <li><a href="#"><img class="img-responsive" src="images/gallery2.png"></a></li>
-                                                                            <li><a href="#"><img class="img-responsive" src="images/gallery3.png"></a></li>
-                                                                    </ul>-->
                                                               </div>
                                                             <?php
-                                                            //if($key1 != count($speaker_previous_event)-1) 
-                                                               // echo "<hr>"; 
                                                         }
                                                     }
                                                 ?>

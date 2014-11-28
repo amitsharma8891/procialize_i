@@ -190,6 +190,9 @@ class Notification extends CI_Controller {
             $this->attendee_model->attendee_type = array('A', 'E', 'S');
             $arrData = $this->attendee_model->getAll(NULL, FALSE, $search, $field, 'AND');
             //display($arrData);exit;
+//            show_query();
+//            display($arrData); 
+//            exit;
 //            echo $this->db->last_query();
             foreach ($arrData as $ele) {
                 $arrInsert['created_date'] = $ele['created_date'];
@@ -217,7 +220,7 @@ class Notification extends CI_Controller {
                     $email_template = get_email_template('notification_from_organizer');
                 }
                 //MAIL TEMLATE
-                $keywords = array('{app_name}', '{event_name}', '{first_name}', '{message_content}', '{app_contact_email}','{site_url}', '{IMAGE_PATH}', '{logo_image}','{apple_app_store}','{google_play_store}');
+                $keywords = array('{app_name}', '{event_name}', '{first_name}', '{message_content}', '{app_contact_email}', '{site_url}', '{IMAGE_PATH}', '{logo_image}', '{apple_app_store}', '{google_play_store}');
                 $replace_with = array(
                     $email_template['setting']['app_name'],
                     $ele['event_name'],
@@ -226,29 +229,29 @@ class Notification extends CI_Controller {
                     $email_template['setting']['app_contact_email'],
                     SITE_URL,
                     CLIENT_IMAGES,
-                    '<img src="' . SITE_URL . 'uploads/app_logo/' . $email_template['setting']['app_logo_big'] . '">',                             '<a href=' . $email_template['setting']['apple_app_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . APPLE_APP_STORE_IMAGE . '"></a>',                             '<a href=' . $email_template['setting']['google_play_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . GOOGLE_PLAY_STORE_IMAGE . '"></a>'
+                    '<img src="' . SITE_URL . 'uploads/app_logo/' . $email_template['setting']['app_logo_big'] . '">', '<a href=' . $email_template['setting']['apple_app_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . APPLE_APP_STORE_IMAGE . '"></a>', '<a href=' . $email_template['setting']['google_play_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . GOOGLE_PLAY_STORE_IMAGE . '"></a>'
                 );
                 $subject = str_replace($keywords, $replace_with, $email_template['subject']);
                 $html = str_replace($keywords, $replace_with, $email_template['body']);
 
                 //MAIL TEMLATE CLOSE
-//                $email_html = str_replace('{first_name}', $ele['first_name'], $email_html);
-//                $email_html = str_replace('{message_content}', $this->input->post('content'), $email_html);
                 if ($gcm_reg_id) {
                     $responce = $this->mobile_model->send_notification($gcm_reg_id, $mobile_os, $mobile_notification);
                 }
-                if (check_DND($element['attendee_id'])) {
-                    echo 'mail sending';
-                    sendMail($to, $subject, '', $html);
+//                if (check_DND($element['attendee_id'])) {
+//                    echo 'mail sending';
+//                    sendMail($to, $subject, '', $html);
+//                }
+
+
+                if (check_DND($ele['attendee_id'])) {
+                    $message['to'] = $to;
+                    $message['subject'] = $subject;
+                    $message['html'] = $html;
+                    $result = $this->db->insert('mail_notification_tbl', $message);
                 }
-                //send email
-                //$subject =    
             }
-            //print_r($arrData);	
-            // echo "<br>";
         } elseif ($this->input->post('attendee_id')) {
-
-
             foreach ($this->input->post('attendee_id') as $attendee_id) {
                 //echo $attendee_id;
                 $arrData = $this->attendee_model->getAll($attendee_id, FALSE, $search = NULL, $field = NULL, 'AND');
@@ -267,15 +270,15 @@ class Notification extends CI_Controller {
                 } elseif ($this->input->post('type') == 'A') {
                     $mobile_notification = 'Organizer has sent you an Alert';
 //                    $subject = $arrData[0]['event_name'] . ' - Networking App by Procialize - Alert from Organizer';
-                  $email_template = get_email_template('alert_from_organizer');
+                    $email_template = get_email_template('alert_from_organizer');
                 } elseif ($this->input->post('type') == 'N') {
                     $mobile_notification = 'Organizer has sent you a Notification';
 //                    $subject = $arrData[0]['event_name'] . ' - Networking App by Procialize - Notification from Organizer';
-                     $email_template = get_email_template('notification_from_organizer');
+                    $email_template = get_email_template('notification_from_organizer');
                 }
 
                 //MAIL TEMLATE
-                $keywords = array('{app_name}', '{event_name}', '{first_name}', '{message_content}', '{app_contact_email}','{site_url}', '{IMAGE_PATH}', '{logo_image}','{apple_app_store}','{google_play_store}');
+                $keywords = array('{app_name}', '{event_name}', '{first_name}', '{message_content}', '{app_contact_email}', '{site_url}', '{IMAGE_PATH}', '{logo_image}', '{apple_app_store}', '{google_play_store}');
                 $replace_with = array(
                     $email_template['setting']['app_name'],
                     $arrData[0]['event_name'],
@@ -284,21 +287,20 @@ class Notification extends CI_Controller {
                     $email_template['setting']['app_contact_email'],
                     SITE_URL,
                     CLIENT_IMAGES,
-                    '<img src="' . SITE_URL . 'uploads/app_logo/' . $email_template['setting']['app_logo_big'] . '">',                             '<a href=' . $email_template['setting']['apple_app_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . APPLE_APP_STORE_IMAGE . '"></a>',                             '<a href=' . $email_template['setting']['google_play_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . GOOGLE_PLAY_STORE_IMAGE . '"></a>'
+                    '<img src="' . SITE_URL . 'uploads/app_logo/' . $email_template['setting']['app_logo_big'] . '">', '<a href=' . $email_template['setting']['apple_app_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . APPLE_APP_STORE_IMAGE . '"></a>', '<a href=' . $email_template['setting']['google_play_store'] . '><img src="' . SITE_URL . 'uploads/app_store_images/' . GOOGLE_PLAY_STORE_IMAGE . '"></a>'
                 );
                 $subject = str_replace($keywords, $replace_with, $email_template['subject']);
                 $html = str_replace($keywords, $replace_with, $email_template['body']);
 
                 //MAIL TEMLATE CLOSE
-
-//                $email_html = str_replace('{first_name}', $arrData[0]['first_name'], $email_html);
-//                $email_html = str_replace('{message_content}', $this->input->post('content'), $email_html);
                 if ($gcm_reg_id) {
                     $responce = $this->mobile_model->send_notification($gcm_reg_id, $mobile_os, $mobile_notification);
                 }
                 if (check_DND($arrData[0]['attendee_id'])) {
-                    echo 'mail sending';
-                    sendMail($to, $subject, '', $html);
+                    $message['to'] = $to;
+                    $message['subject'] = $subject;
+                    $message['html'] = $html;
+                    $result = $this->db->insert('mail_notification_tbl', $message);
                 }
             }
         }

@@ -219,7 +219,8 @@ class image_map_model extends CI_Model {
         try {
             $this->db->trans_begin();
 
-            $this->save($data, $id);
+            $last_insert_id = $this->save($data, $id);
+            return $last_insert_id;
         } catch (Exception $e) {
             $error = true;
         }

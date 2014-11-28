@@ -31,8 +31,8 @@
                 <div class="panel-btns">
                     <a href="#" class="close" data-dismiss="modal" aria-hidden="true">&times;</a>
                 </div>
-                <h4 class="panel-title">Add Child Image map</h4>
-                <p>By this You can Map Exhibitor in image</p>
+                <h4 class="panel-title">Add/Update Sub-Map </h4>
+                <p>Associate an Exhibitor Stall or any other Venue/Location on the Event Map. If you associate an Exhibitor with this location, users will have direct option to view profile of that Exhibitor.</p>
             </div>
 
             <div class="panel-body panel-body-nopadding">
@@ -73,11 +73,12 @@
                         <form id="image_maping_form" enctype="multipart/form-data" method="POST">
 
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Maping Name</label>
+                                <label class="col-sm-2 control-label">Event Map Name</label>
                                 <div class="col-sm-6">
                                     <input type="text" name="name"  id ="name" class ="form-control " placeholder="Please Enter Maping Image Name" value="">
                                     <input type="hidden" name="parent_id" id="parent_id" value="<?php echo $list->id ?>">
                                     <input type="hidden" name="child_id" id="child_id" value="">
+                                    <input type="hidden" name="image_photo_id" id="image_photo_id" value="">
                                     <input type="hidden" name="event_id" id="event_id" value="<?php echo $list->event_id ?>">
                                     <input type="hidden" name="child_coords" id="child_coords" value="">
                                     <span id="name_err" style="color: red"><?php echo $error->name; ?></span>
@@ -103,8 +104,8 @@
                                     }
                                 }
                                 ?>
-                                                                                                                                                                                                            <option <?php echo $seletcted ?> value = "<?php echo $value['id'] ?>"><?php echo $value['name']; ?></option>
-                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                            <option <?php echo $seletcted ?> value = "<?php echo $value['id'] ?>"><?php echo $value['name']; ?></option>
+                                                                                                                                                                                                            
                             <?php }
                             ?>
                                                                 </select>
@@ -132,37 +133,37 @@
                                 if ($i == 0) {
 //                                if (isset($list->parent_id) && $list->parent_id != 0) {
                                     ?>
-                                                                                                                                                                                                                                                                                                                                                    <option value = "0">Select Parent Map Image</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <option value = "0">Select Parent Map Image</option>
                                     <?php
 //                                }
                                 } else {
                                     ?>
-                                                                                                                                                                                                                                                                                                                                                    <option <?php echo $seletcted ?> value = "<?php echo $value['id'] ?>"><?php echo $value['name']; ?></option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <option <?php echo $seletcted ?> value = "<?php echo $value['id'] ?>"><?php echo $value['name']; ?></option>
                                     <?php
                                 }
                                 $i++;
                                 ?>
-                                                                                                                                                                
+                                                                                                                                                                                                            
                             <?php }
                             ?>
                                                                 </select>
                                                             </div>
                                                         </div>-->
                             <div class="form-group">
-                                <label class="col-sm-2 control-label"> Mapping Image</label>
+                                <label class="col-sm-2 control-label"> Mapped Image</label>
                                 <div class="col-sm-6">
-                                    <input type="file" name="image_name">
+                                    <input type="file" name="image_name" id="select_image_name">
                                     <span id="image_name_err" style="color: red"></span>
                                     <div id="edit_child_image">
                                         <?php if ($list->id) { ?>
-                                                                                        <!--<img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" height="150px" width="150px" />-->
+                                                                                                                                                                                                                                        <!--<img src="<?php echo SITE_URL . 'uploads/event_image_maping/' . $list->image_name; ?>" height="150px" width="150px" />-->
                                         <?php } ?>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
 
-                                <label class="col-sm-2 control-label">Image coordinates</label>
+                                <label class="col-sm-2 control-label">Image Coordinates</label>
                                 <div class="col-sm-7">
                                     <textarea name="coordinates" id="coordinates" class ="form-control" placeholder="Please Enter Image coordinates">
                                         <?php //echo $list->coordinates  ?>
@@ -173,9 +174,9 @@
                 <!--            <div class="iframe"><iframe></iframe></div>-->
 
 
-                            <div class = "form-group">
+                            <div class = "form-group"  id="button_fields">
                                 <div class = "col-sm-4">
-                                    <a title="Back" class = "btn btn-danger btn-block" href="<?php echo base_url('manage/image_maping/'); ?>">Back</a>
+                                    <a title="Back"  onclick="modal_close()" class = "btn btn-danger btn-block">Back</a>
 
                     <!--<input type = "button" class = "btn btn-danger btn-block" value = "Cancel"/>-->
                                 </div>
@@ -219,6 +220,17 @@
                             },
                             success: function(res)
                             {
+                            if (res.exhibitor_response) {
+                            $('#delete_button').remove();
+                                    $('#name').val('');
+                                    $('#description').html('');
+                                    $('#image_photo_id').val('0');
+                                    $('#edit_child_image').html('');
+                                    $('#coordinates').html('');
+                                    $('#child_id').val('');
+                                    alert('These co-ordinates already have a Stall/Location tagged to it');
+                                    $('#map_exhibitor').modal('hide');
+                            }
                             if (res.status) {
                             alert('Exhibitor For this Coordinates is already added');
                                     window.location.href = SITE_URL + "manage/image_maping/add_child/" + map_id;
@@ -230,7 +242,11 @@
                                     var image = '<img src="<?php echo SITE_URL . 'uploads/event_image_maping/'; ?>' + res.image_name + '" height="150px" width="150px" />';
                                     $('#edit_child_image').html(image);
                                     $('#parent_id').val(res.parent_id);
+                                    $('#delete_button').remove();
+                                    var button_html = "<div class = 'col-sm-4' id='delete_button'> <a title='Delete' class = 'btn btn-danger btn-block' href='<?php echo SITE_URL . 'manage/image_maping/delete/'; ?>" + res.id + "'>Delete</a></div>";
+                                    $('#button_fields').append(button_html);
                                     $('#child_id').val(res.id);
+                                    $('#image_photo_id').val('1');
                                     $('#event_id').val(res.event_id);
                                     $('#child_coords').val(res.child_coords);
                                     $('#coordinates').html(res.coordinates);
@@ -238,7 +254,9 @@
                                     $("#exhibitor_id").trigger("liszt:updated");
                             } else {
                             $('#name').val('');
+                                    $('#delete_button').remove();
                                     $('#description').html('');
+                                    $('#image_photo_id').val('0');
                                     $('#edit_child_image').html('');
                                     $('#coordinates').html('');
                                     $('#child_id').val('');
@@ -246,7 +264,9 @@
                             }
                     });
             }
-
+    function modal_close() {
+    $('#map_exhibitor').modal('hide');
+    }
 </script>
 <script type = "text/javascript">
     $().ready(function() {
@@ -268,6 +288,18 @@
             coordinates: "Please enter your Coordinates",
             },
             submitHandler: function(form) {
+            var image_photo_id = $('#image_photo_id').val();
+                    var select_image_name = $('#select_image_name').val();
+                    if (select_image_name == ""){
+            if (image_photo_id == 0){
+            $("#image_name_err").html("Please Select image !!");
+                    return false;
+            } else{
+            $("#image_name_err").html("");
+            }
+            } else{
+            $("#image_name_err").html("");
+            }
             form.submit();
             }
 

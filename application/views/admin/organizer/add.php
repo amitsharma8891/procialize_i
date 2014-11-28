@@ -3,7 +3,7 @@
 <link href='http://fonts.googleapis.com/css?family=Lato:300,400,900' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Mrs+Sheppards&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 <script src="<?php echo SITE_URL ?>public/admin/js/croppic.min.js"></script>
-<script src="<?php echo SITE_URL ?>public/admin/js/main.js"></script>
+<!--<script src="<?php echo SITE_URL ?>public/admin/js/main.js"></script>-->
 <!--//Cropic files end  -->
 
 

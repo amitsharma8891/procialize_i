@@ -13,7 +13,7 @@
     if(!in_array($this->uri->segment(2), $page_array))
     {
  ?>
-<script src="<?php echo CLIENT_SCRIPTS?>modules/frontend_module.js"></script>
+<!--<script src="<?php echo CLIENT_SCRIPTS?>modules/frontend_module.js"></script>-->
 
 <?php }?>
 

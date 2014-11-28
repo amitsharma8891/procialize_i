@@ -40,7 +40,7 @@
                             <?php }
                             ?>
                         </select>
-                    </div>
+                    </div> 
                 </div>
             <?php } ?>
 

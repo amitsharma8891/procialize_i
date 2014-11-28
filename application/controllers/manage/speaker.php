@@ -18,6 +18,7 @@ class Speaker extends CI_Controller {
         parent::__construct();
 
         $this->load->model('speaker_model');
+        $this->load->model('place_model');
         $this->load->model('attendee_model', 'model');
         $this->load->model('user_model');
         $this->load->model('event_model');
@@ -52,6 +53,7 @@ class Speaker extends CI_Controller {
                 $selected_event = $this->session->userdata('selected_event');
             }
         }
+//        display($this->input->post());
         if ($this->input->post('event_drpdown') == 0 && $order == "") {
             if (!empty($arrData['event_dropdown']) && isset($arrData['event_dropdown'])) {
                 $i = 0;
@@ -65,7 +67,17 @@ class Speaker extends CI_Controller {
                     }
                 }
             }
+            if ($this->input->post('by_pass_passcode') && $this->input->post('search') == '') {
 
+                $status = $this->speaker_model->by_pass_passcode($this->input->post('delete'));
+                if ($status) {
+                    $this->session->set_flashdata('message', 'User Activated successfully');
+                    redirect('manage/speaker');
+                } else {
+                    $this->session->set_flashdata('message', "User Not Activated Successfully");
+                    redirect('manage/speaker');
+                }
+            }
             if ($this->input->post('event_drpdown') == 0 && $this->input->post('send_passcode') == '' && $this->input->post('search') == '') {
                 if ($selected_event) {
                     $search = $selected_event;
@@ -112,7 +124,7 @@ class Speaker extends CI_Controller {
             if ($this->input->post('send_mail') != '') {
                 $this->model->attendee_type = array('S');
                 $status = $this->model->sendPasscode($this->input->post('delete'));
-                $this->model->attendee_type = array('A','E');
+                $this->model->attendee_type = array('A', 'E');
                 if ($status) {
                     $this->session->set_flashdata('message', 'Mail sent successfully');
                     redirect('manage/speaker');
@@ -121,6 +133,8 @@ class Speaker extends CI_Controller {
                     redirect('manage/speaker');
                 }
             }
+
+
             if ($this->input->post('delete') && $this->input->post('send_mail') == '') {
 
                 $status = $this->model->delete($this->input->post('delete'));

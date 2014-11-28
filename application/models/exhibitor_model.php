@@ -31,8 +31,6 @@ class exhibitor_model extends CI_Model {
 
     function generate_fields($id = NULL) {
         $superadmin = $this->session->userdata('is_superadmin');
-
-
         $arrResult = array();
         if (!is_null($id)) {
             $arrResult = $this->getAll($id, TRUE);
@@ -160,32 +158,7 @@ class exhibitor_model extends CI_Model {
                     ),
                 ),
             ),
-//            'tag' => array("name" => "tag_name",
-//                "type" => "text",
-//                "id" => "tags",
-//                "class" => "form-control ",
-//                "placeholder" => "Tag",
-//                "validate" => '',
-//                "error" => 'Tag',
-//                "value" => set_value('tag_name', (isset($arrResult->tag) ? '' : (isset($postarray['tag_name']) ? $postarray['tag_name'] : ''))),
-//                "decorators" => array(
-//                    array(
-//                        "tag" => "div",
-//                        "close" => "true",
-//                        "class" => "col-sm-6"
-//                    ),
-//                    array("tag" => "div",
-//                        "close" => "close",
-//                    ),
-//                    array(
-//                        "tag" => "lable",
-//                        "close" => "false",
-//                        "class" => "col-sm-1 control-label form-label-placeholder",
-//                        "content" => '<div>Tag</div>',
-//                        "position" => "prependElement",
-//                    ),
-//                ),
-//            ),
+
             'username' => array("name" => "username",
                 "type" => "text",
                 "id" => "username",
@@ -421,7 +394,7 @@ class exhibitor_model extends CI_Model {
                 "decorators" => array(
                     array(
                         "tag" => "div",
-                        "close" => "true",
+                        "close" => "false",
                         "class" => "form-group"
                     ),
                     array(
@@ -438,14 +411,44 @@ class exhibitor_model extends CI_Model {
                     ),
                 ),
             ),
+            'product_category' => array("name" => "product_category_id[]",
+                "type" => "dropdown",
+                "id" => "product_category_id",
+                "class" => "form-control chosen-select validate[required]",
+                "placeholder" => 'Event Start Date<span class="field_required">*</span></div>',
+                "options" => $this->product_category_model->getDropdownValues(),
+                "validate" => 'required|trim',
+                "error" => 'Product Category',
+                "attributes" => ' multiple id="product_category_id"   data-placeholder="Select Product Category"',
+                "value" => set_value('product_category_id', (isset($arrResult->product_category_id) ? explode(',', $arrResult->product_category_id) : (isset($postarray['product_category_id']) ? $postarray['product_category_id'] : ''))),
+                "decorators" => array(
+                    array(
+                        "tag" => "div",
+                        "close" => "true",
+                        "class" => "col-sm-6"
+                    ),
+                    array("tag" => "div",
+                        "close" => "close",
+                    ),
+                    array(
+                        "tag" => "label",
+                        "close" => "false",
+                        "class" => "col-sm-1 control-label form-label-placeholder",
+                        "content" => '<div>Select Product Category<span class="field_required">*</span></div>',
+                        "position" => "prependElement",
+                    ),
+                ),
+            ),
             'country' => array("name" => "country",
-                "type" => "text",
+                "type" => "dropdown",
                 "id" => "country",
-                "class" => "form-control",
-                "placeholder" => "Country",
+                "attributes" => 'id="country" data-placeholder="Select country"',
+                "class" => "form-control chosen-select",
+                "placeholder" => "country",
                 "validate" => '',
-                "error" => 'Country',
-                "value" => set_value('country', (isset($arrResult->country) ? $arrResult->country : (isset($postarray['country']) ? $postarray['country'] : ''))),
+                "error" => 'country',
+                "options" => $this->place_model->getDropdownValues('country'),
+                "value" => set_value('country', (isset($arrResult->country) ? explode(',', $arrResult->country) : (isset($postarray['country']) ? $postarray['country'] : ''))),
                 "decorators" => array(
                     array(
                         "tag" => "div",
@@ -455,36 +458,43 @@ class exhibitor_model extends CI_Model {
                     array(
                         "tag" => "div",
                         "close" => "true",
-                        "class" => "col-sm-5"
+                        "class" => "col-sm-6"
                     ),
                     array(
                         "tag" => "lable",
                         "close" => "false",
                         "class" => "col-sm-1 control-label form-label-placeholder",
-                        "content" => '<div>Country</div>',
+                        "content" => '<div>Attendee country</div>',
                         "position" => "prependElement",
                     ),
                 ),
             ),
             'city' => array("name" => "city",
-                "type" => "text",
+                "type" => "dropdown",
                 "id" => "city",
-                "class" => "form-control validate[required]",
-                "placeholder" => "City*",
-                "validate" => 'required|trim',
-                "error" => 'City',
-                "value" => set_value('city', (isset($arrResult->city) ? $arrResult->city : (isset($postarray['city']) ? $postarray['city'] : ''))),
+                "attributes" => 'id="city" data-placeholder="Select city"',
+                "class" => "form-control chosen-select",
+                "placeholder" => "city",
+                "validate" => '',
+                "error" => 'city',
+                "options" => $this->place_model->getDropdownValues('city', (isset($arrResult->country) ? $arrResult->country : ''), array('city.country_id')),
+                "value" => set_value('city', (isset($arrResult->city) ? explode(',', $arrResult->city) : (isset($postarray['city']) ? $postarray['city'] : ''))),
                 "decorators" => array(
                     array(
                         "tag" => "div",
+                        "close" => "false",
+                        "class" => "form-group"
+                    ),
+                    array(
+                        "tag" => "div",
                         "close" => "true",
-                        "class" => "col-sm-5"
+                        "class" => "col-sm-6"
                     ),
                     array(
                         "tag" => "lable",
                         "close" => "false",
                         "class" => "col-sm-1 control-label form-label-placeholder",
-                        "content" => '<div>City</div>',
+                        "content" => '<div>Attendee City</div>',
                         "position" => "prependElement",
                     ),
                 ),
@@ -610,44 +620,7 @@ class exhibitor_model extends CI_Model {
                     ),
                 ),
             ),
-            /*   'floor_plan' => array("name" => "floor_plan",
-              "type" => "file",
-              "id" => "floor_plan",
-              "class" => "form-control ",
-              "placeholder" => "Floor Plan",
-              "upload_config" => array(
-              "upload_path" => UPLOAD_EXHIBITOR_FLOORPLAN,
-              "allowed_types" => 'gif|jpg|png|jpeg|pdf|doc|docx',
-              "max_size" => '3072',
-              ),
-              "error" => 'Floor Plan',
-              "validate" => '',
-              "decorators" => array(
-              array(
-              "tag" => "div",
-              "close" => "true",
-              "class" => "col-sm-2"
-              ),
-              array(
-              "tag" => "div",
-              "class" => "fileinput fileinput-new",
-              "close" => 'true',
-              "attribute" => 'data-provides="fileinput"',
-              'tag_data' => '<a href="#" title="remove" class="closebtn fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i></a><div class="fileinput-preview thumbnail" data-trigger="fileinput" style="max-width: 100%; max-height: 80px;">' . $floar_plan . '</div>'
-              ),
-              array(
-              "tag" => "div",
-              "close" => "true",
-              "class" => "",
-              ),
-              array(
-              "tag" => "span",
-              "close" => "true",
-              "class" => "btn btn-default btn-file",
-              "tag_data" => '<span class="fileinput-new"><i class="fa fa-picture-o"></i> Exhibitor Floor Plan</span><span class="fileinput-exists">Change Floor Plan</span>',
-              ),
-              ),
-              ), */
+        
             'image1' => array("name" => "image1",
                 "type" => "file",
                 "id" => "image1",
@@ -946,9 +919,9 @@ class exhibitor_model extends CI_Model {
             unset($data['password']);
             $data['email'] = $data['contact_email'];
             $data['first_name'] = $data['contact_name'];
-            $data['phone'] = $data['contact_phone'];
-            $data['mobile'] = $data['contact_telephone'];
-            $data['company_name'] = $data['name'];
+//            $data['phone'] = $data['contact_phone'];
+//            $data['mobile'] = $data['contact_telephone'];
+//            $data['company_name'] = $data['name'];
 //            $data['password'] = generatePassword(6);
             $data['type_of_user'] = 'A';
             if (is_null($id))
@@ -970,7 +943,12 @@ class exhibitor_model extends CI_Model {
                 $data['attendee_type'] = 'E';
                 $data['user_id'] = $contact_id;
                 $data['attendee_type'] = 'E';
+                $data['phone'] = $data['contact_phone'];
+                $data['mobile'] = $data['contact_telephone'];
+                $data['company_name'] = $data['name'];
                 $data['name'] = $data['contact_name'] . ' ' . $data['last_name'];
+                $data['industry_id'] = $data['industry_id'];
+                $data['functionality_id'] = $data['functionality_id'];
                 unset($data['location']);
                 unset($data['latitude']);
                 unset($data['longitude']);
@@ -1031,41 +1009,8 @@ class exhibitor_model extends CI_Model {
                 $this->tag_relation_model->save_batch($arrAttendeeTags);
             }
 
-            $this->has_model->tableName = 'exhibitor_has_industry';
-            if (!is_null($id)) {
-                $arrHasDelete = array("exhibitor_id" => $id);
 
-                if (!$this->has_model->delete($arrHasDelete))
-                    $error = TRUE;
-            }
-            if (isset($data['industry_id'])) {
-                $arrTags = array();
-                foreach ($data['industry_id'] as $industry) {
-                    $arrTags[$i]['exhibitor_id'] = $exhibitor_id;
-                    $arrTags[$i]['industry_id'] = $industry;
-                    $i++;
-                }
-                $this->has_model->save($arrTags);
-            }
-
-            $this->has_model->tableName = 'attendee_has_industry';
-            if (!is_null($id)) {
-                $arrHasDelete = array("attendee_id" => $attendee_id);
-
-                if (!$this->has_model->delete($arrHasDelete))
-                    $error = TRUE;
-            }
-            if (isset($data['industry_id'])) {
-                $arrTags = array();
-                foreach ($data['industry_id'] as $industry) {
-                    $arrTags[$i]['attendee_id'] = $attendee_id;
-                    $arrTags[$i]['industry_id'] = $industry;
-                    $i++;
-                }
-                $this->has_model->save($arrTags);
-            }
-
-            $this->has_model->tableName = 'exhibitor_has_functionality';
+            $this->has_model->tableName = 'exhibitor_has_product_category';
             if (!is_null($id)) {
                 $arrHasDelete = array("exhibitor_id" => $id);
 
@@ -1073,34 +1018,17 @@ class exhibitor_model extends CI_Model {
                     $error = TRUE;
             }
 
-            if (isset($data['functionality_id'])) {
+            if (isset($data['product_category_id'])) {
                 $arrTags = array();
-                foreach ($data['functionality_id'] as $industry) {
+                foreach ($data['product_category_id'] as $industry) {
                     $arrTags[$i]['exhibitor_id'] = $exhibitor_id;
-                    $arrTags[$i]['functionality_id'] = $industry;
+                    $arrTags[$i]['product_category_id'] = $industry;
                     $i++;
                 }
                 $this->has_model->save($arrTags);
             }
 
 
-            $this->has_model->tableName = 'attendee_has_functionality';
-            if (!is_null($id)) {
-                $arrHasDelete = array("attendee_id" => $attendee_id);
-
-                if (!$this->has_model->delete($arrHasDelete))
-                    $error = TRUE;
-            }
-
-            if (isset($data['functionality_id'])) {
-                $arrTags = array();
-                foreach ($data['functionality_id'] as $industry) {
-                    $arrTags[$i]['attendee_id'] = $attendee_id;
-                    $arrTags[$i]['functionality_id'] = $industry;
-                    $i++;
-                }
-                $this->has_model->save($arrTags);
-            }
         } catch (Exception $e) {
             $error = true;
         }
@@ -1126,9 +1054,6 @@ class exhibitor_model extends CI_Model {
                 $data['type_of_user'] = 'E';
                 $user_id = $this->user_model->save($data);
             } else {
-//                echo '<pre>';
-//                print_r($arrResult);
-//                exit;
                 if (count($arrResult) > 0) {
                     // $user_id = $this->user_model->save($data, $arrResult->user_id);
                     $data['user_id'] = $user_id = $arrResult->user_id;
@@ -1142,6 +1067,7 @@ class exhibitor_model extends CI_Model {
             unset($data['password']);
             $data['email'] = $data['contact_email'];
             $data['first_name'] = $data['contact_first_name'];
+            $data['contact_name'] = $data['contact_first_name'];
             $data['last_name'] = $data['contact_last_name'];
             $data['phone'] = $data['contact_phone'];
             $data['mobile'] = $data['contact_mobile'];
@@ -1228,41 +1154,7 @@ class exhibitor_model extends CI_Model {
                 $this->tag_relation_model->save_batch($arrAttendeeTags);
             }
 
-            $this->has_model->tableName = 'exhibitor_has_industry';
-            if (!is_null($id)) {
-                $arrHasDelete = array("exhibitor_id" => $id);
-
-                if (!$this->has_model->delete($arrHasDelete))
-                    $error = TRUE;
-            }
-            if (isset($data['industry_id'])) {
-                $arrTags = array();
-                foreach ($data['industry_id'] as $industry) {
-                    $arrTags[$i]['exhibitor_id'] = $exhibitor_id;
-                    $arrTags[$i]['industry_id'] = $industry;
-                    $i++;
-                }
-                $this->has_model->save($arrTags);
-            }
-
-            $this->has_model->tableName = 'attendee_has_industry';
-            if (!is_null($id)) {
-                $arrHasDelete = array("attendee_id" => $attendee_id);
-
-                if (!$this->has_model->delete($arrHasDelete))
-                    $error = TRUE;
-            }
-            if (isset($data['industry_id'])) {
-                $arrTags = array();
-                foreach ($data['industry_id'] as $industry) {
-                    $arrTags[$i]['attendee_id'] = $attendee_id;
-                    $arrTags[$i]['industry_id'] = $industry;
-                    $i++;
-                }
-                $this->has_model->save($arrTags);
-            }
-
-            $this->has_model->tableName = 'exhibitor_has_functionality';
+            $this->has_model->tableName = 'exhibitor_has_product_category';
             if (!is_null($id)) {
                 $arrHasDelete = array("exhibitor_id" => $id);
 
@@ -1270,34 +1162,17 @@ class exhibitor_model extends CI_Model {
                     $error = TRUE;
             }
 
-            if (isset($data['functionality_id'])) {
+            if (isset($data['product_category_id']) && !empty($data['product_category_id'])) {
                 $arrTags = array();
-                foreach ($data['functionality_id'] as $industry) {
+                foreach ($data['product_category_id'] as $industry) {
                     $arrTags[$i]['exhibitor_id'] = $exhibitor_id;
-                    $arrTags[$i]['functionality_id'] = $industry;
+                    $arrTags[$i]['product_category_id'] = $industry;
                     $i++;
                 }
                 $this->has_model->save($arrTags);
             }
 
 
-            $this->has_model->tableName = 'attendee_has_functionality';
-            if (!is_null($id)) {
-                $arrHasDelete = array("attendee_id" => $attendee_id);
-
-                if (!$this->has_model->delete($arrHasDelete))
-                    $error = TRUE;
-            }
-
-            if (isset($data['functionality_id'])) {
-                $arrTags = array();
-                foreach ($data['functionality_id'] as $industry) {
-                    $arrTags[$i]['attendee_id'] = $attendee_id;
-                    $arrTags[$i]['functionality_id'] = $industry;
-                    $i++;
-                }
-                $this->has_model->save($arrTags);
-            }
         } catch (Exception $e) {
             $error = true;
         }
@@ -1418,10 +1293,11 @@ class exhibitor_model extends CI_Model {
         } else {
             $this->db->order_by($this->order_name, $this->order_by);
         }
-        $this->db->select('exhibitor.id as exhibitor_id,exhibitor.*,exhibitor_profile.*,user.first_name as contact_name,user.last_name as last_name,user.phone as contact_phone,user.mobile as contact_mobile,user.email as contact_email,user.gcm_reg_id as contact_gcm_reg_id,user.mobile_os as contact_mobile_os,user2.username as username,passcode,exhibitor.user_id as user_id');
+        $this->db->select('exhibitor.id as exhibitor_id,exhibitor.*,exhibitor_profile.*,user.first_name as contact_name,user.last_name as last_name,attendee.phone as contact_phone,attendee.mobile as contact_mobile,user.email as contact_email,attendee.gcm_reg_id as contact_gcm_reg_id,attendee.mobile_os as contact_mobile_os,user2.username as username,passcode,exhibitor.user_id as user_id,event_has_attendee.status as exhibitor_status');
         if (!is_null($id) && $where == 'exhibitor.id')
-            $this->db->select('(select group_concat(exhibitor_has_industry.industry_id) from exhibitor_has_industry where exhibitor_id = ' . $id . ') as industry_id   
-        ,(select group_concat(exhibitor_has_functionality.functionality_id) from exhibitor_has_functionality where exhibitor_id = ' . $id . ') as functionality_id,   
+            $this->db->select('attendee.industry as industry_id,
+                     attendee.functionality as functionality_id,
+        ,(select group_concat(exhibitor_has_product_category.product_category_id) from exhibitor_has_product_category where exhibitor_id = ' . $id . ') as product_category_id,   
         ', false);
         $this->db->select('organizer.name as organizer_name,event.name as event_name,event.id as event_id');
         $this->db->select('event.event_start ,event.event_end ,event_profile.location as event_location,event_profile.city as event_city, event_profile.country as event_country');
@@ -1573,9 +1449,23 @@ class exhibitor_model extends CI_Model {
     function check_exhibitor($where = array()) {
 //        $this->db->select('id');
         $this->db->select('exhibitor.id as exhibitor_id,exhibitor.*,exhibitor_profile.*');
-        $this->db->where($where);
+        if (isset($where['city']) && isset($where['country']) && isset($where['email']) && isset($where['event_id']) && isset($where['name'])) {
+            $city = $where['city'];
+            $country = $where['country'];
+            $event_id = $where['event_id'];
+            $name = $where['name'];
+            $email = $where['email'];
+            $this->db->where('city', $city);
+            $this->db->where('country', $country);
+            $this->db->where('event_id', $event_id);
+            $this->db->where('name', $name);
+            $this->db->or_where('user.email', $email);
+        } else {
+            $this->db->where($where);
+        }
+//        $this->db->where($where);
+        $this->db->join('user', 'user.id = exhibitor.contact_id');
         $this->db->join('exhibitor_profile', 'exhibitor_profile.exhibitor_id = exhibitor.id');
-
         $result = $this->db->get('exhibitor')->row();
 //        $this->db->where($field . ' IS NOT NULL');
         if ($result) {
@@ -1655,7 +1545,6 @@ class exhibitor_model extends CI_Model {
      * @return  void
      */
     function check_unique($name, $city, $event, $id = null) {
-
         $this->db->where('exhibitor.event_id', $event);
         $this->db->where('exhibitor.name', $name);
         $this->db->where('exhibitor_profile.city', $city);
@@ -1674,6 +1563,34 @@ class exhibitor_model extends CI_Model {
                 return FALSE;
             }
         }
+    }
+
+    function by_pass_passcode($data = array()) {
+//        display($data);die;
+        //echo '1541';exit;
+        if (empty($data))
+            return false;
+        $status = true;
+        $count = 0;
+        foreach ($data as $id) {
+
+            $objAttend = $this->getAll($id, true);
+            $selected_event = $objAttend->event_id;
+            if ($this->session->userdata('selected_event')) {
+                $selected_event = $this->session->userdata('selected_event');
+            }
+            //if($objAttend->subscribe_email == 1) {
+            $this->db->where('event_id', $selected_event);
+            $this->db->where('attendee_id', $objAttend->attendee_id);
+            $arrData = array('approve_by_org' => 1, 'mail_sent' => 1, 'status' => 1);
+            $this->db->update('event_has_attendee', $arrData);
+            $arrData['mail_sent'] = 1;
+            $this->save($arrData, $id);
+        }
+        //echo '<br>'.$count; 
+        //exit;
+        return $status;
+//        die('adf');
     }
 
 }

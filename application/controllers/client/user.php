@@ -23,10 +23,11 @@ class User extends CI_Controller {
         $attendee_id = $this->session->userdata('client_attendee_id');
 
         $data = array();
-        if ($attendee_id)
+        if ($attendee_id) {
             $data['user_data'] = $this->model->getUserData($attendee_id);
-
-        $data['city_list'] = $this->place_model->getAll('city');
+            $search = $data['user_data']->country;
+            $data['city_list'] = $this->place_model->getAll('city', NULL, NULL, $search, array('city.country_id'));
+        }
         $data['country_list'] = $this->place_model->getAll('country');
         $data['industry_list'] = $this->model->getIndustry(NULL, NULL);
         $data['functionality_list'] = $this->model->getFunctionality(NULL, NULL);
@@ -64,12 +65,13 @@ class User extends CI_Controller {
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
         $post_data = $this->input->post();
+        display($post_data);
         $user_id = $this->session->userdata('client_user_id');
         $attendee_id = $this->session->userdata('client_attendee_id');
         if ($attendee_id)
             $data['user_data'] = $this->model->getUserData($attendee_id);
-        $json_array['industry_list'] = $this->model->getIndustry(NULL, NULL);
-        $json_array['functionality_list'] = $this->model->getFunctionality(NULL, NULL);
+//        $json_array['industry_list'] = $this->model->getIndustry(NULL, NULL);
+//        $json_array['functionality_list'] = $this->model->getFunctionality(NULL, NULL);
         $json_array['error'] = 'error';
         $json_array['msg'] = 'Something Went Worng!';
 
@@ -102,10 +104,10 @@ class User extends CI_Controller {
             }
         }
         $json_array['user_data']['photo'] = isset($post_data['profile_pic']) ? $post_data['profile_pic'] : '';
-        $json_array['user_data']['company_name'] = $post_data['company'];
+//        $json_array['user_data']['company_name'] = $post_data['company'];
         $json_array['user_data']['subscribe_email'] = isset($data['user_data']->subscribe_email) ? $data['user_data']->subscribe_email : '0';
-        $json_array['user_data']['industry_id'] = $post_data['industry_id'][0];
-        $json_array['user_data']['functionality_id'] = $post_data['functionality_id'][0];
+//        $json_array['user_data']['industry_id'] = $post_data['industry_id'][0];
+//        $json_array['user_data']['functionality_id'] = $post_data['functionality_id'][0];
         if ($this->form_validation->run() == FALSE) {
             $json_array['errors']['email_err'] = form_error('email');
             $json_array['errors']['current_password_err'] = form_error('current_password');
@@ -156,9 +158,14 @@ class User extends CI_Controller {
             $data['linkedin_id'] = '';
             //$data['profile_pic']                                                = '';    
             $data['public_profile_url'] = '';
+//            display($attendee_id);
+//            die;
+            $this->db->where('id', $attendee_id);
+            $this->db->update('attendee', array('company_name' => $post_data['company'], 'industry' => $post_data['industry_id'][0], 'functionality' => $post_data['functionality_id'][0], 'mobile' => $post_data['mobile'], 'phone' => $post_data['phone'], 'designation' => $post_data['designation']));
 
             $this->model->attendee_id = $attendee_id;
             $save_user = $this->model->save_user($user_id, $data);
+            show_query();
             $seesion_data = array(
                 'client_user_id' => $save_user['user_id'],
                 'client_attendee_id' => $save_user['attendee_id'],

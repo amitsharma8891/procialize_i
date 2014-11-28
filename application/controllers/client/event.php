@@ -18,8 +18,10 @@ class Event extends CI_Controller {
         $this->load->model('client/client_login_model');
         $this->load->model('common_model/common_transaction_model');
         $this->load->model('common_user_model');
+        $this->load->model('exhibitor_model');
         $this->load->model('map_exhibitor_model');
         $this->load->model('image_map_model');
+        $this->load->model('product_category_model');
         $this->load->model('attendee_model');
         $this->load->model('mobile_model');
         $this->load->helper('emailer_helper');
@@ -218,6 +220,8 @@ class Event extends CI_Controller {
 
             $data['event_id'] = $event_id;
 
+            $data['product_category_list'] = $this->product_category_model->get();
+//           display($data['product_category_list']);
             if (isset($json) && $json != NULL) {
                 if ($json == 'json') {
                     echo json_encode($data);
@@ -239,6 +243,35 @@ class Event extends CI_Controller {
         $exhibitor_id = $this->uri->segment(3);
         $event_id = $this->model->event_id = $this->session->userdata('client_event_id');
         $data = $this->model->getCount();
+        //*********************** image_map start***************
+        $this->db->where('map_exhibitor.event_id', $event_id);
+        $this->db->where('map_exhibitor.exhibitor_id', $exhibitor_id);
+        $map_exhibitor_result = $this->db->get('map_exhibitor');
+        $map_exhibitor_result = $map_exhibitor_result->result_array();
+        $data['map_exhibitor_result'] = $map_exhibitor_result;
+        if (!empty($map_exhibitor_result)) {
+            $total_cordinates = array();
+            foreach ($map_exhibitor_result as $map_exhib_list) {
+                array_push($total_cordinates, $map_exhib_list['coordinates']);
+            }
+            $this->db->where('image_map.parent_id', $map_exhibitor_result[0]['map_id']);
+            $this->db->where_in('image_map.child_coords', $total_cordinates);
+            $image_map_has_child = $this->db->get('image_map');
+            $image_map_has_child = $image_map_has_child->result_array();
+            $data['image_map_has_child'] = $image_map_has_child;
+            $this->db->where('image_map.id', $map_exhibitor_result[0]['map_id']);
+            $image_map_result = $this->db->get('image_map')->row_array();
+            $data['image_map_result'] = $image_map_result;
+            if (!empty($image_map_result)) {
+                if ($image_map_result['parent_id'] == 0) {
+                    $data['image_map_type'] = 'parent';
+                } else {
+                    $data['image_map_type'] = 'child';
+                }
+            }
+        }
+        //*********************** image_map End***************
+
         if (is_numeric($exhibitor_id)) {
             $this->model->exhibitor_id = $exhibitor_id;
             $data['exhibitor_detail'] = $this->model->getExhibitor($exhibitor_id, NULL);
@@ -527,6 +560,12 @@ class Event extends CI_Controller {
         $json_array['user'] = array();
         $json_array['search_flag'] = FALSE;
         $json_array['scroll_flag'] = $scroll;
+        if ($this->input->post()) {
+            if ($this->input->post('search_category_list') != NULL) {
+                $keyword = $this->input->post('search_category_list');
+                $user_type = 'exhibitor';
+            }
+        }
         if ($keyword)
             $json_array['search_flag'] = TRUE;
         $this->model->limit = PAGE_LIMIT;
@@ -586,7 +625,7 @@ class Event extends CI_Controller {
                 $html .= '<div class="col-xs-12"><a href="' . SITE_URL . EVENT_CONTROLLER_PATH . 'attendee-detail/' . $attendee['attendee_id'] . '"><div class="stat well well-sm attnd"><div class="row">
                                                                                    <div class="col-xs-4"><div class="thumb"><img src="' . SITE_URL . 'uploads/' . front_image('attendee', $attendee['attendee_image']) . '" alt="" class="img-responsive userlogo"/>
                                                                                    </div></div><div class="col-xs-8 eventdet"><h4>' . $attendee['attendee_name'] . '</h4><small class="stat-label">' . designation_company($attendee['attendee_designation'], $attendee['attendee_company']) . '</small>
-                                                                                   <small class="stat-label">' . industry_functionality($attendee['attendee_industry'], $attendee['attendee_functionality']) . '</small><small class="stat-label">' . $attendee['attendee_city'] . '</small></div>
+                                                                                   <small class="stat-label">' . industry_functionality($attendee['attendee_industry'], $attendee['attendee_functionality']) . '</small><small class="stat-label">' . $attendee['exhibitor_product_category'] . '</small><small class="stat-label">' . $attendee['attendee_city'] . '</small></div>
                                                                                    </div><!-- row --></div><!-- stat --></a></div>';
             }
         } else {
@@ -607,7 +646,7 @@ class Event extends CI_Controller {
                 }
 
                 $html .='<h4>' . ucwords(strtolower($value['exhibitor_name'])) . '</h4><small class="stat-label">' . $value['exhibitor_city'] . ', ' . $value['exhibitor_country'] . '</small><small class="stat-label">' . $value['exhibitor_industry'] . '</small>
-                                                                                  <small class="stat-label">Stall Number: <strong>' . $value['stall_number'] . '</strong></small></div></div><!-- row --></a>';
+                                                                                  <small class="stat-label">' . $value['exhibitor_product_category'] . '</small><small class="stat-label">Stall Number: <strong>' . $value['stall_number'] . '</strong></small></div></div><!-- row --></a>';
 
 
                 if ($value['exhibitor_featured'] == 1) {
@@ -979,6 +1018,7 @@ class Event extends CI_Controller {
         $json_array['error'] = 'error';
         $json_array['msg'] = 'Something went Wrong!';
         $get_organizer = $this->model->getOrganizer(NULL, $data['event_id']);
+//        display($data);die;
         if ($data['start_time'] && $data['end_time'] && $data['target_id'] && $data['title']) {
             $this->common_transaction_model->message = $data['title'];
             $this->common_transaction_model->meeting_start_time = $data['start_time'];
@@ -1210,6 +1250,54 @@ class Event extends CI_Controller {
         } else {
             $data['error_message'] = 'Event Not Found!';
             $this->load->view(CLIENT_DATA_ERROR_VIEW, $data);
+        }
+    }
+
+    function get_exhibitor($maped_event_image_id = NULL) {
+        $map_id = $this->input->post('map_id');
+        $event_id = $this->input->post('event_id');
+        $coordinates = $this->input->post('coordinates');
+        $this->db->where('image_map.parent_id', $map_id);
+        $this->db->where('image_map.event_id', $event_id);
+        $this->db->where('image_map.child_coords', $coordinates);
+        $image_map_result = $this->db->get('image_map')->row();
+        if (!empty($image_map_result)) {
+            echo json_encode($image_map_result);
+        } else {
+//            $this->db->where('map_exhibitor.map_id', $map_id);
+//            $this->db->or_where('map_exhibitor.child_map_id', $map_id);
+            $where = '(map_exhibitor.map_id="' . $map_id . '" or map_exhibitor.child_map_id = "' . $map_id . '")';
+            $this->db->where($where);
+            $this->db->where('map_exhibitor.event_id', $event_id);
+            $this->db->where('map_exhibitor.coordinates', $coordinates);
+            $result = $this->db->get('map_exhibitor')->row();
+            if (!empty($result) && $result != "") {
+                $result->exhhibitor_name = '';
+                $result->exhhibitor_logo = '';
+                $fields = array('exhibitor.event_id');
+                $search = $event_id;
+                $result->exhhibitor_list = $this->exhibitor_model->getAll(NULL, NULL, $search, $fields, NULL, NULL, NULL);
+                $exhibitor_list_data = array();
+                $ii = 0;
+                foreach ($result->exhhibitor_list as $ex_value) {
+                    $exhibitor_list_data[$ii] = $ex_value;
+                    $ii++;
+                    if ($result->exhibitor_id == $ex_value['attendee_id']) {
+                        $result->exhhibitor_name = $ex_value['name'];
+                        $result->exhhibitor_logo = $ex_value['logo'];
+                    }
+                }
+//                display($exhibitor_list_data);
+                $result->exhhibitor_list = $exhibitor_list_data;
+            }
+            echo json_encode($result);
+        }
+    }
+
+    function expire_session($maped_event_image_id = NULL) {
+        if ($this->input->post()) {
+            $session_name = $this->input->post('session_name');
+            $this->session->unset_userdata($session_name);
         }
     }
 

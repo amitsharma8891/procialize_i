@@ -52,7 +52,8 @@
                 ?>
                 <li class="nav-parent <?php echo (get_cookie('event_id') == $event['event_id']) ? 'nav-active' : '' ?>"><a href="#"><i class="fa fa-folder"></i> <?php echo $event['name']; ?> <span> </span></a>
                     <ul class="children" style="display: <?php echo (get_cookie('event_id') == $event['event_id']) ? 'block' : 'none' ?>;">
-        <?php foreach ($arrMenus as $url => $menu) {
+        <?php 
+        foreach ($arrMenus as $url => $menu) {
             ?>
                             <li class="sub-menu <?php echo (get_cookie('menu_name') == ucwords(strtolower($menu))) ? 'active' : '' ?>" data="<?php echo $event['event_id'] ?>">
 
@@ -90,14 +91,14 @@
                 </li>
 
         <?php
-    }
+    } 
 } else {
     $arrHeader = array('Admin Menu', 'Master Data');
     ?>
             <?php
             $first = true;
 
-            $arrSkipArrow = array('Exhibitor Profile', 'Announcement', 'Survey', 'Dashboard', 'Survey', 'Industry', 'Functionality', 'Tag','Email Template','Country Master','City Master');
+            $arrSkipArrow = array('Exhibitor Profile', 'Announcement', 'Survey', 'Dashboard', 'Survey', 'Industry', 'Functionality','Product Category', 'Tag','Email Template','Country Master','City Master');
 
             //  print_r($arrMenus);exit;
             foreach ($arrHeader as $header) {

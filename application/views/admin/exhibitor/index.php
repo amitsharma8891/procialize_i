@@ -33,7 +33,11 @@
                         <input type="submit" name="send_mail" value="Send Mail" class="btn btn-default">
                     </div>
                 </li>
-
+                <li>
+                    <div class="ckbox ckbox-default">
+                        <input type="submit" name="by_pass_passcode" value="By Pass Passcode" class="btn btn-default">
+                    </div>
+                </li>
                 <li>
                     <a href="#" class="itemopt disabled" id="delete-item"><i class="fa fa-trash-o"></i> Delete</a>
                 </li>
@@ -106,7 +110,7 @@
                                     <td class="tdalign"><?php echo ($exhibitor['is_featured'] != 0) ? anchor('#', '<i class="fa fa-certificate fa-lg"></i>') : '<i class="fa fa-certificate fa-lg"></i>'; ?></td>
                                     <td class="tdalign"><img width="30px" height="30px" src='<?php echo base_url() ?>/<?php echo UPLOAD_EXHIBITOR_LOGO_DISPLAY ?><?php echo ($exhibitor['logo'] == '') ? 'exhibitor_logo.png' : $exhibitor['logo']; ?> ' /> </td>
 
-                                                    <!-- <td><?php echo $exhibitor["organizer_name"] ?> </td> -->
+                                                                    <!-- <td><?php echo $exhibitor["organizer_name"] ?> </td> -->
                                     <td class="tdalign"><?php echo $exhibitor["event_name"] ?> </td>
 
                                     <td class="tdalign"><?php echo $exhibitor["name"] ?> </td>
@@ -114,7 +118,7 @@
                                     <td class="tdalign"><?php echo $exhibitor["contact_name"] ?> </td>
                                     <td class="tdalign"><?php echo $exhibitor["passcode"] ?> </td>
                                     <td class="tdalign"><?php echo $exhibitor["username"] ?> </td>
-                                    <td class="tdalign"><?php echo ($exhibitor['status'] == 1) ? 'E' : 'D'; ?></td>
+                                    <td class="tdalign"><?php echo ($exhibitor['exhibitor_status'] == 1) ? 'E' : 'D'; ?></td>
                                     <td class="tdalign"><?php echo ($exhibitor['mail_sent'] == 1) ? 'Y' : 'N'; ?></td>
                                     <td class="table-action tdalign tdwdth130">
 

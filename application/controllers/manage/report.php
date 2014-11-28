@@ -124,7 +124,8 @@ class Report extends CI_Controller {
                         if ($attendee['attendee_status'] == 1)
                             $attendee_status = 'Yes';
                         $accessed_app = 'No';
-                        if ($attendee['gcm_reg_id'] != "" || $attendee['gcm_reg_id'] != NULL)
+                        if ($attendee[''
+                            . ''] != "" || $attendee['gcm_reg_id'] != NULL)
                             $accessed_app = 'Yes';
                         $excel_column .= $sender_type . "\t" . $attendee['name'] . "\t" . $attendee['designation'] . "\t" . $attendee['company_name'] . "\t" . $attendee['email'] . "\t" . $attendee['mobile'] . "\t" . $attendee['phone'] . "\t" . "\t" . $accessed_app . "\n";
                     }

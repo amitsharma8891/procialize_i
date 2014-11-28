@@ -232,7 +232,7 @@ class Event extends CI_Controller {
         $arrData['datepicker'] = 'false';
         $arrData['breadcrumb_tag'] = ' Description for event goes here';
         $arrData['breadcrumb_class'] = 'fa-flask';
-        $arrData['middle'] = 'admin/event/add';//'admin/middle_template';
+        $arrData['middle'] = 'admin/event/add'; //'admin/middle_template';
         $arrData['data'] = $this->model->getAll($id, true);
         // echo '<pre>';print_r($arrData); exit;
         $this->load->view('admin/default', $arrData);
@@ -265,6 +265,21 @@ class Event extends CI_Controller {
             echo json_encode($arrResult);
             exit;
         }
+    }
+
+    function update_event_tweets() {
+        $event_id = $this->input->post('event_id');
+        $twitter_tag = $this->db->select('twitter_handler')->from('event')->where('id', $event_id)->get()->row();
+        $arrResult['status'] = 0;
+        if (isset($twitter_tag->twitter_handler) && $twitter_tag->twitter_handler) {
+            $tweets = get_tweetes($twitter_tag->twitter_handler);
+            if ($tweets) {
+                $this->db->where('id', $event_id);
+                $this->db->update('event', array('tweets' => json_encode($tweets)));
+                $arrResult['status'] = 1;
+            }
+        }
+        echo json_encode($arrResult);
     }
 
 }

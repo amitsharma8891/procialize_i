@@ -231,7 +231,7 @@ class functionality_model extends CI_Model {
     function check($search, $field = 'name') {
         $this->db->select('id');
         $this->db->where($field, $search);
-		        $this->db->where($field . ' IS NOT NULL', null, false);
+        $this->db->where($field . ' IS NOT NULL', null, false);
         $result = $this->db->get('functionality')->row();
 
         if ($result) {

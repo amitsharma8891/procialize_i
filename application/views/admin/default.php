@@ -117,6 +117,24 @@ error_reporting(0);
         </script>
 
         <script>
+            var SITE_URL = '<?php echo SITE_URL; ?>';
+            function update_tweets(event_id)
+            {
+                $.ajax({
+                    type: "POST",
+                    url: SITE_URL + "manage/event/update_event_tweets",
+                    dataType: "json",
+                    data: {
+                        'event_id': event_id,
+                    },
+                    success: function(res)
+                    {
+                        if (res.status == 1) {
+                            alert('Tweets Updated Successfully.');
+                        }
+                    }
+                });
+            }
             jQuery(document).ready(function() {
                 $("input[name = 'search']").keypress(function(e) {
                     if (e.keyCode == '13') {
@@ -171,29 +189,7 @@ error_reporting(0);
                     width: 'auto',
                     'autocomplete_url': '<?php echo base_url('manage/tag/autocomplete/'); ?>' + $(this).val(),
                 });
-                // HTML5 WYSIWYG Editor
-                // jQuery('#wysiwyg').wysihtml5({color: true, html: true});
-
-                // CKEditor
-                //   jQuery('#ckeditor').ckeditor();
-                // CKEditor
-//                   jQuery('#body').ckeditor();
-//
-                /* jQuery("#event_start").datepicker({dateFormat: 'yy-mm-dd',
-                 onSelect: function(datetext) {
-                 var d = new Date(); // for now
-                 // datetext = datetext + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
-                 // datetext = datetext;
-                 $('#event_start').val(datetext);
-                 },
-                 });
-                 jQuery("#event_end").datepicker({dateFormat: 'yy-mm-dd',
-                 onSelect: function(datetext) {
-                 var d = new Date(); // for now
-                 // datetext = datetext + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
-                 $('#event_end').val(datetext);
-                 },
-                 });*/
+                
 
 
                 $(document).ready(function() {
@@ -524,25 +520,14 @@ error_reporting(0);
                 });
                 jQuery(document).ready(function() {
 
-//                    jQuery('#table1').dataTable();
-//                    jQuery('#table2').dataTable({
-//                        "sPaginationType": "full_numbers"
-//                    });
+
                     // Chosen Select
                     jQuery("select").chosen({
                         'min-width': '100px',
                         'white-space': 'nowrap',
                         disable_search_threshold: 10
                     });
-//                    // Delete row in a table
-//                    jQuery('.delete-row').click(function() {
-//                        var c = confirm("Continue delete?");
-//                        if (c)
-//                            jQuery(this).closest('tr').fadeOut(function() {
-//                                jQuery(this).remove();
-//                            });
-//                        return false;
-//                    });
+
                     // Show aciton upon row hover
                     jQuery('.table-hidaction tbody tr').hover(function() {
                         jQuery(this).find('.table-action-hide a').animate({opacity: 1});
@@ -824,19 +809,10 @@ if (isset($data->tag_name)) {
                             <div class="col-sm-12">
                                 <ul class="list-inline mb5">
                                     <li>
-                                        <!--                                        <div class="ckbox ckbox-default">
-                                                                                    <select name ='type1' type="select" class="form-control">
-                                                                                        <option value="selected">Type</option>
-                                                                                        <option value="A">A</option>
-                                                                                        <option value="B">BZ</option>
-                                                                                    </select>
-                                                                                </div>-->
-
+                                        
                                     </li>
 
-<!--                                    <li><input name ='alll' type="checkbox" id="alll" value="1" > <label for="alll">All</label></li>
-                                    <li><input name ='exhibitor' class="select_all" type="checkbox" id="exhibitors" value="1"> <label for="exhibitors">Exhibitors</label></li>-->
-                                    <!--<li><input name ='speaker' class="select_all" type="checkbox" id="speakers" value="1"> <label for="speakers">Speakers</label></li>-->
+
                                     <li><input name ='attendee' class="select_all" type="checkbox" id="attendee" value="1"> <label for="attendee">All Attendee, Speakers, Exhibitors </label></li>
                                 </ul>
                             </div>

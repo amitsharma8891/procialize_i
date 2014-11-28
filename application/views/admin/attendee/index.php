@@ -38,6 +38,11 @@
                     </div>
                 </li>
                 <li>
+                    <div class="ckbox ckbox-default">
+                        <input type="submit" name="by_pass_passcode" value="By Pass Passcode" class="btn btn-default">
+                    </div>
+                </li>
+                <li>
                     <a href="#" class="itemopt disabled" id="delete-item"><i class="fa fa-trash-o"></i> Delete</a>
                 </li>
 
@@ -129,7 +134,7 @@
                                     <td class="tdalign text-center"><?php echo $attendee["city"] ?>  </td>
                                     <td class="tdalign text-center"><?php echo $attendee["mobile"] ?></td>
                                     <td class="tdalign text-center"><?php echo $attendee["passcode"] ?></td>
-                                    <td class="tdalign text-center"><?php echo ($attendee['status'] == 1) ? 'E' : 'D'; ?></td>
+                                    <td class="tdalign text-center"><?php echo ($attendee['attendee_status'] == 1) ? 'E' : 'D'; ?></td>
                                     <td class="tdalign text-center"><?php echo ($attendee['event_paid_status'] == 1) ? 'Y' : 'N/A'; ?></td>
                                     <td class="tdalign text-center"><?php echo ($attendee['attendee_approve_status'] == 1) ? 'Y' : 'N'; ?></td>
                                     <td class="tdalign text-center"><?php echo ($attendee['event_mail_sent'] == 1) ? 'Y' : 'N'; ?></td>

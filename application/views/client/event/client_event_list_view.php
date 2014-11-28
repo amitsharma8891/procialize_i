@@ -89,16 +89,7 @@
                                                             foreach($event['attendee_list'] as $attendee)
                                                             {
                                                                 $i++;
-                                                                /*if($this->session->userdata('client_user_city')  )
-                                                                {
-                                                                    if($this->session->userdata('client_user_city') ==  $attendee['attendee_city'])
-                                                                    echo '<li><a><img class="img-responsive" src="'.SITE_URL.'uploads/'.front_image('attendee',$attendee['attendee_image']).'"></a></li>';
-                                                                }
-                                                                else
-                                                                {
-                                                                    echo '<li><a><img class="img-responsive" src="'.SITE_URL.'uploads/'.front_image('attendee',$attendee['attendee_image']).'"></a></li>';
-                                                                }
-                                                                */
+                                                               
                                                                 echo '<li><a><img class="img-responsive" src="'.SITE_URL.'uploads/'.front_image('attendee',$attendee['attendee_image']).'"></a></li>';
                                                                     
                                                         ?>

@@ -508,13 +508,15 @@ class speaker_model extends CI_Model {
                 ),
             ),
             'country' => array("name" => "country",
-                "type" => "text",
+                "type" => "dropdown",
                 "id" => "country",
-                "class" => "form-control",
-                "placeholder" => "Speaker Country",
+                "attributes" => 'id="country" data-placeholder="Select country"',
+                "class" => "form-control chosen-select",
+                "placeholder" => "country",
                 "validate" => '',
-                "error" => 'Country',
-                "value" => set_value('country', (isset($arrResult->country) && ($arrResult->country != '') ? $arrResult->country : (isset($postarray['country']) ? $postarray['country'] : ''))),
+                "error" => 'country',
+                "options" => $this->place_model->getDropdownValues('country'),
+                "value" => set_value('country', (isset($arrResult->country) ? explode(',', $arrResult->country) : (isset($postarray['country']) ? $postarray['country'] : ''))),
                 "decorators" => array(
                     array(
                         "tag" => "div",
@@ -530,38 +532,42 @@ class speaker_model extends CI_Model {
                         "tag" => "lable",
                         "close" => "false",
                         "class" => "col-sm-1 control-label form-label-placeholder",
-                        "content" => '<div>Speaker Country<span class="field_required"></span></div>',
+                        "content" => '<div>Attendee country</div>',
                         "position" => "prependElement",
                     ),
                 ),
             ),
             'city' => array("name" => "city",
-                "type" => "text",
+                "type" => "dropdown",
                 "id" => "city",
-                "class" => "form-control",
-                "placeholder" => "Speaker City",
+                "attributes" => 'id="city" data-placeholder="Select city"',
+                "class" => "form-control chosen-select",
+                "placeholder" => "city",
                 "validate" => '',
-                "error" => 'City',
-                "value" => set_value('city', (isset($arrResult->city) && ($arrResult->city != '') ? $arrResult->city : (isset($postarray['city']) ? $postarray['city'] : ''))),
+                "error" => 'city',
+                "options" => $this->place_model->getDropdownValues('city', (isset($arrResult->country) ? $arrResult->country : ''), array('city.country_id')),
+                "value" => set_value('city', (isset($arrResult->city) ? explode(',', $arrResult->city) : (isset($postarray['city']) ? $postarray['city'] : ''))),
                 "decorators" => array(
+                    array(
+                        "tag" => "div",
+                        "close" => "false",
+                        "class" => "form-group"
+                    ),
                     array(
                         "tag" => "div",
                         "close" => "true",
                         "class" => "col-sm-6"
                     ),
-                    array("tag" => "div",
-                        "close" => "close",
-                    ),
                     array(
                         "tag" => "lable",
                         "close" => "false",
                         "class" => "col-sm-1 control-label form-label-placeholder",
-                        "content" => '<div>Speaker City</div>',
+                        "content" => '<div>Attendee City</div>',
                         "position" => "prependElement",
                     ),
                 ),
             ),
-            //bhavana
+            //Anupam
             'email' => array("name" => "email",
                 "type" => "text",
                 "id" => "email",
@@ -931,11 +937,11 @@ class speaker_model extends CI_Model {
             $this->db->order_by($this->order_name, $this->order_by);
         }
         if (!is_null($id))
-            $this->db->select('(select group_concat(attendee_has_industry.industry_id) from attendee_has_industry where attendee_id = ' . $id . ') as industry_id   
-        ,(select group_concat(attendee_has_functionality.functionality_id) from attendee_has_functionality where attendee_id = ' . $id . ') as functionality_id,   
-        ', false);
+            $this->db->select('attendee.industry as industry_id,
+                        attendee.functionality as functionality_id'
+                    , false);
         $this->db->select('attendee.id as attendee_id,user.id as user_id,attendee.*,user.*');
-        $this->db->select('event.name as event_name,organizer.name as organizer_name,event.id as event_id,event_has_attendee.passcode');
+        $this->db->select('event.name as event_name,organizer.name as organizer_name,event.id as event_id,event_has_attendee.passcode,event_has_attendee.status as speaker_status');
         $this->db->select('event.event_start ,event.event_end ,event_profile.location as event_location,event_profile.city as event_city, event_profile.country as event_country');
 
         $this->db->join('user', 'user.id = attendee.user_id', 'left');
@@ -1133,6 +1139,30 @@ class speaker_model extends CI_Model {
             $arrDropdown[$value['attendee_id']] = $value['name'];
         }
         return $arrDropdown;
+    }
+
+    function by_pass_passcode($data = array()) {
+        if (empty($data))
+            return false;
+        $status = true;
+        $count = 0;
+        foreach ($data as $id) {
+            $objAttend = $this->getAll($id, true);
+            $selected_event = $objAttend->event_id;
+            if ($this->session->userdata('selected_event')) {
+                $selected_event = $this->session->userdata('selected_event');
+            }
+            if (isset($objAttend->subscribe_email)) {
+                $count++;
+                $this->db->where('event_id', $selected_event);
+                $this->db->where('attendee_id', $objAttend->attendee_id);
+                $arrData = array('approve_by_org' => 1, 'mail_sent' => 1, 'status' => 1);
+                $this->db->update('event_has_attendee', $arrData);
+                $arrData['mail_sent'] = 1;
+                $this->save($arrData, $id);
+            }
+        }
+        return $status;
     }
 
 }

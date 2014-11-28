@@ -148,6 +148,27 @@ class common_transaction_model extends CI_Model {
         if ($type == 'set') {
             $reply_meeting = '';
             $email_template = get_email_template('mail_for_setup_meeting');
+
+            // Anupam bhatnagar *** Session chk between start date
+            $startdateRange = "start_time BETWEEN '$this->meeting_start_time%' AND '$this->meeting_end_time%'";
+            $this->db->where($startdateRange, NULL, FALSE);
+            $this->db->where('S_H_A.attendee_id', $user_data->attendee_id);
+            $this->db->join('session_has_attendee as S_H_A', 'S_H_A.session_id = session.id');
+            $this->db->where('event_id', $event_id);
+            $check_session_start_query = $this->db->get('session');
+            $check_session_start_query = $check_session_start_query->row();
+
+            // Anupam bhatnagar *** Session chk between End date
+            $this->db->where('S_H_A.attendee_id', $user_data->attendee_id);
+            $this->db->join('session_has_attendee as S_H_A', 'S_H_A.session_id = session.id');
+            $enddateRange = "end_time BETWEEN '$this->meeting_start_time%' AND '$this->meeting_end_time%'";
+            $this->db->where($enddateRange, NULL, FALSE);
+            $this->db->where('event_id', $event_id);
+            $check_session_end_query = $this->db->get('session');
+            $check_session_end_query = $check_session_end_query->row();
+            if (!empty($check_session_start_query) || !empty($check_session_end_query)) {
+                return array('check_slot' => '1', 'set_meeting' => '', 'reply_meeting' => '');
+            }
             $set_meeting = $this->set_meeting($user_data->attendee_id, $user_data->attendee_type, $subject_id, $subject_type, $event_id, $this->message, $this->meeting_start_time, $this->meeting_end_time);
         } else {
             $set_meeting = '';

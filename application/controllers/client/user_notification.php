@@ -230,7 +230,7 @@ class User_notification extends CI_Controller {
         $data['attendee_id'] = $this->session->userdata('client_attendee_id');
         $data['attendee_type'] = $this->session->userdata('client_user_type');
         $data['event_id'] = $this->session->userdata('client_event_id');
-        $json_array['error'] = 'error';
+        $json_array['error'] = 'error'; 
         $json_array['msg'] = 'Something Went Wrong!';
         if (is_numeric($data['attendee_id']) && $data['to']) {
             $save_social = $this->model->shareProcialize($data);

@@ -28,6 +28,11 @@
                     </div>
                 </li>
                 <li>
+                    <div class="ckbox ckbox-default">
+                        <input type="submit" name="by_pass_passcode" value="By Pass Passcode" class="btn btn-default">
+                    </div>
+                </li>
+                <li>
                     <a href="#" class="itemopt disabled" id="delete-item"><i class="fa fa-trash-o"></i> Delete</a>
                 </li>
 
@@ -87,6 +92,7 @@
                         </thead>
                         <tbody>
                             <?php
+//                            display($list);
                             foreach ($list as $speaker) {
                                 ?>
                                 <tr>
@@ -110,7 +116,7 @@
                                     <td> <?php echo $speaker["mobile"]; ?></td>
                                     <td> <?php echo $speaker["passcode"]; ?></td>
 
-                                    <td class="tdalign"><?php echo ($speaker['status'] == 1) ? 'E' : 'D'; ?></td>
+                                    <td class="tdalign"><?php echo ($speaker['speaker_status'] == 1) ? 'E' : 'D'; ?></td>
                                     <td class="tdalign"><?php echo ($speaker['mail_sent'] == 1) ? 'Y' : 'N'; ?></td>
                                     <td class="table-action tdalign tdwdth130">
 

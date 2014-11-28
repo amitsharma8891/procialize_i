@@ -145,7 +145,7 @@ class place_model extends CI_Model {
      *
      * gets email_template
      * 
-     * @author  Rohan
+     * @author  Anupam
      * @access  public
      * @params  int $id
      * @params  boolean $row to return single row
@@ -162,6 +162,50 @@ class place_model extends CI_Model {
             $result = $this->db->get($country_city_type);
             return $result->result_array();
         }
+    }
+
+    /**
+     * get
+     *
+     * gets email_template
+     * 
+     * @author  Anupam
+     * @access  public
+     * @params  int $id
+     * @params  boolean $row to return single row
+     * @return  void
+     */
+    function get_place($country_city_type = NULL, $id = NULL, $row = FALSE, $where = NULL) {
+        $where = $country_city_type . '.name';
+        if (!empty($id))
+            $this->db->where($where, $id);
+        if (!empty($id)) {
+            $result = $this->db->get($country_city_type)->row();
+            return $result;
+        } else {
+            $result = $this->db->get($country_city_type);
+            return $result->result_array();
+        }
+    }
+
+    function getDropdownValues($type, $search = NULL, $field = NULL) {
+        $dropDownValues = array();
+        if ($type == 'city') {
+            if (!empty($search)) {
+                $country = $this->get_place('country', $search, '1', array('country.name'));
+                $search = $country->id;
+                $field = array('city.country_id');
+                $dropDownValues = $this->getAll($type, NULL, NULL, $search, $field);
+            }
+        } else {
+            $dropDownValues = $this->getAll($type);
+        }
+//        $dropDownValues = $this->getAll($type);
+        $arrDropdown = array();
+        foreach ($dropDownValues as $value) {
+            $arrDropdown[$value['name']] = $value['name'];
+        }
+        return $arrDropdown;
     }
 
 }

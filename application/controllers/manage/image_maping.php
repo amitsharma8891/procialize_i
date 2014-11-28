@@ -19,6 +19,7 @@ class Image_maping extends CI_Controller {
         $this->load->model('event_model');
         $this->load->model('attendee_model');
         $this->load->model('map_exhibitor_model');
+        $this->load->model('exhibitor_model');
         $this->load->library('form_validation');
         $this->superadmin = $this->session->userdata('is_superadmin');
     }
@@ -69,6 +70,8 @@ class Image_maping extends CI_Controller {
         $config['create_thumb'] = TRUE;
         $config['maintain_ratio'] = TRUE;
         $this->db->select('event.name,event.id');
+        $organizer_id = $this->session->userdata('id');
+        $this->db->where('event.organizer_id', $organizer_id);
         $event_list = $this->db->get('event');
         $event_list = $event_list->result_array();
         $this->load->library('upload', $config);
@@ -81,6 +84,7 @@ class Image_maping extends CI_Controller {
             setcookie('postarray', $postarray);
             if (!$this->upload->do_upload('image_name')) //{
                 $error = array('error' => $this->upload->display_errors());
+
             $image_data = $this->upload->data();
             if ($id) {
                 if (isset($image_data['file_name']) && !empty($image_data['file_name']))
@@ -97,13 +101,14 @@ class Image_maping extends CI_Controller {
                 $arrInsert['created'] = date("Y-m-d H:i:s");
                 $arrInsert['modified'] = date("Y-m-d H:i:s");
                 $status = $this->model->saveAll($arrInsert);
+                $id = $status;
             }
             if ($status) {
                 $this->session->set_flashdata('message', 'Image Maping Added Successfully !!');
-                redirect('manage/image_maping');
+                redirect('manage/image_maping/add/' . $id);
             } else {
                 $this->session->set_flashdata('message', 'Failed to Add Image Maping !!');
-                redirect('manage/image_maping/add');
+                redirect('manage/image_maping/add/' . $id);
             }
         }
         $arrData['event_list'] = $event_list;
@@ -112,8 +117,13 @@ class Image_maping extends CI_Controller {
         $parent_list = $parent_list->result_array();
         $arrData['parent_list'] = $parent_list;
         $arrData['list'] = $this->model->get($id);
-        $arrData['thisPage'] = 'Default Image Maping';
-        $arrData['breadcrumb'] = 'Add Image Maping';
+        $arrData['event_image_map_status'] = 0;
+        if (!empty($arrData['list'])) {
+            $arrData['event_image_map_status'] = 1;
+        }
+        $arrData['thisPage'] = 'Default Event Map';
+        $arrData['breadcrumb'] = 'Add Event Map';
+        $arrData['event_image_map'] = 'event_image_map';
         $arrData['breadcrumb_tag'] = ' All elements to add an Image for an event...';
         $arrData['breadcrumb_class'] = 'fa-flask';
         $arrData['middle'] = 'admin/image_maping/add';
@@ -170,6 +180,7 @@ class Image_maping extends CI_Controller {
             }
             $map_exhibitor_id = $arrInsert['map_exhibitor_id'];
             $coordinates = $arrInsert['coordinates'];
+
             if ($map_exhibitor_id) {
                 $postarray = json_encode($arrInsert);
                 setcookie('postarray', $postarray);
@@ -198,19 +209,21 @@ class Image_maping extends CI_Controller {
         $arrData['list'] = $this->model->getAll($maped_event_image_id, '1', $search, $field, 'image_map.id', 'AND');
         if (!empty($arrData['list'])) {
             $event_id = $arrData['list']->event_id;
-            $arrData['exhhibitor_list'] = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
+            $fields = array('exhibitor.event_id');
+            $search = $event_id;
+            $arrData['exhhibitor_list'] = $this->exhibitor_model->getAll(NULL, NULL, $search, $fields, NULL, NULL, NULL);
             $exhibitor_list_data = array();
             $ii = 0;
             foreach ($arrData['exhhibitor_list'] as $ex_value) {
-                if ($ex_value['api_access_token'] !== '') {
-                    $exhibitor_list_data[$ii] = $ex_value;
-                    $ii++;
-                }
+//                if ($ex_value['contact_gcm_reg_id'] !== '') {
+                $exhibitor_list_data[$ii] = $ex_value;
+                $ii++;
+//                }
             }
             $arrData['exhhibitor_list'] = $exhibitor_list_data;
         }
-        $arrData['thisPage'] = 'Default Image Maping';
-        $arrData['breadcrumb'] = ' Image Maping';
+        $arrData['thisPage'] = 'Default Event Map';
+        $arrData['breadcrumb'] = ' Event Map';
         $arrData['breadcrumb_tag'] = ' Description for Image Maping goes here';
         $arrData['breadcrumb_class'] = 'fa-home';
         $arrData['middle'] = 'admin/image_maping/map_exhibitor';
@@ -251,10 +264,10 @@ class Image_maping extends CI_Controller {
             }
             if ($status) {
                 $this->session->set_flashdata('message', 'Image Maping Added Successfully !!');
-                redirect('manage/image_maping');
+                redirect('manage/image_maping/add_child/' . $maped_event_image_id);
             } else {
                 $this->session->set_flashdata('message', 'Failed to Add Image Maping !!');
-                redirect('manage/image_maping/add');
+                redirect('manage/image_maping/add_child/' . $maped_event_image_id);
             }
             //add_chil end*****************
             if ($status) {
@@ -279,9 +292,9 @@ class Image_maping extends CI_Controller {
             }
         }
         $arrData['exhhibitor_list'] = $exhibitor_list_data;
-        $arrData['thisPage'] = 'Default Image Maping';
-        $arrData['breadcrumb'] = ' Image Maping';
-        $arrData['breadcrumb_tag'] = ' Description for Image Maping goes here';
+        $arrData['thisPage'] = 'Default Event Map';
+        $arrData['breadcrumb'] = ' Event Map';
+        $arrData['breadcrumb_tag'] = ' Description for Event Map goes here';
         $arrData['breadcrumb_class'] = 'fa-home';
         $arrData['middle'] = 'admin/image_maping/add_child';
         $this->load->view('admin/default', $arrData);
@@ -306,14 +319,16 @@ class Image_maping extends CI_Controller {
             $this->db->where('map_exhibitor.coordinates', $coordinates);
             $result = $this->db->get('map_exhibitor')->row();
             if (!empty($result)) {
-                $result->exhhibitor_list = $this->attendee_model->getAll(NULL, NULL, 'E', array('attendee.attendee_type'), 'AND', '', $event_id);
+                $fields = array('exhibitor.event_id');
+                $search = $event_id;
+                $result->exhhibitor_list = $this->exhibitor_model->getAll(NULL, NULL, $search, $fields, NULL, NULL, NULL);
                 $exhibitor_list_data = array();
                 $ii = 0;
                 foreach ($result->exhhibitor_list as $ex_value) {
-                    if ($ex_value['api_access_token'] !== '') {
-                        $exhibitor_list_data[$ii] = $ex_value;
-                        $ii++;
-                    }
+//                    if ($ex_value['contact_gcm_reg_id'] !== '') {
+                    $exhibitor_list_data[$ii] = $ex_value;
+                    $ii++;
+//                    }
                 }
                 $result->exhhibitor_list = $exhibitor_list_data;
             }
@@ -325,10 +340,21 @@ class Image_maping extends CI_Controller {
         $map_id = $this->input->post('map_id');
         $event_id = $this->input->post('event_id');
         $child_coords = $this->input->post('child_coords');
-        $this->db->where('image_map.parent_id', $map_id);
-        $this->db->where('image_map.event_id', $event_id);
-        $this->db->where('image_map.child_coords', $child_coords);
-        $result = $this->db->get('image_map')->row();
+
+        $where = '(map_exhibitor.map_id="' . $map_id . '" or map_exhibitor.child_map_id = "' . $map_id . '")';
+        $this->db->where($where);
+        $this->db->where('map_exhibitor.event_id', $event_id);
+        $this->db->where('map_exhibitor.coordinates', $child_coords);
+        $exhibitor_result = $this->db->get('map_exhibitor')->row();
+        if (!empty($exhibitor_result)) {
+            $result['exhibitor_response'] = '1';
+        } else {
+            $this->db->where('image_map.parent_id', $map_id);
+            $this->db->where('image_map.event_id', $event_id);
+            $this->db->where('image_map.child_coords', $child_coords);
+            $result = $this->db->get('image_map')->row();
+        }
+
         echo json_encode($result);
     }
 
@@ -337,6 +363,13 @@ class Image_maping extends CI_Controller {
         $this->db->or_where('parent_id', $map_id);
         $this->db->delete('image_map');
         $this->db->where('map_id', $map_id);
+        $this->db->delete('map_exhibitor');
+        $this->session->set_flashdata('message', 'Image Maping deleted Successfully !!');
+        redirect('manage/image_maping/');
+    }
+
+    function delete_exhibitor($map_id) {
+        $this->db->where('id', $map_id);
         $this->db->delete('map_exhibitor');
         $this->session->set_flashdata('message', 'Image Maping deleted Successfully !!');
         redirect('manage/image_maping/');
